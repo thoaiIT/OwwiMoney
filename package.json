@@ -9,16 +9,24 @@
     "lint": "prettier --check .&& tsc --noEmit && next lint",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "seed": "node -r dotenv/config ./utils/createTable.js"
+    "seed": "node -r dotenv/config ./utils/createTable.js",
+    "preview-email": "email dev"
   },
   "dependencies": {
     "@radix-ui/themes": "^2.0.0",
+    "@react-email/container": "0.0.10",
+    "@react-email/html": "0.0.6",
+    "@react-email/section": "0.0.10",
+    "@react-email/text": "0.0.6",
+    "@types/nodemailer": "^6.4.14",
     "clsx": "^2.0.0",
     "moment": "^2.29.4",
     "next": "^14.0.0",
+    "nodemailer": "^6.9.7",
     "radix-themes-tw": "^0.0.8",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-email": "1.9.5"
   },
   "devDependencies": {
     "@types/node": "^20",
