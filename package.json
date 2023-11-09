@@ -23,12 +23,12 @@
     "@react-email/text": "0.0.6",
     "@types/nodemailer": "^6.4.14",
     "@vercel/postgres": "^0.5.1",
+    "Prisma": "npm:prisma@^4.14.0",
     "bcrypt": "^5.1.1",
     "clsx": "^2.0.0",
     "moment": "^2.29.4",
     "next": "^14.0.0",
     "nodemailer": "^6.9.7",
-    "Prisma": "npm:prisma@^4.14.0",
     "radix-themes-tw": "^0.0.8",
     "react": "^18",
     "react-dom": "^18",
@@ -52,7 +52,7 @@
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
-    "prisma": "^5.2.0",
+    "prisma": "^5.5.2",
     "tailwindcss": "^3.3.4",
     "typescript": "^5"
   }
