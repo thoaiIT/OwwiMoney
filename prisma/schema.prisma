@@ -1,0 +1,136 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id             String         @id @default(auto()) @map("_id") @db.ObjectId
+    name           String
+    email          String         @unique
+    hashedPassword String
+    avatarUrl      String?
+    bio            String?
+    totalBalance   Float?
+    createdAt      DateTime       @default(now())
+    updatedAt      DateTime       @updatedAt
+    Session        Session[]
+    OTP            OTP[]
+    TRANSACTIONS   TRANSACTIONS[]
+}
+
+model Type {
+    id           String         @id @default(auto()) @map("_id") @db.ObjectId
+    name         String
+    description  String?
+    Category     Category[]
+    Partner      Partner[]
+    TRANSACTIONS TRANSACTIONS[]
+}
+
+model Category {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    typeId String @db.ObjectId
+    type   Type   @relation(fields: [typeId], references: [id])
+
+    name         String
+    description  String?
+    UserBudget   UserBudget[]
+    TRANSACTIONS TRANSACTIONS[]
+}
+
+model Partner {
+    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+
+    typeId String @db.ObjectId
+    type   Type   @relation(fields: [typeId], references: [id])
+
+    description  String?
+    contact      String?
+    address      String?
+    email        String?
+    Session      Session[]
+    TRANSACTIONS TRANSACTIONS[]
+}
+
+model UserBudget {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    categoryId String   @db.ObjectId
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    expected String?
+    actual   String?
+    status   String?
+}
+
+model Wallet {
+    id           String         @id @default(auto()) @map("_id") @db.ObjectId
+    name         String
+    description  String?
+    TRANSACTIONS TRANSACTIONS[]
+}
+
+model Session {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
+    partnerId String    @db.ObjectId
+    partner   Partner   @relation(fields: [partnerId], references: [id])
+    Message   Message[]
+}
+
+model Message {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    sessionId String  @db.ObjectId
+    session   Session @relation(fields: [sessionId], references: [id])
+
+    content   String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    status    String
+}
+
+model OTP {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
+    code      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    status    String
+}
+
+model TRANSACTIONS {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
+    partnerId String  @db.ObjectId
+    partner   Partner @relation(fields: [partnerId], references: [id])
+
+    categoryId String   @db.ObjectId
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    typeId String @db.ObjectId
+    type   Type   @relation(fields: [typeId], references: [id])
+
+    walletId String @db.ObjectId
+    wallet   Wallet @relation(fields: [walletId], references: [id])
+
+    amount          Float
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    description     String?
+    invoiceImageUrl String?
+}
