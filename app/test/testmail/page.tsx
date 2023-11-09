@@ -1,12 +1,13 @@
-import { render } from '@react-email/render';
-import EmailOTPTemplate from '../../../emails/EmailTemplate';
-import { sendEmail } from '../../../helper/lib/email';
-
+import MailClient from './client';
 export default async function page() {
-  await sendEmail({
-    to: 'buoibonbua@gmail.com',
-    subject: 'Welcome to NextAPI',
-    html: render(EmailOTPTemplate('112111')),
-  });
-  return <div>testmail page. sent</div>;
+  // const otp = GenerateOTP();
+  // const template = generateMailOTP(otp.toString());
+  // console.log({ otp, template });
+  // await sendEmail({
+  //   to: 'buoibonbua@gmail.com',
+  //   subject: 'Welcome to NextAPI',
+  //   html: template,
+  // });
+
+  return <MailClient />;
 }
