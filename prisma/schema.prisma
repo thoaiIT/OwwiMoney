@@ -8,27 +8,27 @@ datasource db {
 }
 
 model User {
-    id             String         @id @default(auto()) @map("_id") @db.ObjectId
+    id             String        @id @default(auto()) @map("_id") @db.ObjectId
     name           String
-    email          String         @unique
+    email          String        @unique
     hashedPassword String
     avatarUrl      String?
     bio            String?
     totalBalance   Float?
-    createdAt      DateTime       @default(now())
-    updatedAt      DateTime       @updatedAt
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
     Session        Session[]
-    OTP            OTP[]
-    TRANSACTIONS   TRANSACTIONS[]
+    Otp            Otp[]
+    Transaction    Transaction[]
 }
 
 model Type {
-    id           String         @id @default(auto()) @map("_id") @db.ObjectId
-    name         String
-    description  String?
-    Category     Category[]
-    Partner      Partner[]
-    TRANSACTIONS TRANSACTIONS[]
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    Category    Category[]
+    Partner     Partner[]
+    Transaction Transaction[]
 }
 
 model Category {
@@ -37,10 +37,10 @@ model Category {
     typeId String @db.ObjectId
     type   Type   @relation(fields: [typeId], references: [id])
 
-    name         String
-    description  String?
-    UserBudget   UserBudget[]
-    TRANSACTIONS TRANSACTIONS[]
+    name        String
+    description String?
+    UserBudget  UserBudget[]
+    Transaction Transaction[]
 }
 
 model Partner {
@@ -50,12 +50,12 @@ model Partner {
     typeId String @db.ObjectId
     type   Type   @relation(fields: [typeId], references: [id])
 
-    description  String?
-    contact      String?
-    address      String?
-    email        String?
-    Session      Session[]
-    TRANSACTIONS TRANSACTIONS[]
+    description String?
+    contact     String?
+    address     String?
+    email       String?
+    Session     Session[]
+    Transaction Transaction[]
 }
 
 model UserBudget {
@@ -69,10 +69,10 @@ model UserBudget {
 }
 
 model Wallet {
-    id           String         @id @default(auto()) @map("_id") @db.ObjectId
-    name         String
-    description  String?
-    TRANSACTIONS TRANSACTIONS[]
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    Transaction Transaction[]
 }
 
 model Session {
@@ -98,19 +98,19 @@ model Message {
     status    String
 }
 
-model OTP {
+model Otp {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id])
 
     code      String
+    status    String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    status    String
 }
 
-model TRANSACTIONS {
+model Transaction {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
     userId String @db.ObjectId
