@@ -1,15 +1,9 @@
-import { Button, Flex } from '@radix-ui/themes';
+import ThemeSwitch from '../ui/components/theme-switch';
 
 export default function Home() {
   return (
-    <Flex gap="3">
-      <Button
-        color="indigo"
-        variant="soft"
-        className="bg-red-400"
-      >
-        Edit profile
-      </Button>
-    </Flex>
+    <div>
+      <ThemeSwitch />
+    </div>
   );
 }
