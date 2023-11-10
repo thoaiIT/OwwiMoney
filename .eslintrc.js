@@ -47,7 +47,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn'],
     'no-inline-styles/no-inline-styles': 2,
     '@typescript-eslint/no-explicit-any': 'warn',
-    "@typescript-eslint/no-var-requires": "warn",
+    '@typescript-eslint/no-var-requires': 'warn',
   },
   root: true,
 };
