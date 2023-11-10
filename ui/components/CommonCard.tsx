@@ -2,7 +2,9 @@
 
 import clsx from 'clsx';
 
-const CommonCard = ({ className, children }: { className: string; children: React.ReactNode }) => {
+type CommonCardProps = { className: string; children: React.ReactNode };
+
+const CommonCard: React.FC<CommonCardProps> = ({ className, children }) => {
   return (
     <div
       className={clsx(
