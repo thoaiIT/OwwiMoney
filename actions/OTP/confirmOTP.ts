@@ -9,6 +9,10 @@ export const confirmOTP = async (code: string) => {
       userId: '654c9b599ccb5469902cc392',
     },
   });
+  if (otp?.createdAt) {
+    const checkLifeTime = new Date().getTime() - new Date(otp.createdAt).getTime() > 60000;
+    // if (checkLifeTime) return {message: "Expired"}
+  }
   console.log({ otp, code });
   if (!otp) {
     return false;

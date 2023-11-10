@@ -4,14 +4,14 @@ import { Button, TextFieldInput } from '@radix-ui/themes';
 import { GenerateOTP } from '../../../utils';
 import { registerOTPTemplate } from '../../../actions/mail/registerOTPTemplate';
 import { sendEmail } from '../../../helper/lib/email';
-import { registerOTP } from '../../../actions/user/registerOTP';
-import { confirmOTP } from '../../../actions/user/confirmOTP';
+import { registerOTP } from '../../../actions/OTP/registerOTP';
+import { confirmOTP } from '../../../actions/OTP/confirmOTP';
 
 function client() {
   const sendEmailHandler = async () => {
     const otp = GenerateOTP();
-    const template = registerOTPTemplate(otp.toString());
-    await registerOTP(otp.toString());
+    const template = registerOTPTemplate(otp.toString(), '');
+    await registerOTP(otp.toString(), '');
     await sendEmail({
       to: 'buoibonbua@gmail.com',
       subject: 'Welcome to OwwiMoney',

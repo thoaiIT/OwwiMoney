@@ -1,7 +1,6 @@
-import React from 'react';
-import { createUser } from '../../../actions/user/create';
+'use server';
+import CreateUserForm from './CreateUserForm';
 
 export default async function page() {
-  await createUser();
-  return <div>createUser</div>;
+  return <CreateUserForm />;
 }

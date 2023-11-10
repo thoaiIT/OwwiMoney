@@ -2,10 +2,10 @@
 import type { Otp } from '@prisma/client';
 import prisma from '../../helper/lib/prismadb';
 
-export const registerOTP = async (code: string) => {
+export const registerOTP = async (code: string, userId: string) => {
   const otp: Otp = await prisma.otp.create({
     data: {
-      userId: '654c9b599ccb5469902cc392',
+      userId: userId,
       code: code,
       status: 'pending',
     },
