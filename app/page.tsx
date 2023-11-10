@@ -1,15 +1,16 @@
-import { Button, Flex } from '@radix-ui/themes';
+import CommonCard from '../ui/components/CommonCard';
+import ThemeSwitch from '../ui/components/theme-switch';
+import Logo from '../ui/Logo';
 
 export default function Home() {
   return (
-    <Flex gap="3">
-      <Button
-        color="indigo"
-        variant="soft"
-        className="bg-red-400"
-      >
-        Edit profile
-      </Button>
-    </Flex>
+    <div>
+      <ThemeSwitch />
+      <CommonCard className="h-25 ml-4 ">
+        <Logo />
+        <div>hello world!!</div>
+        <div>hello world!!</div>
+      </CommonCard>
+    </div>
   );
 }

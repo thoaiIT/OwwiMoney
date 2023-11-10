@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Theme } from '@radix-ui/themes';
 import './globals.css';
 import '@radix-ui/themes/styles.css';
-
-const inter = Inter({ subsets: ['latin'] });
+import { inter } from '../ui/fonts';
+import { ThemeContextProvider } from '../context/theme-context';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -13,9 +11,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Theme>{children}</Theme>
+    <html
+      lang="en"
+      className="!scroll-smoot"
+    >
+      <body
+        className={`${inter.className} bg-light-mode text-gray-950 relative pt-28 sm:pt-36 dark:bg-dark-mode dark:text-gray-50 dark:text-opacity-90`}
+      >
+        <ThemeContextProvider>{children}</ThemeContextProvider>
       </body>
     </html>
   );

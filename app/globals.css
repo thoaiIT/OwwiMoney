@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  --line-color: #f9f7f7;
+}
+
+.html.dark {
+  --line-color: #212332;
+}

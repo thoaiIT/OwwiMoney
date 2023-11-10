@@ -32,7 +32,8 @@
     "radix-themes-tw": "^0.0.8",
     "react": "^18",
     "react-dom": "^18",
-    "react-email": "1.9.5"
+    "react-email": "1.9.5",
+    "react-icons": "^4.11.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
