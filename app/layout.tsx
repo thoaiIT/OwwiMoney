@@ -3,6 +3,7 @@ import './globals.css';
 import '@radix-ui/themes/styles.css';
 import { inter } from '../ui/fonts';
 import { ThemeContextProvider } from '../context/theme-context';
+import { Theme } from '@radix-ui/themes';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.className} bg-light-mode text-gray-950 relative pt-28 sm:pt-36 dark:bg-dark-mode dark:text-gray-50 dark:text-opacity-90`}
       >
-        <ThemeContextProvider>{children}</ThemeContextProvider>
+        <ThemeContextProvider>
+          <Theme>{children}</Theme>
+        </ThemeContextProvider>
       </body>
     </html>
   );
