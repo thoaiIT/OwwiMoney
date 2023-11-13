@@ -4,20 +4,25 @@ import '@radix-ui/themes/styles.css';
 import { ThemeContextProvider } from '../context/theme-context';
 import { Quicksand } from 'next/font/google';
 
-const quicksand = Quicksand({ subsets: ['latin'], weight: ['400', '700'] });
+const quickSand = Quicksand({
+  variable: '--display-font',
+  preload: false,
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
 
 export const metadata: Metadata = {
-  title: 'OwwiMoney',
-  description: 'Money management app',
+  title: 'OwwiMiney',
+  description: '$$$',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className="!scroll-smoot"
+      className={`${quickSand.variable} !scroll-smooth`}
     >
-      <body className={`${quicksand.className}`}>
+      <body className={`${quickSand.className} `}>
         <div className="flex flex-col min-h-screen">
           <ThemeContextProvider>{children}</ThemeContextProvider>
         </div>

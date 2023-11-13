@@ -11,7 +11,7 @@ import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   return (
     <>
@@ -91,4 +91,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;
