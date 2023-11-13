@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import Heading from '../../ui/components/Heading';
-
-import { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import Input from '../../ui/components/input/Input';
 import Button from '../../ui/components/button/Button';
 import ButtonIcon from '../../ui/components/button/ButtonIcon';
@@ -11,8 +12,34 @@ import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
 
+// Yup schema to validate the form
+const schema = Yup.object().shape({
+  email: Yup.string().required('No email provided').email(),
+  password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
+});
+
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+
+    // Pass the Yup schema to validate the form
+    validationSchema: schema,
+
+    // Handle form submission
+    onSubmit: async ({ email, password }) => {
+      // Make a request to your backend to store the data
+      console.log({ email, password });
+    },
+  });
+
+  // Destructure the formik object
+  const { errors, touched, values, handleChange, handleSubmit } = formik;
+
   return (
     <>
       <Heading
@@ -28,12 +55,20 @@ const LoginForm = () => {
         label="Email"
         type="email"
         placeholder="username@gmail.com"
+        onChange={handleChange}
+        value={values.email}
+        errors={errors.email}
+        touched={touched.email}
       />
       <Input
         id={'password'}
         label="Password"
         type="password"
         placeholder="Password"
+        value={values.password}
+        errors={errors.password}
+        touched={touched.password}
+        onChange={handleChange}
       />
       <p className="text-sm">
         <Link
@@ -46,11 +81,9 @@ const LoginForm = () => {
       <Button
         custom="xl:w-[70%]"
         label={isLoading ? 'Loading' : 'Sign In'}
-        onClick={() => {
-          return '';
-        }}
+        onClick={handleSubmit}
       />
-      <div className="xl:w-[70%] mt-3">
+      <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
       <div className="xl:w-[70%] grid grid-cols-3 gap-2">
@@ -76,7 +109,7 @@ const LoginForm = () => {
           onClick={() => ''}
         />
       </div>
-      <div className="xl:w-[70%] mt-3">
+      <div className="xl:w-[70%]">
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
           <Link

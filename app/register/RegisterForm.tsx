@@ -6,13 +6,49 @@ import Heading from '../../ui/components/Heading';
 import { useState } from 'react';
 import Input from '../../ui/components/input/Input';
 import Button from '../../ui/components/button/Button';
-import ButtonIcon from '../../ui/components/button/ButtonIcon';
-import GoogleIcon from '../../public/icons/google.svg';
-import FaceBookIcon from '../../public/icons/facebook.svg';
-import GitHubIcon from '../../public/icons/github.svg';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const getCharacterValidationError = (str: string) => {
+  return `Your password must have at least 1 ${str} character`;
+};
+
+// Yup schema to validate the form
+const schema = Yup.object().shape({
+  email: Yup.string().required('No email provided').email(),
+  password: Yup.string()
+    .required('No password provided.')
+    .min(7, 'Password is too short - should be 7 chars minimum.')
+    .matches(/[0-9]/, getCharacterValidationError('digit'))
+    .matches(/[a-z]/, getCharacterValidationError('lowercase'))
+    .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
+  confirmPassword: Yup.string()
+    .required('Please retype your password.')
+    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
+});
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+
+    // Pass the Yup schema to validate the form
+    validationSchema: schema,
+
+    // Handle form submission
+    onSubmit: async ({ email, password, confirmPassword }) => {
+      // Make a request to your backend to store the data
+      console.log({ email, password, confirmPassword });
+    },
+  });
+
+  // Destructure the formik object
+  const { errors, touched, values, handleChange, handleSubmit } = formik;
   return (
     <>
       <Heading
@@ -28,18 +64,30 @@ const RegisterForm = () => {
         label="Email"
         type="email"
         placeholder="username@gmail.com"
+        onChange={handleChange}
+        value={values.email}
+        errors={errors.email}
+        touched={touched.email}
       />
       <Input
         id={'password'}
         label="Password"
         type="password"
         placeholder="Password"
+        onChange={handleChange}
+        value={values.password}
+        errors={errors.password}
+        touched={touched.password}
       />
       <Input
-        id={'confirm_password'}
+        id={'confirmPassword'}
         label="Confirm password"
         type="password"
         placeholder="Confirm password"
+        onChange={handleChange}
+        value={values.confirmPassword}
+        errors={errors.confirmPassword}
+        touched={touched.confirmPassword}
       />
       <p className="text-sm">
         Have an account yet?
@@ -53,9 +101,7 @@ const RegisterForm = () => {
       <Button
         custom="xl:w-[70%]"
         label={isLoading ? 'Loading' : 'Register'}
-        onClick={() => {
-          return '';
-        }}
+        onClick={handleSubmit}
       />
     </>
   );
