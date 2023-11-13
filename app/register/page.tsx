@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Container from '../../ui/components/Container';
 import FormWrap from '../../ui/components/FormWrap';
-import LoginForm from './RegisterForm';
+import RegisterForm from './RegisterForm';
 import OwwiFigure from '../../public/img/Owwi_figure.png';
 
 const Page = () => {
@@ -10,7 +10,7 @@ const Page = () => {
       <Container>
         <div className="grid xl:grid-cols-2 gap-2 h-full relative">
           <FormWrap>
-            <LoginForm />
+            <RegisterForm />
           </FormWrap>
           <Image
             src={OwwiFigure}

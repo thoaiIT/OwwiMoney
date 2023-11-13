@@ -8,6 +8,7 @@ import Input from '../../ui/components/input/Input';
 import Button from '../../ui/components/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { registerUser } from '../../actions/user/registerUser';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -44,11 +45,19 @@ const RegisterForm = () => {
     onSubmit: async ({ email, password, confirmPassword }) => {
       // Make a request to your backend to store the data
       console.log({ email, password, confirmPassword });
+
+      const result = await registerUser({
+        email,
+        password,
+        name: 'phat',
+      });
+      console.log({ result });
     },
   });
 
   // Destructure the formik object
   const { errors, touched, values, handleChange, handleSubmit } = formik;
+
   return (
     <>
       <Heading
