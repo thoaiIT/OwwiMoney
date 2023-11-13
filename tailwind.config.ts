@@ -16,6 +16,7 @@ module.exports = {
         'dark-blue': '#465685',
         'owwi-title': '#465685',
         'btn-color': '#A93159',
+        'light-blue': '#E2EEF5',
       },
     },
   },

@@ -45,7 +45,7 @@ const RegisterForm = () => {
       </p>
       <Button
         custom="xl:w-[70%]"
-        label={isLoading ? 'Loading' : 'Sign Up'}
+        label={isLoading ? 'Loading' : 'Sign In'}
         onClick={() => {
           return '';
         }}
@@ -65,14 +65,14 @@ const RegisterForm = () => {
           iconImage={GitHubIcon}
           width={22}
           height={22}
-          description={'Login with Google'}
+          description={'Login with Github'}
           onClick={() => ''}
         />
         <ButtonIcon
           iconImage={FaceBookIcon}
           width={22}
           height={22}
-          description={'Login with Google'}
+          description={'Login with Facebook'}
           onClick={() => ''}
         />
       </div>
