@@ -49,7 +49,7 @@ const RegisterForm = () => {
       const result = await registerUser({
         email,
         password,
-        name: 'phat',
+        name: email.split('@')[0] || 'user',
       });
       console.log({ result });
     },
