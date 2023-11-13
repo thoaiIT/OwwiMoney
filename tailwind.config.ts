@@ -12,6 +12,7 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'owwi-pattern': "url('/img/Owwi_background.png')",
       },
       fontWeight: {
         display: {
@@ -25,6 +26,9 @@ module.exports = {
         'dark-mode': '#212332',
         'light-mode': '#f9f7f7',
         'dark-cpn': '#112D4E',
+        'dark-blue': '#465685',
+        'btn-color': '#A93159',
+        'light-blue': '#E2EEF5',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',
