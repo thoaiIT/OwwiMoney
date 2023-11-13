@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev-custom": "node server.js",
     "build": "prettier --check . && next build",
     "start": "next start",
+    "start-custom": "NODE_ENV=production node server.js",
     "lint": "prettier --check .&& tsc --noEmit && next lint",
     "format": "prettier --write .",
     "prepare": "husky install",
@@ -33,7 +35,9 @@
     "react": "^18",
     "react-dom": "^18",
     "react-email": "1.9.5",
-    "react-icons": "^4.11.0"
+    "react-icons": "^4.11.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

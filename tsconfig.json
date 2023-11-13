@@ -28,6 +28,14 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/createTable.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "utils/createTable.js",
+    "app/api/socket/route.ts",
+    "actions/chat/route.js"
+  ],
   "exclude": ["node_modules"]
 }
