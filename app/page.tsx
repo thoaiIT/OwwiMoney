@@ -1,16 +1,18 @@
-import CommonCard from '../ui/components/CommonCard';
-import ThemeSwitch from '../ui/components/theme-switch';
-import Logo from '../ui/Logo';
+import Container from '../ui/components/Container';
+import FormWrap from '../ui/components/FormWrap';
+import RegisterForm from './register/RegisterForm';
 
 export default function Home() {
   return (
-    <div>
-      <ThemeSwitch />
-      <CommonCard className="h-25 ml-4 ">
-        <Logo />
-        <div>hello world!!</div>
-        <div>hello world!!</div>
-      </CommonCard>
+    <div className="bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-12">
+      <Container>
+        <div className="grid xl:grid-cols-2 gap-2">
+          <FormWrap>
+            <RegisterForm />
+          </FormWrap>
+          <div className="">Owwi Image</div>
+        </div>
+      </Container>
     </div>
   );
 }
