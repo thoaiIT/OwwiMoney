@@ -16,12 +16,12 @@ const RegisterForm = () => {
   return (
     <>
       <Heading
-        title="OwwiMoney"
-        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue mt-4"
+        title="Hello!"
+        custom="md:text-7xl text-5xl text-center xl:text-start"
       />
       <Heading
-        title="Login"
-        custom="mt-2 text-3xl text-center xl:text-start"
+        title="Sign Up to Get Started"
+        custom="text-4xl text-center xl:text-start font-light"
       />
       <Input
         id={'email'}
@@ -35,58 +35,28 @@ const RegisterForm = () => {
         type="password"
         placeholder="Password"
       />
+      <Input
+        id={'confirm_password'}
+        label="Confirm password"
+        type="password"
+        placeholder="Confirm password"
+      />
       <p className="text-sm">
+        Have an account yet?
         <Link
-          className="text-dark-blue font-medium hover:text-blue-500"
-          href="/forgetpassword"
+          className="ml-2 text-dark-blue font-medium hover:text-blue-500"
+          href="/login"
         >
-          Forget Password?
+          Login here
         </Link>
       </p>
       <Button
         custom="xl:w-[70%]"
-        label={isLoading ? 'Loading' : 'Sign In'}
+        label={isLoading ? 'Loading' : 'Register'}
         onClick={() => {
           return '';
         }}
       />
-      <div className="xl:w-[70%] mt-3">
-        <p className="text-sm text-gray-400 text-center">or continue with</p>
-      </div>
-      <div className="xl:w-[70%] grid grid-cols-3 gap-2">
-        <ButtonIcon
-          iconImage={GoogleIcon}
-          width={22}
-          height={22}
-          description={'Login with Google'}
-          onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={GitHubIcon}
-          width={22}
-          height={22}
-          description={'Login with Github'}
-          onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={FaceBookIcon}
-          width={22}
-          height={22}
-          description={'Login with Facebook'}
-          onClick={() => ''}
-        />
-      </div>
-      <div className="xl:w-[70%] mt-3">
-        <p className="text-sm text-gray-400 text-center">
-          Don&apos;t have an account yet?
-          <Link
-            href="/register"
-            className="ml-1 text-dark-blue hover:text-blue-500"
-          >
-            Register for free
-          </Link>
-        </p>
-      </div>
     </>
   );
 };

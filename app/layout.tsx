@@ -12,7 +12,7 @@ const quickSand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: 'OwwiMiney',
+  title: 'OwwiMoney',
   description: '$$$',
 };
 
