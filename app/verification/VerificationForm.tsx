@@ -6,9 +6,19 @@ import OwwiFigure from '../../public/img/Owwi_figure.png';
 import Input from '../../components/login/input/Input';
 import { useEffect, useState } from 'react';
 import Button from '../../components/login/button/Button';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { confirmOTP } from '../../actions/OTP/confirmOTP';
+
+const schema = Yup.object().shape({
+  verification: Yup.string()
+    .required('Require verification code!')
+    .max(6, '6 digits code required')
+    .min(6, '6 digits code required'),
+});
 
 const VerificationForm = () => {
-  const [value, setValue] = useState<number | ''>('');
+  // const [value, setValue] = useState<number | ''>('');
   const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
 
@@ -19,6 +29,27 @@ const VerificationForm = () => {
     return () => clearInterval(interval);
   }, [resend]);
 
+  const formik = useFormik({
+    initialValues: {
+      verification: '',
+    },
+
+    // Pass the Yup schema to validate the form
+    validationSchema: schema,
+
+    // Handle form submission
+    onSubmit: async ({ verification }: { verification: string }) => {
+      // Make a request to your backend to store the data
+      console.log({ verification });
+
+      const result = await confirmOTP(String(verification));
+      console.log({ result });
+    },
+  });
+
+  // Destructure the formik object
+  const { errors, touched, values, handleChange, handleSubmit } = formik;
+
   const displayTime = () => {
     const minutes = Math.floor(time / 60);
     const remainingSeconds = time % 60;
@@ -28,15 +59,15 @@ const VerificationForm = () => {
     return formattedTime;
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputValue = event.target.value;
 
-    const numericValue = inputValue.replace(/[^0-9]/g, '');
+  //   const numericValue = inputValue.replace(/[^0-9]/g, '');
 
-    const truncatedValue = numericValue.slice(0, 6);
+  //   const truncatedValue = numericValue.slice(0, 6);
 
-    setValue(truncatedValue === '' ? '' : parseInt(truncatedValue, 10));
-  };
+  //   setValue(truncatedValue === '' ? '' : parseInt(truncatedValue, 10));
+  // };
   return (
     <>
       <div className="flex flex-col justify-center">
@@ -57,17 +88,17 @@ const VerificationForm = () => {
       <Input
         id="verification"
         custom="border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow"
-        onChange={handleInputChange}
-        min={0}
-        max={999999}
+        onChange={handleChange}
         type="number"
-        value={value === '' ? '' : value.toString()}
+        value={values.verification}
+        errors={errors.verification}
+        touched={touched.verification}
       />
       <div className="text-color-resend text-center ">{displayTime()}</div>
       <Button
         label="VERIFY"
-        onClick={() => ''}
-        custom="rounded-[5px] bg-dark-blue text-white hover:bg-ocean_blue-400"
+        onClick={handleSubmit}
+        custom="rounded-[5px] bg-dark-blue text-white"
       />
       <p className="text-gray-400 mt-1 text-center">
         If you didn’t receive a code!
