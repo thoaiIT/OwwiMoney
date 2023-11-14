@@ -1,11 +1,12 @@
 'use client';
 
-import { Box, Flex } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
 import { CommonButton } from '../components/button';
-import CommonInput from '../components/input';
 import CommonCard from '../ui/components/CommonCard';
 import ThemeSwitch from '../ui/components/theme-switch';
 import Logo from '../ui/Logo';
+import CommonInput from '../components/input';
+import type { EventFor } from '../helper/type';
 
 export default function Home() {
   return (
@@ -24,8 +25,8 @@ export default function Home() {
       >
         <CommonInput
           type="text"
-          onChange={(e) => {
-            console.log(e);
+          onChange={(e: EventFor<'input', 'onChange'>) => {
+            console.log(e.target.value);
           }}
           placeholder="hello world!!"
           intent="primary"
