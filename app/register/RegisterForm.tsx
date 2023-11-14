@@ -77,6 +77,7 @@ const RegisterForm = () => {
         value={values.email}
         errors={errors.email}
         touched={touched.email}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'password'}
@@ -87,6 +88,7 @@ const RegisterForm = () => {
         value={values.password}
         errors={errors.password}
         touched={touched.password}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'confirmPassword'}
@@ -97,6 +99,7 @@ const RegisterForm = () => {
         value={values.confirmPassword}
         errors={errors.confirmPassword}
         touched={touched.confirmPassword}
+        custom="xl:w-[70%] rounded-full"
       />
       <p className="text-sm">
         Have an account yet?
@@ -108,7 +111,8 @@ const RegisterForm = () => {
         </Link>
       </p>
       <Button
-        custom="xl:w-[70%]"
+        custom="xl:w-[70%] bg-btn-color
+        text-white rounded-full"
         label={isLoading ? 'Loading' : 'Register'}
         onClick={handleSubmit}
       />
