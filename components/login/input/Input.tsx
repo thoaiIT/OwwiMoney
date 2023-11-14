@@ -17,6 +17,7 @@ interface InputProps {
   maxLength?: number;
   min?: number;
   max?: number;
+  resend?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -34,6 +35,7 @@ const Input: React.FC<InputProps> = ({
   maxLength,
   min,
   max,
+  resend,
 }) => {
   return (
     <div className="w-full relative">

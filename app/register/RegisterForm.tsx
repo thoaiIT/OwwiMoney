@@ -84,6 +84,7 @@ const RegisterForm = () => {
         value={values.email}
         errors={errors.email as any}
         touched={touched.email as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'password'}
@@ -92,8 +93,8 @@ const RegisterForm = () => {
         placeholder="Password"
         onChange={handleChange}
         value={values.password}
-        errors={errors.email as any}
-        touched={touched.email as any}
+        errors={errors.password as any}
+        touched={touched.password as any}
         custom="xl:w-[70%] rounded-full"
       />
       <Input
@@ -105,6 +106,7 @@ const RegisterForm = () => {
         value={values.confirmPassword}
         errors={errors.confirmPassword as any}
         touched={touched.confirmPassword as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <p className="text-sm">
         Have an account yet?

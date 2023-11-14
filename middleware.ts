@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { cookies } from 'next/headers';
 // Limit the middleware to paths starting with `/api/`
 
 export function middleware(request: NextRequest) {
@@ -11,4 +10,11 @@ export function middleware(request: NextRequest) {
     response.cookies.set('userId', id);
     return response;
   }
+
+  // if (request.nextUrl.pathname.startsWith('/verification')) {
+  //   const response = NextResponse.redirect(new URL('/', request.url));
+  //   if (!response.cookies.get('userId')?.value) {
+  //     return response;
+  //   }
+  // }
 }

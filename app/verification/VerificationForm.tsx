@@ -9,6 +9,7 @@ import Button from '../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { confirmOTP } from '../../actions/OTP/confirmOTP';
+import { sendOTP } from '../../actions/OTP/sendOTP';
 
 const schema = Yup.object().shape({
   verification: Yup.string()
@@ -68,6 +69,10 @@ const VerificationForm = () => {
 
   //   setValue(truncatedValue === '' ? '' : parseInt(truncatedValue, 10));
   // };
+
+  const resendOTPHandler = async () => {
+    await sendOTP();
+  };
   return (
     <>
       <div className="flex flex-col justify-center">
@@ -81,10 +86,11 @@ const VerificationForm = () => {
 
         <Heading
           title="Verification"
-          custom="xl:text-start text-5xl font-semibold text-dark-blue"
+          custom=" text-5xl font-semibold text-dark-blue"
+          center
         />
       </div>
-      <p className="text-gray-400">Enter your 4 digits code that you received on your email.</p>
+      <p className="text-gray-400">Enter your 6 digits code that you received on your email.</p>
       <Input
         id="verification"
         custom="border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow"
@@ -93,6 +99,7 @@ const VerificationForm = () => {
         value={values.verification}
         errors={errors.verification}
         touched={touched.verification}
+        resend={resend}
       />
       <div className="text-color-resend text-center ">{displayTime()}</div>
       <Button
@@ -102,16 +109,19 @@ const VerificationForm = () => {
       />
       <p className="text-gray-400 mt-1 text-center">
         If you didn’t receive a code!
-        <button
-          className="ml-2 text-color-resend hover:text-orange-500"
-          onClick={() => {
-            console.log('click');
-            setResend(true);
-            setTime(60);
-          }}
-        >
-          Resend
-        </button>
+        {time === 0 && (
+          <button
+            className="ml-2 text-color-resend hover:text-orange-500"
+            onClick={() => {
+              console.log('click');
+              setResend(true);
+              setTime(60);
+              resendOTPHandler();
+            }}
+          >
+            Resend
+          </button>
+        )}
       </p>
     </>
   );
