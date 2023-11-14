@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Heading from '../../ui/components/Heading';
+import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Input from '../../ui/components/input/Input';
-import Button from '../../ui/components/button/Button';
-import ButtonIcon from '../../ui/components/button/ButtonIcon';
+import Input from '../../components/login/input/Input';
+import Button from '../../components/login/button/Button';
+import ButtonIcon from '../../components/login/button/ButtonIcon';
 import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
