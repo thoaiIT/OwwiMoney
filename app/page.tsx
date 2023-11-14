@@ -1,5 +1,6 @@
 'use client';
 
+import { Box, Flex } from '@radix-ui/themes';
 import { CommonButton } from '../components/button';
 import CommonInput from '../components/input';
 import CommonCard from '../ui/components/CommonCard';
@@ -15,15 +16,21 @@ export default function Home() {
         <div>hello world!!</div>
         <div>hello world!!</div>
         <CommonButton variant={'outline'}>hello</CommonButton>
+      </CommonCard>
+      <Flex
+        direction="column"
+        gap="3"
+        className="max-w-sm"
+      >
         <CommonInput
-          type="input"
+          type="text"
           onChange={(e) => {
             console.log(e);
           }}
           placeholder="hello world!!"
-          variant="primary"
+          intent="primary"
         />
-      </CommonCard>
+      </Flex>
     </div>
   );
 }
