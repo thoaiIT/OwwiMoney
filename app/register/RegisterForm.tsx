@@ -9,6 +9,7 @@ import Button from '../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
+import { useRouter } from 'next/navigation';
 import type { ObjectWithDynamicKeys } from '../../helper/type';
 
 const getCharacterValidationError = (str: string) => {
@@ -30,6 +31,7 @@ const schema = Yup.object().shape({
 });
 
 const RegisterForm = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
@@ -52,6 +54,10 @@ const RegisterForm = () => {
         password,
         name: email.split('@')[0] || 'user',
       });
+
+      if (result?.body?.userId) {
+        router.push(`/otp/register-user/${result?.body?.userId}`);
+      }
       console.log({ result });
     },
   });
