@@ -1,13 +1,13 @@
 import Image from 'next/image';
-import Container from '../../ui/components/Container';
-import FormWrap from '../../ui/components/FormWrap';
+import Container from '../../components/login/Container';
+import FormWrap from '../../components/login/FormWrap';
 import RegisterForm from './RegisterForm';
 import OwwiFigure from '../../public/img/Owwi_figure.png';
 
 const Page = () => {
   return (
     <div className="bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-12">
-      <Container>
+      <Container custom="w-[1426px] h-[749px]">
         <div className="grid xl:grid-cols-2 gap-2 h-full relative">
           <FormWrap>
             <RegisterForm />

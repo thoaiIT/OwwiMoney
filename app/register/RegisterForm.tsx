@@ -1,11 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import Heading from '../../ui/components/Heading';
+import Heading from '../../components/login/Heading';
 
 import { useState } from 'react';
-import Input from '../../ui/components/input/Input';
-import Button from '../../ui/components/button/Button';
+import Input from '../../components/login/input/Input';
+import Button from '../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
@@ -62,7 +62,7 @@ const RegisterForm = () => {
     <>
       <Heading
         title="Hello!"
-        custom="md:text-7xl text-5xl text-center xl:text-start"
+        custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
       />
       <Heading
         title="Sign Up to Get Started"
