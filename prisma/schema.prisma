@@ -18,7 +18,7 @@ model User {
     totalBalance   Float?
     createdAt      DateTime      @default(now())
     updatedAt      DateTime      @updatedAt
-    Session        Session[]
+    Room           Room[]
     Otp            Otp[]
     Transaction    Transaction[]
 }
@@ -55,7 +55,7 @@ model Partner {
     contact     String?
     address     String?
     email       String?
-    Session     Session[]
+    Room        Room[]
     Transaction Transaction[]
 }
 
@@ -76,7 +76,7 @@ model Wallet {
     Transaction Transaction[]
 }
 
-model Session {
+model Room {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
     userId String @db.ObjectId
@@ -90,8 +90,8 @@ model Session {
 model Message {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 
-    sessionId String  @db.ObjectId
-    session   Session @relation(fields: [sessionId], references: [id])
+    roomId String @db.ObjectId
+    room   Room   @relation(fields: [roomId], references: [id])
 
     content   String
     createdAt DateTime @default(now())

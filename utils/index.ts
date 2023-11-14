@@ -1,4 +1,4 @@
-export const GenerateOTP = () => Math.trunc(Math.random() * 1000000);
+export const GenerateOTP = () => Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
 export const generateMailOTP = (otp: string) => {
   return `
     <!DOCTYPE html>
@@ -15,3 +15,5 @@ export const generateMailOTP = (otp: string) => {
     </html>
     `;
 };
+
+exports.GenerateOTP = GenerateOTP;

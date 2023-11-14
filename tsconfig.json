@@ -28,6 +28,17 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "utils/createTable.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "utils/createTable.js",
+    "app/api/socket/route.ts",
+    "actions/chat/lmao.mjs",
+    "server.mjs",
+    "helper/lib/prismadb.ts",
+    "helper/lib/prismadbserver.js"
+  ],
   "exclude": ["node_modules"]
 }
