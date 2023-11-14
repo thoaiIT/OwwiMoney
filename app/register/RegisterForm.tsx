@@ -10,6 +10,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
 import { useRouter } from 'next/navigation';
+import type { ObjectWithDynamicKeys } from '../../helper/type';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -44,7 +45,7 @@ const RegisterForm = () => {
     validationSchema: schema,
 
     // Handle form submission
-    onSubmit: async ({ email, password, confirmPassword }) => {
+    onSubmit: async ({ email, password, confirmPassword }: ObjectWithDynamicKeys<any>) => {
       // Make a request to your backend to store the data
       console.log({ email, password, confirmPassword });
 
@@ -81,9 +82,8 @@ const RegisterForm = () => {
         placeholder="username@gmail.com"
         onChange={handleChange}
         value={values.email}
-        errors={errors.email}
-        touched={touched.email}
-        custom="xl:w-[70%] rounded-full"
+        errors={errors.email as any}
+        touched={touched.email as any}
       />
       <Input
         id={'password'}
@@ -92,8 +92,8 @@ const RegisterForm = () => {
         placeholder="Password"
         onChange={handleChange}
         value={values.password}
-        errors={errors.password}
-        touched={touched.password}
+        errors={errors.email as any}
+        touched={touched.email as any}
         custom="xl:w-[70%] rounded-full"
       />
       <Input
@@ -103,9 +103,8 @@ const RegisterForm = () => {
         placeholder="Confirm password"
         onChange={handleChange}
         value={values.confirmPassword}
-        errors={errors.confirmPassword}
-        touched={touched.confirmPassword}
-        custom="xl:w-[70%] rounded-full"
+        errors={errors.confirmPassword as any}
+        touched={touched.confirmPassword as any}
       />
       <p className="text-sm">
         Have an account yet?
