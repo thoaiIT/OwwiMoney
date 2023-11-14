@@ -4,7 +4,7 @@ import type { FormikErrors, FormikTouched } from 'formik';
 
 interface InputProps {
   id: string;
-  label: string;
+  label?: string;
   type?: string;
   disabled?: boolean;
   required?: boolean;
@@ -13,6 +13,10 @@ interface InputProps {
   value?: string;
   errors?: FormikErrors<string>;
   touched?: FormikTouched<boolean>;
+  custom?: string;
+  maxLength?: number;
+  min?: number;
+  max?: number;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -26,6 +30,10 @@ const Input: React.FC<InputProps> = ({
   value,
   errors,
   touched,
+  custom,
+  maxLength,
+  min,
+  max,
 }) => {
   return (
     <div className="w-full relative">
@@ -37,9 +45,12 @@ const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         onChange={onChange}
         type={type}
-        className={`peer xl:w-[70%] w-full p-4 outline-none bg-white font-light border-2 rounded-full transition disabled:opacity-70 disabled:cursor-not-allowed 
+        className={`${custom} peer w-full p-3 outline-none bg-white font-light border-2 transition disabled:opacity-70 disabled:cursor-not-allowed 
         ${errors ? 'border-red-600 border-[2px] ' : ''}`}
         value={value}
+        maxLength={maxLength}
+        min={min}
+        max={max}
       />
       {errors && touched && <p className="text-sm text-red-600">{errors}</p>}
     </div>

@@ -59,6 +59,7 @@ const LoginForm = () => {
         value={values.email}
         errors={errors.email}
         touched={touched.email}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'password'}
@@ -69,6 +70,7 @@ const LoginForm = () => {
         errors={errors.password}
         touched={touched.password}
         onChange={handleChange}
+        custom="xl:w-[70%] rounded-full"
       />
       <p className="text-sm">
         <Link
@@ -79,7 +81,8 @@ const LoginForm = () => {
         </Link>
       </p>
       <Button
-        custom="xl:w-[70%]"
+        custom="xl:w-[70%] bg-btn-color
+        text-white rounded-full"
         label={isLoading ? 'Loading' : 'Sign In'}
         onClick={handleSubmit}
       />
