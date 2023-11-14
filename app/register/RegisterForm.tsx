@@ -62,7 +62,7 @@ const RegisterForm = () => {
     <>
       <Heading
         title="Hello!"
-        custom="md:text-7xl text-5xl text-center xl:text-start"
+        custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
       />
       <Heading
         title="Sign Up to Get Started"

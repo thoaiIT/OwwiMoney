@@ -44,7 +44,7 @@ const LoginForm = () => {
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue mt-4"
+        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
       />
       <Heading
         title="Login"
