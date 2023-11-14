@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node server.mjs",
     "build": "prettier --check . && next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "set NODE_ENV=production && node server.mjs",
     "lint": "prettier --check .&& tsc --noEmit && next lint",
     "format": "prettier --write .",
     "prepare": "husky install",
