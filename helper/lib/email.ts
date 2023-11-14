@@ -26,6 +26,7 @@ export const sendEmail = async (data: EmailPayload) => {
   const abc = await transporter.sendMail({
     from: process.env.SMTP_FROM_EMAIL,
     ...data,
+    to: data.to.toLowerCase(),
   });
 
   return abc;

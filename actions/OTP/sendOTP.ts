@@ -23,11 +23,14 @@ export const sendOTP = async () => {
     const otpCode = GenerateOTP();
     const template = sendOTPTemplate(otpCode.toString(), user?.name);
     await registerOTP(otpCode.toString(), user.id);
+    console.log({ email: user.email, name: user.name });
+
     await sendEmail({
       to: user.email,
       subject: 'OwwiMoney - OTP',
       html: template,
     });
+
     return { message: 'Sent OTP', status: HttpStatusCodes[200] };
   } else {
     return { message: 'User not found', status: HttpStatusCodes[404] };
