@@ -1,8 +1,13 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
-const { Server } = require('socket.io');
-const { sendMessage } = require('./actions/chat/route');
+// const { createServer } = require('http');
+// const { parse } = require('url');
+// const next = require('next');
+// const { Server } = require('socket.io');
+// const { sendMessage } = require('./actions/chat/lmao.js');
+import { createServer } from 'http';
+import { parse } from 'url';
+import next from 'next';
+import { Server } from 'socket.io';
+import { sendMessage } from './actions/chat/lmao.mjs';
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -60,7 +65,7 @@ app.prepare().then(() => {
     .listen(port, () => {
       console.log(`> Ready on http://${hostname}:${port}`);
     });
-  exports.io = io;
+  // exports.io = io;
 });
 
 // export const io = io;

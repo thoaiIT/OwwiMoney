@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "dev-custom": "node server.js",
+    "dev": "node server.mjs",
     "build": "prettier --check . && next build",
-    "start": "next start",
-    "start-custom": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node server.js",
     "lint": "prettier --check .&& tsc --noEmit && next lint",
     "format": "prettier --write .",
     "prepare": "husky install",
@@ -41,6 +39,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/next": "^9.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
