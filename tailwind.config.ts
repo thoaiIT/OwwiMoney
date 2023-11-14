@@ -29,6 +29,8 @@ module.exports = {
         'dark-blue': '#465685',
         'btn-color': '#A93159',
         'light-blue': '#E2EEF5',
+        'blue-sm': '#9BADCA',
+        'color-resend': '#F2451C',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',

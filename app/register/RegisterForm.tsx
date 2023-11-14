@@ -86,8 +86,9 @@ const RegisterForm = () => {
         placeholder="Password"
         onChange={handleChange}
         value={values.password}
-        errors={errors.password as any}
-        touched={touched.password as any}
+        errors={errors.email as any}
+        touched={touched.email as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'confirmPassword'}
@@ -109,7 +110,8 @@ const RegisterForm = () => {
         </Link>
       </p>
       <Button
-        custom="xl:w-[70%]"
+        custom="xl:w-[70%] bg-btn-color
+        text-white rounded-full"
         label={isLoading ? 'Loading' : 'Register'}
         onClick={handleSubmit}
       />
