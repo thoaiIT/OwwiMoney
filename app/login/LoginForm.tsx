@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
@@ -11,8 +11,13 @@ import ButtonIcon from '../../components/login/button/ButtonIcon';
 import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
-import { CommonButton } from '../../components/button';
-import Image from 'next/image';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { setCookies } from '../../actions/cookies';
+
+interface LoginFormProps {
+  currentUser: any | null;
+}
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -20,8 +25,9 @@ const schema = Yup.object().shape({
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm = () => {
+const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -34,8 +40,21 @@ const LoginForm = () => {
 
     // Handle form submission
     onSubmit: async ({ email, password }) => {
+      setIsLoading(true);
       // Make a request to your backend to store the data
-      console.log({ email, password });
+
+      signIn('credentials', { email, password, redirect: false }).then(async (callback) => {
+        setIsLoading(false);
+
+        if (callback?.ok) {
+          await setCookies('isAuthenticated', 'true');
+          router.push('/dashboard');
+          router.refresh();
+        }
+        if (callback?.error) {
+          console.log('error');
+        }
+      });
     },
   });
 
@@ -82,54 +101,48 @@ const LoginForm = () => {
           Forget Password?
         </Link>
       </p>
-      <CommonButton
-        intent={'secondary'}
-        className="xl:w-[70%]"
-        onClick={() => handleSubmit}
-      >
-        {isLoading ? 'Loading' : 'Sign In'}
-      </CommonButton>
+      <Button
+        custom="xl:w-[70%] bg-btn-color
+        text-white rounded-full"
+        label={isLoading ? 'Loading...' : 'Sign in'}
+        onClick={handleSubmit}
+        disabled={isLoading}
+      />
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
       <div className="xl:w-[70%] grid grid-cols-3 gap-2">
-        <CommonButton
-          intent={'outline'}
-          onClick={() => handleSubmit}
-        >
-          <Image
-            src={GoogleIcon}
-            alt=""
-          />
-        </CommonButton>
-        <CommonButton
-          intent={'outline'}
-          onClick={() => handleSubmit}
-        >
-          <Image
-            src={GitHubIcon}
-            alt=""
-          />
-        </CommonButton>
-        <CommonButton
-          intent={'outline'}
-          onClick={() => handleSubmit}
-        >
-          <Image
-            src={FaceBookIcon}
-            alt=""
-          />
-        </CommonButton>
+        <ButtonIcon
+          iconImage={GoogleIcon}
+          width={22}
+          height={22}
+          description={'Login with Google'}
+          onClick={() => ''}
+        />
+        <ButtonIcon
+          iconImage={GitHubIcon}
+          width={22}
+          height={22}
+          description={'Login with Github'}
+          onClick={() => ''}
+        />
+        <ButtonIcon
+          iconImage={FaceBookIcon}
+          width={22}
+          height={22}
+          description={'Login with Facebook'}
+          onClick={() => ''}
+        />
       </div>
       <div className="xl:w-[70%]">
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
-          <CommonButton
-            intent={'link'}
-            onClick={() => handleSubmit}
+          <Link
+            href="/register"
+            className="ml-1 text-dark-blue hover:text-blue-500"
           >
-            <Link href="/register">Register for free</Link>
-          </CommonButton>
+            Register for free
+          </Link>
         </p>
       </div>
     </>
