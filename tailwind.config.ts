@@ -105,7 +105,8 @@ module.exports = {
         },
         card: {
           DEFAULT: 'var(--card)',
-          foreground: 'hsl(var(--card-foreground))',
+          foreground: 'var(--card-foreground)',
+          hover: 'var(--card-hover)',
         },
       },
       fontSize: {

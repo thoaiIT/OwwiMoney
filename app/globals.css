@@ -9,12 +9,14 @@ html {
   --line-color: #f9f7f7;
   --card: #ffffff;
   --card-foreground: #1c2024;
+  --card-hover: #e0e0e0;
 }
 
 html.dark {
   --line-color: #212332;
   --card: #112d4e;
   --card-foreground: #f9f7f7;
+  --card-hover: #0c243f;
 }
 
 .remove-arrow::-webkit-inner-spin-button,

@@ -1,11 +1,12 @@
 'use client';
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { tailwindMerge } from '../utils/helper';
 import { CommonButton } from './button';
-import { SlArrowDown } from 'react-icons/sl';
-import { BsCheck } from 'react-icons/bs';
+import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
+import { BsCheck, BsSearch } from 'react-icons/bs';
+import CommonInput from './input';
 
 type dataType = {
   value: string;
@@ -19,18 +20,41 @@ type OptionItemProps = dataType & {
 
 type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root> &
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
-    options: dataType[];
+    optionsProp: dataType[];
     widthSelection: number;
     maxVisibleItems?: number;
+    placeholder: string;
   };
 
 const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, CommonComboboxProps>(
-  ({ className, options, widthSelection, maxVisibleItems, align = 'center', sideOffset = 4, ...props }, ref) => {
+  (
+    {
+      className,
+      optionsProp,
+      widthSelection,
+      maxVisibleItems,
+      placeholder,
+      align = 'center',
+      sideOffset = 4,
+      ...props
+    },
+    ref,
+  ) => {
+    const [options, setOptions] = useState<dataType[]>(optionsProp);
     const [open, setOpen] = useState<boolean>(false);
     const [value, setValue] = useState<string>('');
-    const height: number = (maxVisibleItems as number) * 40;
-    const maxheight: string = `${height ? `max-h-[${height.toString()}px] overflow-y-scroll` : ''}`;
-    console.log({ height, maxVisibleItems, maxheight });
+    const height = (maxVisibleItems as number) * 38;
+
+    const handleSearch = (searchString: string) => {
+      setOptions(optionsProp.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
+    };
+
+    useEffect(() => {
+      if (!open) {
+        setOptions(optionsProp);
+      }
+    }, [open, optionsProp]);
+
     return (
       <PopoverPrimitive.Root
         open={open}
@@ -38,36 +62,53 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       >
         <PopoverPrimitive.Trigger asChild>
           <CommonButton
+            style={{ width: widthSelection }}
             intent="outline"
-            className={tailwindMerge('justify-between', `w-[${widthSelection.toString()}px]`)}
+            className="justify-between"
           >
-            {value ? options.find((option) => option.value === value)?.label : 'Select framework...'}
-            <SlArrowDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
+            <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
           </CommonButton>
         </PopoverPrimitive.Trigger>
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content
+            style={{ width: widthSelection }}
             ref={ref}
             align={align}
             sideOffset={sideOffset}
             className={tailwindMerge(
-              'z-50 rounded-md border bg-white text-black shadow-md outline-none',
-              `w-[${widthSelection.toString()}px] ${maxheight}`,
+              'z-50 rounded-md border bg-card text-card-foreground shadow-md outline-none',
               className,
             )}
             {...props}
           >
-            {options.map((option) => (
-              <OptionItem
-                key={option.value}
-                label={option.label}
-                value={option.value}
-                onSelect={(value) => {
-                  setValue(value);
+            <div className="flex items-center">
+              <BsSearch className="w-4 ml-3" />
+              <CommonInput
+                intent="simple"
+                placeholder="Search here... "
+                onChange={(e) => {
+                  handleSearch(e.target.value);
                 }}
-                isActive={value === option.value}
               />
-            ))}
+            </div>
+            <div
+              style={{ maxHeight: height }}
+              className={`${maxVisibleItems && maxVisibleItems < options.length ? 'overflow-y-scroll' : ''} border-t-2`}
+            >
+              {options.map((option) => (
+                <OptionItem
+                  key={option.value}
+                  label={option.label}
+                  value={option.value}
+                  onSelect={(value) => {
+                    setValue(value);
+                    setOpen(false);
+                  }}
+                  isActive={value === option.value}
+                />
+              ))}
+            </div>
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
       </PopoverPrimitive.Root>
@@ -93,10 +134,8 @@ const OptionItem: React.FC<OptionItemProps> = ({ label, value, onSelect, isActiv
       onKeyDown={handleKeyPress}
       role="button"
       className={tailwindMerge(
-        'py-2 px-4 hover:opacity-100 hover:duration-300 flex items-center',
-        isActive
-          ? 'bg-midnight_blue-200 text-white rounded'
-          : 'hover:duration-300 hover:bg-seasalt hover:rounded hover:cursor-pointer',
+        'py-2 px-4 hover:duration-300 flex items-center text-sm',
+        'hover:duration-300 hover:bg-card-hover hover:rounded hover:cursor-pointer',
       )}
     >
       {label}

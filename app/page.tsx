@@ -23,6 +23,18 @@ const frameworks = [
     value: 'astro',
     label: 'Astro',
   },
+  {
+    value: 'js',
+    label: 'Javascript',
+  },
+  {
+    value: 'html',
+    label: 'HTML',
+  },
+  {
+    value: 'css',
+    label: 'CSS',
+  },
 ];
 export default function Home() {
   return (
@@ -37,9 +49,10 @@ export default function Home() {
         <CardContent>
           <p>Card Content</p>
           <CommonCombobox
-            options={frameworks}
+            optionsProp={frameworks}
             widthSelection={500}
-            maxVisibleItems={4}
+            maxVisibleItems={5}
+            placeholder={'Select framework...'}
           />
         </CardContent>
         <CardFooter>

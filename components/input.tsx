@@ -3,7 +3,7 @@ import { tailwindMerge } from '../utils/helper';
 import { cva } from 'class-variance-authority';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  intent?: 'primary' | 'secondary' | 'outline' | 'disabled';
+  intent?: 'primary' | 'secondary' | 'outline' | 'disabled' | 'simple';
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
@@ -18,8 +18,9 @@ const textFieldVariants = cva(
       intent: {
         primary: ['border-celestial_blue', 'focus:border-dark-mode'],
         secondary: ['border-seasalt', 'focus:border-ocean_blue'],
-        outline: ['border-light-mode', ' focus:border-midnight_blue'],
+        outline: ['border-light-mode', 'focus:border-midnight_blue'],
         disabled: ['bg-gray-300', 'text-gray-500', 'cursor-not-allowed'],
+        simple: ['border-none', 'focus-visible:ring-0'],
       },
     },
     defaultVariants: {
