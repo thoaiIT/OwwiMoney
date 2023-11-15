@@ -11,5 +11,6 @@ export function encrypt(input: string) {
 }
 
 export function decrypt(encrypted: string) {
+  // Decrypt
   return encrypt(encrypted); // Encryption and decryption are symmetric
 }
