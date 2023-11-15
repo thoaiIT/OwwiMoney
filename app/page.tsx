@@ -5,6 +5,7 @@ import CommonInput from '../components/input';
 import CommonCard from '../ui/components/CommonCard';
 import ThemeSwitch from '../ui/components/theme-switch';
 import Logo from '../ui/Logo';
+import Success from '../components/success';
 import { CommonButton } from '../components/button';
 
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
           intent="primary"
         />
       </Flex>
+      <Success />
     </div>
   );
 }
