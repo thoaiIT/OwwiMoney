@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
 import { useRouter } from 'next/navigation';
 import type { ObjectWithDynamicKeys } from '../../helper/type';
+import { setCookies } from '../../actions/cookies';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -54,9 +55,13 @@ const RegisterForm = () => {
         password,
         name: email.split('@')[0] || 'user',
       });
-
       if (result?.body?.userId) {
-        router.push(`/otp/register-user/${result?.body?.userId}`);
+        const id = result?.body?.userId;
+        await setCookies('userId', id);
+        Promise.all([setCookies('userId', id)]).then(() => {
+          router.push('/verification?type=register');
+        });
+        // router.push(); //`/otp/register-user/${result?.body?.userId}`
       }
       console.log({ result });
     },
@@ -84,6 +89,7 @@ const RegisterForm = () => {
         value={values.email}
         errors={errors.email as any}
         touched={touched.email as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'password'}
@@ -92,8 +98,8 @@ const RegisterForm = () => {
         placeholder="Password"
         onChange={handleChange}
         value={values.password}
-        errors={errors.email as any}
-        touched={touched.email as any}
+        errors={errors.password as any}
+        touched={touched.password as any}
         custom="xl:w-[70%] rounded-full"
       />
       <Input
@@ -105,6 +111,7 @@ const RegisterForm = () => {
         value={values.confirmPassword}
         errors={errors.confirmPassword as any}
         touched={touched.confirmPassword as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <p className="text-sm">
         Have an account yet?
