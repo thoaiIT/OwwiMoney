@@ -3,8 +3,7 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import React, { useEffect, useState } from 'react';
 import { tailwindMerge } from '../utils/helper';
-import { CommonButton } from './button';
-import { SlArrowDown, SlArrowUp } from 'react-icons/sl';
+import { SlArrowDown } from 'react-icons/sl';
 import { BsCheck, BsSearch } from 'react-icons/bs';
 import CommonInput from './input';
 
@@ -61,14 +60,13 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
         onOpenChange={setOpen}
       >
         <PopoverPrimitive.Trigger asChild>
-          <CommonButton
+          <div
             style={{ width: widthSelection }}
-            intent="outline"
-            className="justify-between"
+            className="justify-between border inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
           >
             {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
             <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
-          </CommonButton>
+          </div>
         </PopoverPrimitive.Trigger>
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content

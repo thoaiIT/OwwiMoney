@@ -50,7 +50,7 @@ export default function Home() {
           <p>Card Content</p>
           <CommonCombobox
             optionsProp={frameworks}
-            widthSelection={500}
+            widthSelection={400}
             maxVisibleItems={5}
             placeholder={'Select framework...'}
           />
