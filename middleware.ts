@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Limit the middleware to paths starting with `/api/`
+const protectedRoutes = ['/dashboard'];
 
 export async function middleware(request: NextRequest) {
   const cookieStore = cookies();
@@ -14,15 +15,12 @@ export async function middleware(request: NextRequest) {
       return response;
     }
   }
-  if (!isAuthenticated && ['/dashboard'].includes(request.nextUrl.pathname)) {
+  if (!isAuthenticated && protectedRoutes.includes(request.nextUrl.pathname)) {
     const absoluteURL = new URL('/login', request.nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }
 
-  if (
-    !!isAuthenticated &&
-    (['/login'].includes(request.nextUrl.pathname) || ['/register'].includes(request.nextUrl.pathname))
-  ) {
+  if (!!isAuthenticated && ['/login', '/register'].includes(request.nextUrl.pathname)) {
     const absoluteURL = new URL('/dashboard', request.nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }

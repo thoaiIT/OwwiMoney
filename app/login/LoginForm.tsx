@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
-import ButtonIcon from '../../components/login/button/ButtonIcon';
 import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
@@ -17,17 +15,13 @@ import { setCookies } from '../../actions/cookies';
 import { CommonButton } from '../../components/button';
 import Image from 'next/image';
 
-interface LoginFormProps {
-  currentUser: any | null;
-}
-
 // Yup schema to validate the form
 const schema = Yup.object().shape({
   email: Yup.string().required('No email provided').email(),
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
