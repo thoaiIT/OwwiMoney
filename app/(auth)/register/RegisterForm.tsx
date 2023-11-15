@@ -1,18 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import Heading from '../../components/login/Heading';
+import Heading from '../../../components/login/Heading';
 
 import { useState } from 'react';
-import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
+import Input from '../../../components/login/input/Input';
+import Button from '../../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { registerUser } from '../../actions/user/registerUser';
+import { registerUser } from '../../../actions/user/registerUser';
 import { useRouter } from 'next/navigation';
-import type { ObjectWithDynamicKeys } from '../../helper/type';
-import { setCookies } from '../../actions/cookies';
-import { CommonButton } from '../../components/button';
+import type { ObjectWithDynamicKeys } from '../../../helper/type';
+import { setCookies } from '../../../actions/cookies';
+import { CommonButton } from '../../../components/button';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;

@@ -1,7 +1,7 @@
 'use client';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { deleteCookies } from '../../actions/cookies';
+import { deleteCookies } from '../../../actions/cookies';
 
 const Dashboard = () => {
   const router = useRouter();

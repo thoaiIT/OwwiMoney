@@ -1,19 +1,16 @@
 import Image from 'next/image';
-import Container from '../../components/login/Container';
-import FormWrap from '../../components/login/FormWrap';
-import LoginForm from './LoginForm';
-import OwwiFigure from '../../public/img/Owwi_figure.png';
-import { getCurrentUser } from '../../actions/user/getCurrentUser';
+import Container from '../../../components/login/Container';
+import FormWrap from '../../../components/login/FormWrap';
+import RegisterForm from './RegisterForm';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
-const Page = async () => {
-  const currentUser = await getCurrentUser();
-
+const Page = () => {
   return (
-    <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-4 md:p-6">
+    <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-12">
       <Container custom="w-[1426px] h-[749px]">
         <div className="grid xl:grid-cols-2 gap-2 h-full relative">
           <FormWrap custom="px-6 md:px-12">
-            <LoginForm currentUser={currentUser} />
+            <RegisterForm />
           </FormWrap>
           <Image
             src={OwwiFigure}

@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Heading from '../../components/login/Heading';
+import Heading from '../../../components/login/Heading';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
-import ButtonIcon from '../../components/login/button/ButtonIcon';
-import GoogleIcon from '../../public/icons/google.svg';
-import FaceBookIcon from '../../public/icons/facebook.svg';
-import GitHubIcon from '../../public/icons/github.svg';
+import Input from '../../../components/login/input/Input';
+import Button from '../../../components/login/button/Button';
+import ButtonIcon from '../../../components/login/button/ButtonIcon';
+import GoogleIcon from '../../../public/icons/google.svg';
+import FaceBookIcon from '../../../public/icons/facebook.svg';
+import GitHubIcon from '../../../public/icons/github.svg';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { setCookies } from '../../actions/cookies';
+import { setCookies } from '../../../actions/cookies';
 
 interface LoginFormProps {
   currentUser: any | null;
