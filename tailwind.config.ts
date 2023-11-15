@@ -125,6 +125,28 @@ module.exports = {
         '8xl': '6rem', // Octa extra large
         '9xl': '8rem', // Nona extra large
       },
+      keyframes: {
+        progressSmall: {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+          },
+        },
+        progressBig: {
+          '0%': {
+            width: '0%',
+          },
+          '100%': {
+            width: '100%',
+          },
+        },
+      },
+      animation: {
+        'progress-small': 'progressSmall .2s',
+        'progress-big': 'progressBig .3s',
+      },
     },
   },
   darkMode: 'class',
