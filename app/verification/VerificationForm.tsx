@@ -10,7 +10,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { confirmOTP } from '../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../actions/OTP/sendOTP';
-import { HttpStatusCodes } from '../../helper/type';
 import { useRouter } from 'next/navigation';
 
 const schema = Yup.object().shape({

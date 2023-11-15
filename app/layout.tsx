@@ -3,7 +3,6 @@ import './globals.css';
 import '@radix-ui/themes/styles.css';
 import { ThemeContextProvider } from '../context/theme-context';
 import { Quicksand } from 'next/font/google';
-import { Theme } from '@radix-ui/themes';
 
 const quickSand = Quicksand({
   variable: '--display-font',

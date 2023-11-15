@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
@@ -25,7 +25,7 @@ const schema = Yup.object().shape({
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 

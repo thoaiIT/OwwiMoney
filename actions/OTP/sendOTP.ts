@@ -1,5 +1,4 @@
 'use server';
-import type { Otp } from '@prisma/client';
 import prisma from '../../helper/lib/prismadb';
 import { cookies } from 'next/headers';
 import { GenerateOTP } from '../../utils';

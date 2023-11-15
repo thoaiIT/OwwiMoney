@@ -5,7 +5,6 @@ import Heading from '../../components/login/Heading';
 
 import { useState } from 'react';
 import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
@@ -34,7 +33,7 @@ const schema = Yup.object().shape({
 
 const RegisterForm = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
