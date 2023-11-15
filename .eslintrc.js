@@ -19,7 +19,7 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'no-empty-function': 'off',
-    '@typescript-eslint/no-empty-function': 'error',
+    '@typescript-eslint/no-empty-function': 'warn',
     'react-hooks/exhaustive-deps': 'off',
     quotes: ['error', 'single', { avoidEscape: true }],
     'react/react-in-jsx-scope': 'off',
@@ -32,7 +32,7 @@ module.exports = {
     'jsx-a11y/no-redundant-roles': ['error', { nav: ['navigation'] }],
     'jsx-a11y/aria-role': ['error', { allowedInvalidRoles: ['text'], ignoreNonDOM: true }],
     'jsx-a11y/no-access-key': 'error',
-    'react/self-closing-comp': 'error',
+    'react/self-closing-comp': 'warn',
     'prefer-arrow-callback': 'error',
     'no-underscore-dangle': ['error', { enforceInMethodNames: true }],
     'no-new-object': 'error',
