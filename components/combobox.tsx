@@ -62,7 +62,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
         <PopoverPrimitive.Trigger asChild>
           <div
             style={{ width: widthSelection }}
-            className="justify-between border inline-flex items-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
+            className="justify-between border inline-flex items-center rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 font-semibold"
           >
             {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
             <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
