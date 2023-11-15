@@ -3,6 +3,7 @@ import './globals.css';
 import '@radix-ui/themes/styles.css';
 import { ThemeContextProvider } from '../context/theme-context';
 import { Quicksand } from 'next/font/google';
+import { Theme } from '@radix-ui/themes';
 
 const quickSand = Quicksand({
   variable: '--display-font',
@@ -22,9 +23,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${quickSand.variable} !scroll-smooth`}
     >
-      <body className={`${quickSand.className} `}>
-        <div className="flex flex-col min-h-screen items-center justify-center">
-          <ThemeContextProvider>{children}</ThemeContextProvider>
+      <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
+        <div className="flex flex-col min-h-screen">
+          <ThemeContextProvider>
+            <Theme>{children}</Theme>
+          </ThemeContextProvider>
         </div>
       </body>
     </html>
