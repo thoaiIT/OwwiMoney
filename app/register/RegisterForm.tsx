@@ -12,6 +12,7 @@ import { registerUser } from '../../actions/user/registerUser';
 import { useRouter } from 'next/navigation';
 import type { ObjectWithDynamicKeys } from '../../helper/type';
 import { setCookies } from '../../actions/cookies';
+import { CommonButton } from '../../components/button';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -113,21 +114,22 @@ const RegisterForm = () => {
         touched={touched.confirmPassword as any}
         custom="xl:w-[70%] rounded-full"
       />
-      <p className="text-sm">
+      <p className="text-sm flex items-center">
         Have an account yet?
-        <Link
-          className="ml-2 text-dark-blue font-medium hover:text-blue-500"
-          href="/login"
+        <CommonButton
+          intent={'link'}
+          className="w-fit p-1"
         >
-          Login here
-        </Link>
+          <Link href="/login">Login here</Link>
+        </CommonButton>
       </p>
-      <Button
-        custom="xl:w-[70%] bg-btn-color
-        text-white rounded-full"
-        label={isLoading ? 'Loading' : 'Register'}
-        onClick={handleSubmit}
-      />
+      <CommonButton
+        intent={'secondary'}
+        className="xl:w-[70%]"
+        onClick={() => handleSubmit}
+      >
+        {isLoading ? 'Loading' : 'Register'}
+      </CommonButton>
     </>
   );
 };

@@ -103,6 +103,11 @@ module.exports = {
           400: '#DFE7D5',
           500: '#E8EBD9',
         },
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+          hover: 'var(--card-hover)',
+        },
       },
       fontSize: {
         '2xs': '0.625rem', // Extra small
