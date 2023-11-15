@@ -7,7 +7,7 @@ import { getCurrentUser } from '../../actions/user/getCurrentUser';
 
 const Page = async () => {
   const currentUser = await getCurrentUser();
-  console.log({ currentUser });
+
   return (
     <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-4 md:p-6">
       <Container custom="w-[1426px] h-[749px]">

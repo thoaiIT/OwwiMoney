@@ -7,7 +7,6 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const cookieStore = cookies();
   const isAuthenticated = cookieStore.get('isAuthenticated')?.value;
-  console.log({ isAuthenticated });
 
   if (request.nextUrl.pathname.startsWith('/verification')) {
     if (!request.cookies.get('userId')?.value) {
@@ -16,7 +15,6 @@ export async function middleware(request: NextRequest) {
     }
   }
   if (!isAuthenticated && ['/dashboard'].includes(request.nextUrl.pathname)) {
-    console.log('vao1');
     const absoluteURL = new URL('/login', request.nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }

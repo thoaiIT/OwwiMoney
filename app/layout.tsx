@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
         <div className="flex flex-col min-h-screen">
           <ThemeContextProvider>
-            <Theme className={`${quickSand.className} `}>{children}</Theme>
+            <Theme>{children}</Theme>
           </ThemeContextProvider>
         </div>
       </body>
