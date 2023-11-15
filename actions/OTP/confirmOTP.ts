@@ -3,13 +3,14 @@ import type { Otp } from '@prisma/client';
 import prisma from '../../helper/lib/prismadb';
 import { HttpStatusCodes } from '../../helper/type';
 import { cookies } from 'next/headers';
+import { decrypt } from '../../helper/lib/hash';
 const delayTime = 10000;
 const OTPLifetime = 60000;
 
 export const confirmOTP = async (code: string) => {
   try {
     const cookieStore = cookies();
-    const userIdCookies = cookieStore.get('userId')?.value || '';
+    const userIdCookies = decrypt(cookieStore.get('userId')?.value || '');
 
     let userId;
     if (userIdCookies) {
