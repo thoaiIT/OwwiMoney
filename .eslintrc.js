@@ -15,6 +15,7 @@ module.exports = {
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
   ],
+  ignorePatterns: ['node_modules/', 'pages/'],
   rules: {
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'no-empty-function': 'off',
