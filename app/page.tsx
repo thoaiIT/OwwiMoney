@@ -1,11 +1,11 @@
 'use client';
 
 import { Box, Flex } from '@radix-ui/themes';
-import { CommonButton } from '../components/button';
 import CommonInput from '../components/input';
 import CommonCard from '../ui/components/CommonCard';
 import ThemeSwitch from '../ui/components/theme-switch';
 import Logo from '../ui/Logo';
+import { CommonButton } from '../components/button';
 
 export default function Home() {
   return (
@@ -15,7 +15,7 @@ export default function Home() {
         <Logo />
         <div>hello world!!</div>
         <div>hello world!!</div>
-        <CommonButton variant={'outline'}>hello</CommonButton>
+        <CommonButton intent={'link'}>hello</CommonButton>
       </CommonCard>
       <Flex
         direction="column"
