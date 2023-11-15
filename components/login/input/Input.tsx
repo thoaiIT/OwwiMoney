@@ -17,6 +17,7 @@ interface InputProps {
   maxLength?: number;
   min?: number;
   max?: number;
+  resend?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -24,7 +25,6 @@ const Input: React.FC<InputProps> = ({
   label,
   type,
   disabled,
-  required,
   placeholder,
   onChange,
   value,

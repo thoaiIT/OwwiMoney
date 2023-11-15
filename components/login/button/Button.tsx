@@ -1,6 +1,5 @@
 'use client';
 
-import type { FormEvent } from 'react';
 import type { IconType } from 'react-icons/lib';
 
 interface ButtonProps {
@@ -18,7 +17,9 @@ const Button: React.FC<ButtonProps> = ({ label, disabled, outline, small, custom
     <button
       type="button"
       disabled={disabled}
-      className={`disabled:cursor-not-allowed transition w-full flex items-center justify-center gap-2 hover:bg-rose-700 
+      className={`disabled:cursor-not-allowed rounded-full transition w-full flex items-center justify-center gap-2 hover:bg-rose-700 
+      ${outline ? 'bg-white' : 'bg-btn-color'}
+      ${outline ? 'text-slate-700' : 'text-white'}
       ${small ? 'text-sm font-light' : 'text-md font-semibold'}
       ${small ? 'py-1 px-2 ' : 'py-3 px-4 '}
       ${custom ? custom : ''}`}

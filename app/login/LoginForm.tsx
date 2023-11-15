@@ -11,6 +11,13 @@ import ButtonIcon from '../../components/login/button/ButtonIcon';
 import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { setCookies } from '../../actions/cookies';
+
+interface LoginFormProps {
+  currentUser: any | null;
+}
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -18,8 +25,9 @@ const schema = Yup.object().shape({
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm = () => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -32,8 +40,21 @@ const LoginForm = () => {
 
     // Handle form submission
     onSubmit: async ({ email, password }) => {
+      setIsLoading(true);
       // Make a request to your backend to store the data
-      console.log({ email, password });
+
+      signIn('credentials', { email, password, redirect: false }).then(async (callback) => {
+        setIsLoading(false);
+
+        if (callback?.ok) {
+          await setCookies('isAuthenticated', 'true');
+          router.push('/dashboard');
+          router.refresh();
+        }
+        if (callback?.error) {
+          console.log('error');
+        }
+      });
     },
   });
 
@@ -83,8 +104,9 @@ const LoginForm = () => {
       <Button
         custom="xl:w-[70%] bg-btn-color
         text-white rounded-full"
-        label={isLoading ? 'Loading' : 'Sign In'}
+        label={isLoading ? 'Loading...' : 'Sign in'}
         onClick={handleSubmit}
+        disabled={isLoading}
       />
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>

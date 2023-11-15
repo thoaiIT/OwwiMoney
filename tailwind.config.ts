@@ -103,6 +103,11 @@ module.exports = {
           400: '#DFE7D5',
           500: '#E8EBD9',
         },
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+          hover: 'var(--card-hover)',
+        },
       },
       fontSize: {
         '2xs': '0.625rem', // Extra small
@@ -133,6 +138,24 @@ module.exports = {
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        progressSmall: {
+          '0%': {
+            transform: 'translateX(0%)',
+          },
+          '100%': {
+            transform: 'translateX(100%)',
+          },
+        },
+        progressBig: {
+          '0%': {
+            width: '0%',
+          },
+          '100%': {
+            width: '100%',
+          },
+        },
+        'progress-small': 'progressSmall .2s',
+        'progress-big': 'progressBig .3s',
       },
     },
   },

@@ -1,24 +1,70 @@
 'use client';
 
-import { CommonButton } from '../components/button';
-import CommonCard from '../ui/components/CommonCard';
-import ThemeSwitch from '../ui/components/theme-switch';
-import Logo from '../ui/Logo';
 import CommonInput from '../components/input';
 import type { EventFor } from '../helper/type';
 import { Box, Flex } from '@radix-ui/themes';
 
 import DialogForm from '../components/dialog/formDialog';
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
+import ThemeSwitch from '../ui/components/theme-switch';
+import CommonCombobox from '../components/combobox';
 
+const frameworks = [
+  {
+    value: 'next.js',
+    label: 'Next.js',
+  },
+  {
+    value: 'sveltekit',
+    label: 'SvelteKit',
+  },
+  {
+    value: 'nuxt.js',
+    label: 'Nuxt.js',
+  },
+  {
+    value: 'remix',
+    label: 'Remix',
+  },
+  {
+    value: 'astro',
+    label: 'Astro',
+  },
+  {
+    value: 'js',
+    label: 'Javascript',
+  },
+  {
+    value: 'html',
+    label: 'HTML',
+  },
+  {
+    value: 'css',
+    label: 'CSS',
+  },
+];
 export default function Home() {
   return (
-    <div>
+    <div className="ml-6">
+      Home
       <ThemeSwitch />
-      <CommonCard className="h-25 ml-4 ">
-        <Logo />
-        <div>hello world!!</div>
-        <div>hello world!!</div>
-        <CommonButton variant={'outline'}>hello</CommonButton>
+      <CommonCard className="w-96">
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>Card Description</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Card Content</p>
+          <CommonCombobox
+            optionsProp={frameworks}
+            widthSelection={400}
+            maxVisibleItems={5}
+            placeholder={'Select framework...'}
+          />
+        </CardContent>
+        <CardFooter>
+          <p>Card Footer</p>
+        </CardFooter>
       </CommonCard>
       <Flex
         direction="column"
