@@ -1,9 +1,6 @@
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
 import ThemeSwitch from '../ui/components/theme-switch';
 import CommonCombobox from '../components/combobox';
-import Success from '../components/success';
-import { Flex } from '@radix-ui/themes';
-import CommonInput from '../components/input';
 
 const frameworks = [
   {
