@@ -9,6 +9,8 @@ import Button from '../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { registerUser } from '../../actions/user/registerUser';
+import { useRouter } from 'next/navigation';
+import type { ObjectWithDynamicKeys } from '../../helper/type';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -29,6 +31,7 @@ const schema = Yup.object().shape({
 });
 
 const RegisterForm = () => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const formik = useFormik({
@@ -42,7 +45,7 @@ const RegisterForm = () => {
     validationSchema: schema,
 
     // Handle form submission
-    onSubmit: async ({ email, password, confirmPassword }) => {
+    onSubmit: async ({ email, password, confirmPassword }: ObjectWithDynamicKeys<any>) => {
       // Make a request to your backend to store the data
       console.log({ email, password, confirmPassword });
 
@@ -51,6 +54,10 @@ const RegisterForm = () => {
         password,
         name: email.split('@')[0] || 'user',
       });
+
+      if (result?.body?.userId) {
+        router.push(`/otp/register-user/${result?.body?.userId}`);
+      }
       console.log({ result });
     },
   });
@@ -75,8 +82,8 @@ const RegisterForm = () => {
         placeholder="username@gmail.com"
         onChange={handleChange}
         value={values.email}
-        errors={errors.email}
-        touched={touched.email}
+        errors={errors.email as any}
+        touched={touched.email as any}
       />
       <Input
         id={'password'}
@@ -85,8 +92,9 @@ const RegisterForm = () => {
         placeholder="Password"
         onChange={handleChange}
         value={values.password}
-        errors={errors.password}
-        touched={touched.password}
+        errors={errors.email as any}
+        touched={touched.email as any}
+        custom="xl:w-[70%] rounded-full"
       />
       <Input
         id={'confirmPassword'}
@@ -95,8 +103,8 @@ const RegisterForm = () => {
         placeholder="Confirm password"
         onChange={handleChange}
         value={values.confirmPassword}
-        errors={errors.confirmPassword}
-        touched={touched.confirmPassword}
+        errors={errors.confirmPassword as any}
+        touched={touched.confirmPassword as any}
       />
       <p className="text-sm">
         Have an account yet?
@@ -108,7 +116,8 @@ const RegisterForm = () => {
         </Link>
       </p>
       <Button
-        custom="xl:w-[70%]"
+        custom="xl:w-[70%] bg-btn-color
+        text-white rounded-full"
         label={isLoading ? 'Loading' : 'Register'}
         onClick={handleSubmit}
       />

@@ -1,12 +1,7 @@
 /** @type {import('tailwindcss').Config, import { radixThemePreset } from 'radix-themes-tw';} */
 
 module.exports = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './ui/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./app/**/*.{js,ts,jsx,tsx}', './pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     content: ['./app/**/*.tsx', './components/**/*.tsx'],
     fontFamily: {
@@ -34,6 +29,8 @@ module.exports = {
         'dark-blue': '#465685',
         'btn-color': '#A93159',
         'light-blue': '#E2EEF5',
+        'blue-sm': '#9BADCA',
+        'color-resend': '#F2451C',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',

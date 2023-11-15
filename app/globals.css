@@ -16,3 +16,12 @@ html.dark {
   --card: #112d4e;
   --card-foreground: #f9f7f7;
 }
+
+.remove-arrow::-webkit-inner-spin-button,
+.remove-arrow::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.remove-arrow {
+  -moz-appearance: textfield;
+}
