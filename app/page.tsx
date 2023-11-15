@@ -7,6 +7,8 @@ import Logo from '../ui/Logo';
 import CommonInput from '../components/input';
 import type { EventFor } from '../helper/type';
 import { Box, Flex } from '@radix-ui/themes';
+import { IoIosSearch } from 'react-icons/io';
+
 import {
   Dialog,
   DialogContent,

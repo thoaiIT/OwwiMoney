@@ -1,4 +1,4 @@
-import React, { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes } from 'react';
+import React, { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode } from 'react';
 import { tailwindMerge } from '../utils/helper';
 import { cva } from 'class-variance-authority';
 
@@ -7,6 +7,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  icon?: ReactNode;
 }
 
 const textFieldVariants = cva(

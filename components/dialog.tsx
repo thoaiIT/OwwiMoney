@@ -20,20 +20,16 @@ import React, { forwardRef, type ElementRef, type ComponentPropsWithoutRef, type
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { tailwindMerge } from '../utils/helper';
 import { IoIosClose } from 'react-icons/io';
+import type { DialogPortalProps } from '../types/component';
 
 const Dialog = DialogPrimitive.Root;
 
 const DialogTrigger = DialogPrimitive.Trigger;
 
-const DialogPortal = DialogPrimitive.Portal;
-
-// const DialogPortal = ({ className, ...props }: DialogPrimitive.DialogPortalProps) => (
-//   <DialogPrimitive.Portal
-//     className={tailwindMerge(className)}
-//     {...props}
-//   />
-// );
-// DialogPortal.displayName = DialogPrimitive.Portal.displayName;
+const DialogPortal = ({ ...props }: DialogPrimitive.DialogPortalProps & DialogPortalProps) => (
+  <DialogPrimitive.Portal {...props} />
+);
+DialogPortal.displayName = DialogPrimitive.Portal.displayName;
 
 const DialogClose = DialogPrimitive.Close;
 
