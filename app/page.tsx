@@ -1,6 +1,5 @@
 'use client';
-
-import { Box, Flex } from '@radix-ui/themes';
+import { Flex } from '@radix-ui/themes';
 import { CommonButton } from '../components/button';
 import CommonInput from '../components/input';
 import CommonCard from '../ui/components/CommonCard';

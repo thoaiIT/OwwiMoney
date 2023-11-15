@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${quickSand.variable} !scroll-smooth`}
     >
       <body className={`${quickSand.className} `}>
-        <div className="flex flex-col min-h-screen items-center justify-center">
+        <div className="flex flex-col min-h-screen">
           <ThemeContextProvider>{children}</ThemeContextProvider>
         </div>
       </body>

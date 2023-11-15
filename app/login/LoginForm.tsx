@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
@@ -11,6 +11,13 @@ import ButtonIcon from '../../components/login/button/ButtonIcon';
 import GoogleIcon from '../../public/icons/google.svg';
 import FaceBookIcon from '../../public/icons/facebook.svg';
 import GitHubIcon from '../../public/icons/github.svg';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { setCookies } from '../../actions/cookies';
+
+interface LoginFormProps {
+  currentUser: any | null;
+}
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -18,8 +25,9 @@ const schema = Yup.object().shape({
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm = () => {
+const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -34,7 +42,19 @@ const LoginForm = () => {
     onSubmit: async ({ email, password }) => {
       setIsLoading(true);
       // Make a request to your backend to store the data
-      console.log({ email, password });
+
+      signIn('credentials', { email, password, redirect: false }).then(async (callback) => {
+        setIsLoading(false);
+
+        if (callback?.ok) {
+          await setCookies('isAuthenticated', 'true');
+          router.push('/dashboard');
+          router.refresh();
+        }
+        if (callback?.error) {
+          console.log('error');
+        }
+      });
     },
   });
 

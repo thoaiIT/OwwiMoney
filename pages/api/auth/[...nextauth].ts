@@ -35,40 +35,39 @@ export const authOptions: AuthOptions = {
           type: 'password',
         },
       },
-      async authorize(credentials) {
+      async authorize(credentials) { 
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid email or password');
         }
-
         const user = await prisma.user.findUnique({
           where: {
             email: credentials?.email,
           },
         });
-
         if (!user) throw new Error('User not found');
-
-        const hashedPassword = await bcrypt.hash(user.password as string, 12);
-
-        if (!user.email || !hashedPassword) {
-          throw new Error('Invalid email or password');
+        if (!user.email) {
+          throw new Error('Invalid email');
         }
 
-        const isCorrectPassword = await bcrypt.compare(credentials.password, hashedPassword);
-
+        const isCorrectPassword = await bcrypt.compare(credentials.password, user.password );
+        
         if (!isCorrectPassword) throw new Error('Invalid password');
-
+      
         return user;
       },
     }),
   ],
   pages: {
     signIn: '/login',
+    signOut: '/login'
   },
   debug: process.env.NODE_ENV === 'development',
   session: {
     strategy: 'jwt',
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+  
+  }
 };
 export default NextAuth(authOptions);
