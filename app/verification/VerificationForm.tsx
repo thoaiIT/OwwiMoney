@@ -10,6 +10,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { confirmOTP } from '../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../actions/OTP/sendOTP';
+import { HttpStatusCodes } from '../../helper/type';
+import { useRouter } from 'next/navigation';
 
 const schema = Yup.object().shape({
   verification: Yup.string()
@@ -20,7 +22,8 @@ const schema = Yup.object().shape({
 
 const VerificationForm = () => {
   // const [value, setValue] = useState<number | ''>('');
-  const [time, setTime] = useState(60);
+  const router = useRouter();
+  const [time, setTime] = useState(5);
   const [resend, setResend] = useState(false);
 
   useEffect(() => {
@@ -44,6 +47,13 @@ const VerificationForm = () => {
       console.log({ verification });
 
       const result = await confirmOTP(String(verification));
+      if (result.status && result.status.code === 201) {
+        //Authorize
+
+        router.push('/');
+      } else {
+        // Show error
+      }
       console.log({ result });
     },
   });
@@ -107,22 +117,22 @@ const VerificationForm = () => {
         onClick={handleSubmit}
         custom="rounded-[5px] bg-dark-blue text-white"
       />
-      <p className="text-gray-400 mt-1 text-center">
-        If you didn’t receive a code!
-        {time === 0 && (
+      {time === 0 && (
+        <p className="text-gray-400 mt-1 text-center">
+          If you didn’t receive a code!
           <button
             className="ml-2 text-color-resend hover:text-orange-500"
             onClick={() => {
               console.log('click');
               setResend(true);
-              setTime(60);
+              setTime(5);
               resendOTPHandler();
             }}
           >
             Resend
           </button>
-        )}
-      </p>
+        </p>
+      )}
     </>
   );
 };
