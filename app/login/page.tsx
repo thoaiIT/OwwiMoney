@@ -9,7 +9,7 @@ const Page = async () => {
   const currentUser = await getCurrentUser();
 
   return (
-    <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-4 md:p-6">
+    <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-2 md:p-6">
       <Container custom="w-[1426px] h-[749px]">
         <div className="grid xl:grid-cols-2 gap-2 h-full relative">
           <FormWrap custom="px-6 md:px-12">

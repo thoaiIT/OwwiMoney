@@ -14,6 +14,8 @@ import GitHubIcon from '../../public/icons/github.svg';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { setCookies } from '../../actions/cookies';
+import { CommonButton } from '../../components/button';
+import Image from 'next/image';
 
 interface LoginFormProps {
   currentUser: any | null;
@@ -101,38 +103,44 @@ const LoginForm: React.FC<LoginFormProps> = ({ currentUser }) => {
           Forget Password?
         </Link>
       </p>
-      <Button
-        custom="xl:w-[70%] bg-btn-color
-        text-white rounded-full"
-        label={isLoading ? 'Loading...' : 'Sign in'}
-        onClick={handleSubmit}
-        disabled={isLoading}
-      />
+      <CommonButton
+        intent={'secondary'}
+        className="xl:w-[70%]"
+        onClick={() => handleSubmit()}
+      >
+        {isLoading ? 'Loading' : 'Sign In'}
+      </CommonButton>
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
       <div className="xl:w-[70%] grid grid-cols-3 gap-2">
-        <ButtonIcon
-          iconImage={GoogleIcon}
-          width={22}
-          height={22}
-          description={'Login with Google'}
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={GitHubIcon}
-          width={22}
-          height={22}
-          description={'Login with Github'}
+        >
+          <Image
+            src={GoogleIcon}
+            alt=""
+          />
+        </CommonButton>
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={FaceBookIcon}
-          width={22}
-          height={22}
-          description={'Login with Facebook'}
+        >
+          <Image
+            src={GitHubIcon}
+            alt=""
+          />
+        </CommonButton>
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
+        >
+          <Image
+            src={FaceBookIcon}
+            alt=""
+          />
+        </CommonButton>
       </div>
       <div className="xl:w-[70%]">
         <p className="text-sm text-gray-400 text-center">

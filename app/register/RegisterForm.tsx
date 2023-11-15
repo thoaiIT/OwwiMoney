@@ -79,7 +79,7 @@ const RegisterForm = () => {
       />
       <Heading
         title="Sign Up to Get Started"
-        custom="text-4xl text-center xl:text-start font-light"
+        custom="text-3xl text-center xl:text-start font-light"
       />
       <Input
         id={'email'}
@@ -116,17 +116,17 @@ const RegisterForm = () => {
       />
       <p className="text-sm flex items-center">
         Have an account yet?
-        <CommonButton
-          intent={'link'}
-          className="w-fit p-1"
+        <Link
+          href="/login"
+          className="ml-1 text-dark-blue hover:text-blue-500"
         >
-          <Link href="/login">Login here</Link>
-        </CommonButton>
+          Login here
+        </Link>
       </p>
       <CommonButton
         intent={'secondary'}
         className="xl:w-[70%]"
-        onClick={() => handleSubmit}
+        onClick={() => handleSubmit()}
       >
         {isLoading ? 'Loading' : 'Register'}
       </CommonButton>
