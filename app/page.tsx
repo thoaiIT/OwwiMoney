@@ -1,6 +1,6 @@
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
-import ThemeSwitch from '../ui/components/theme-switch';
 import CommonCombobox from '../components/combobox';
+import ThemeSwitch from '../components/theme-switch';
 
 const frameworks = [
   {
