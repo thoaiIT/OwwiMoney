@@ -32,6 +32,7 @@ const LoginForm = () => {
 
     // Handle form submission
     onSubmit: async ({ email, password }) => {
+      setIsLoading(true);
       // Make a request to your backend to store the data
       console.log({ email, password });
     },
@@ -83,8 +84,9 @@ const LoginForm = () => {
       <Button
         custom="xl:w-[70%] bg-btn-color
         text-white rounded-full"
-        label={isLoading ? 'Loading' : 'Sign In'}
+        label={isLoading ? 'Loading...' : 'Sign in'}
         onClick={handleSubmit}
+        disabled={isLoading}
       />
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
