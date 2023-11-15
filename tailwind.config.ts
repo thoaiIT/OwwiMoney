@@ -106,6 +106,10 @@ module.exports = {
           400: '#DFE7D5',
           500: '#E8EBD9',
         },
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'hsl(var(--card-foreground))',
+        },
       },
       fontSize: {
         '2xs': '0.625rem', // Extra small

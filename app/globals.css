@@ -2,10 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  --line-color: #f9f7f7;
+:root {
 }
 
-.html.dark {
+html {
+  --line-color: #f9f7f7;
+  --card: #ffffff;
+  --card-foreground: #1c2024;
+}
+
+html.dark {
   --line-color: #212332;
+  --card: #112d4e;
+  --card-foreground: #f9f7f7;
 }

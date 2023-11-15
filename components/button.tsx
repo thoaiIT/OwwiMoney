@@ -7,8 +7,8 @@ const buttonVariants = cva(
   'inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
-      variant: {
-        primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      intent: {
+        primary: ['bg-primary', ' text-primary-foreground', ' hover:bg-primary/90'],
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
         disable: 'bg-disable text-disable-foreground hover:bg-disable/90',
@@ -23,7 +23,7 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'primary',
+      intent: 'primary',
       size: 'default',
     },
   },
@@ -34,11 +34,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, Va
 }
 
 const CommonButton = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, intent, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
-        className={tailwindMerge(buttonVariants({ variant, size, className }))}
+        className={tailwindMerge(buttonVariants({ intent, size, className }))}
         ref={ref}
         {...props}
       />
