@@ -62,6 +62,9 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'warn',
     'no-unused-vars': 'off',
     'unused-imports/no-unused-imports': 'warn',
+    'react/prop-types': 0,
+    'no-undef': 0,
+    'react/no-unknown-property': 'warn',
     'unused-imports/no-unused-vars': [
       'warn',
       {
