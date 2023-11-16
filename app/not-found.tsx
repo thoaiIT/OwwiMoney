@@ -1,9 +1,12 @@
+'use client';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { VscArrowRight } from 'react-icons/vsc';
 import { CommonButton } from '../components/button';
 import Owwi404 from '../public/img/Owwi_404.png';
 
 export default function NotFound() {
+  const router = useRouter();
   return (
     <div className="relative xl:grid xl:grid-cols-2 h-screen p-4 flex items-center justify-center">
       <svg
@@ -31,6 +34,9 @@ export default function NotFound() {
           <CommonButton
             intent={'secondary'}
             className="w-48 flex items-center"
+            onClick={() => {
+              router.back();
+            }}
           >
             Go back
             <VscArrowRight className="ml-6" />
@@ -49,6 +55,9 @@ export default function NotFound() {
           <CommonButton
             intent={'secondary'}
             className="w-48 flex items-center"
+            onClick={() => {
+              router.back();
+            }}
           >
             Go back
             <VscArrowRight className="ml-6" />
