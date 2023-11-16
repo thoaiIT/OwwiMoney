@@ -150,10 +150,6 @@ module.exports = {
           to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
         },
         // End Toast
-      },
-      animation: {
-        overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
-        contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         progressSmall: {
           '0%': {
             transform: 'translateX(0%)',
@@ -170,6 +166,11 @@ module.exports = {
             width: '100%',
           },
         },
+      },
+      animation: {
+        overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+
         'progress-small': 'progressSmall .2s',
         'progress-big': 'progressBig .3s',
         // Toast
