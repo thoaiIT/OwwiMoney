@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
 import { registerUser } from '../../../actions/user/registerUser';
+import useToast from '../../../components/toast/useToast';
+import { Button } from '@radix-ui/themes';
 
 export default function CreateUserForm() {
   const submitHandler = async () => {
@@ -13,8 +15,10 @@ export default function CreateUserForm() {
   };
 
   return (
-    <form action={submitHandler}>
-      <button type="submit">Register Account</button>
-    </form>
+    <>
+      <form action={submitHandler}>
+        <button type="submit">Register Account</button>
+      </form>
+    </>
   );
 }

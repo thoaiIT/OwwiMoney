@@ -31,6 +31,8 @@ module.exports = {
         'light-blue': '#E2EEF5',
         'blue-sm': '#9BADCA',
         'color-resend': '#F2451C',
+        'color-error': '#F03E3E',
+        'color-success': '#51cf66',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',
@@ -134,6 +136,20 @@ module.exports = {
           from: { opacity: 0, transform: 'translate(-50%, -48%) scale(0.96)' },
           to: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
         },
+        // Toast
+        hide: {
+          from: { opacity: 1 },
+          to: { opacity: 0 },
+        },
+        slideIn: {
+          from: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
+          to: { transform: 'translateX(0)' },
+        },
+        swipeOut: {
+          from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
+          to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
+        },
+        // End Toast
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -156,6 +172,11 @@ module.exports = {
         },
         'progress-small': 'progressSmall .2s',
         'progress-big': 'progressBig .3s',
+        // Toast
+        hide: 'hide 100ms ease-in',
+        slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        swipeOut: 'swipeOut 100ms ease-out',
+        // End Toast
       },
     },
   },
