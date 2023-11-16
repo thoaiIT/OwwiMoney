@@ -6,7 +6,7 @@ module.exports = {
     node: true,
     es2022: true,
   },
-  plugins: ['react', 'react-hooks', 'jsx-a11y', 'prettier', 'eslint-plugin-no-inline-styles'],
+  plugins: ['react', 'react-hooks', 'jsx-a11y', 'prettier', 'eslint-plugin-no-inline-styles', 'unused-imports'],
   extends: [
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
@@ -49,6 +49,8 @@ module.exports = {
     'no-inline-styles/no-inline-styles': 2,
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-var-requires': 'warn',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
   },
   root: true,
 };

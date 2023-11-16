@@ -2,18 +2,19 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Heading from '../../components/login/Heading';
+import Heading from '../../../components/login/Heading';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Input from '../../components/login/input/Input';
-import GoogleIcon from '../../public/icons/google.svg';
-import FaceBookIcon from '../../public/icons/facebook.svg';
-import GitHubIcon from '../../public/icons/github.svg';
+import Input from '../../../components/login/input/Input';
+import GoogleIcon from '../../../public/icons/google.svg';
+import FaceBookIcon from '../../../public/icons/facebook.svg';
+import GitHubIcon from '../../../public/icons/github.svg';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { setCookies } from '../../actions/cookies';
-import { CommonButton } from '../../components/button';
+import { setCookies } from '../../../actions/cookies';
+import { CommonButton } from '../../../components/button';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -24,6 +25,7 @@ const schema = Yup.object().shape({
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { data } = useSession();
 
   const formik = useFormik({
     initialValues: {
@@ -43,11 +45,14 @@ const LoginForm = () => {
         setIsLoading(false);
 
         if (callback?.ok) {
+          // console.log(callback);
+          console.log(data);
           await setCookies('isAuthenticated', 'true');
-          router.push('/dashboard');
+          // router.push('/dashboard');
           router.refresh();
         }
         if (callback?.error) {
+          console.log(callback);
           console.log('error');
         }
       });

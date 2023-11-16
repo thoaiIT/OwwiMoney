@@ -1,4 +1,4 @@
-import { getCurrentUser } from '../../actions/user/getCurrentUser';
+import { getCurrentUser } from '../../../actions/user/getCurrentUser';
 import Dashboard from './Dashboard';
 
 const Page = async () => {

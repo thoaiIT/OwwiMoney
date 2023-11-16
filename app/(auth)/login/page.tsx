@@ -1,8 +1,8 @@
 import Image from 'next/image';
-import Container from '../../components/login/Container';
-import FormWrap from '../../components/login/FormWrap';
+import Container from '../../../components/login/Container';
+import FormWrap from '../../../components/login/FormWrap';
 import LoginForm from './LoginForm';
-import OwwiFigure from '../../public/img/Owwi_figure.png';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
 const Page = async () => {
   return (

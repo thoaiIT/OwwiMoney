@@ -1,6 +1,5 @@
 'use client';
 
-import type { FormEvent } from 'react';
 import type { IconType } from 'react-icons/lib';
 
 interface ButtonProps {

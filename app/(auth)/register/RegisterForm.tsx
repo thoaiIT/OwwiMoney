@@ -1,18 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import Heading from '../../components/login/Heading';
+import Heading from '../../../components/login/Heading';
 
 import { useState } from 'react';
-import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
+import Input from '../../../components/login/input/Input';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { registerUser } from '../../actions/user/registerUser';
+import { registerUser } from '../../../actions/user/registerUser';
 import { useRouter } from 'next/navigation';
-import type { ObjectWithDynamicKeys } from '../../helper/type';
-import { setCookies } from '../../actions/cookies';
-import { CommonButton } from '../../components/button';
+import type { ObjectWithDynamicKeys } from '../../../helper/type';
+import { setCookies } from '../../../actions/cookies';
+import { CommonButton } from '../../../components/button';
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -34,7 +33,7 @@ const schema = Yup.object().shape({
 
 const RegisterForm = () => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -58,7 +57,7 @@ const RegisterForm = () => {
       });
       if (result?.body?.userId) {
         const id = result?.body?.userId;
-        await setCookies('userId', id);
+        await setCookies('userId', id, true);
         Promise.all([setCookies('userId', id)]).then(() => {
           router.push('/verification?type=register');
         });

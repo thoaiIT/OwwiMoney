@@ -25,7 +25,6 @@ const Input: React.FC<InputProps> = ({
   label,
   type,
   disabled,
-  required,
   placeholder,
   onChange,
   value,
@@ -35,7 +34,6 @@ const Input: React.FC<InputProps> = ({
   maxLength,
   min,
   max,
-  resend,
 }) => {
   return (
     <div className="w-full relative">

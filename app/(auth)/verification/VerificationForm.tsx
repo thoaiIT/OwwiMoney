@@ -1,16 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import Heading from '../../components/login/Heading';
-import OwwiFigure from '../../public/img/Owwi_figure.png';
-import Input from '../../components/login/input/Input';
+import Heading from '../../../components/login/Heading';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
+import Input from '../../../components/login/input/Input';
 import { useEffect, useState } from 'react';
-import Button from '../../components/login/button/Button';
+import Button from '../../../components/login/button/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { confirmOTP } from '../../actions/OTP/confirmOTP';
-import { sendOTP } from '../../actions/OTP/sendOTP';
-import { HttpStatusCodes } from '../../helper/type';
+import { confirmOTP } from '../../../actions/OTP/confirmOTP';
+import { sendOTP } from '../../../actions/OTP/sendOTP';
 import { useRouter } from 'next/navigation';
 
 const schema = Yup.object().shape({
@@ -103,7 +102,7 @@ const VerificationForm = () => {
       <p className="text-gray-400">Enter your 6 digits code that you received on your email.</p>
       <Input
         id="verification"
-        custom="border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow"
+        custom="text-center border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow"
         onChange={handleChange}
         type="number"
         value={values.verification}
