@@ -1,6 +1,11 @@
+import Image from 'next/image';
+import { VscArrowRight } from 'react-icons/vsc';
+import { CommonButton } from '../components/button';
+import Owwi404 from '../public/img/Owwi_404.png';
+
 export default function NotFound() {
   return (
-    <div className="relative flex flex-cols h-screen">
+    <div className="relative xl:grid xl:grid-cols-2 h-screen p-4 flex items-center justify-center">
       <svg
         width="100%"
         height="100vh"
@@ -16,8 +21,40 @@ export default function NotFound() {
           strokeLinecap="round"
         />
       </svg>
-      <div className="text-black w-[50vw] flex flex-cols">left</div>
-      <div className="text-black w-[50vw]">right</div>
+      <div className="text-black xl:flex items-center justify-center hidden">
+        <div className="mx-10 pl-20 flex flex-col gap-4">
+          <div className="font-bold text-5xl">Oops...</div>
+          <div className="font-medium text-6xl">Page not found</div>
+          <div className="font-normal text-3xl">
+            ...maybe the page you’re looking for is not found or never existed.
+          </div>
+          <CommonButton
+            intent={'secondary'}
+            className="w-48 flex items-center"
+          >
+            Go back
+            <VscArrowRight className="ml-6" />
+          </CommonButton>
+        </div>
+      </div>
+      <div className="text-black flex flex-col items-center justify-center gap-2">
+        <Image
+          src={Owwi404}
+          width={600}
+          height={600}
+          alt="404"
+        />
+        <div className="xl:hidden">
+          <p className="text-2xl mb-4">Page not found</p>
+          <CommonButton
+            intent={'secondary'}
+            className="w-48 flex items-center"
+          >
+            Go back
+            <VscArrowRight className="ml-6" />
+          </CommonButton>
+        </div>
+      </div>
     </div>
   );
 }
