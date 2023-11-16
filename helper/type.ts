@@ -91,3 +91,34 @@ export type ModifyOption<T, K extends keyof T, V> = Omit<T, K> & { [P in K]: V }
 export type ObjectWithDynamicKeys<T> = {
   [key: string]: T;
 };
+
+export type ErrorType = {
+  message: string;
+};
+
+interface HttpStatusCode {
+  [key: number]: { message: string; code: number };
+}
+
+export const HttpStatusCodes: HttpStatusCode = {
+  100: { message: 'Continue', code: 100 },
+  101: { message: 'Switching Protocols', code: 101 },
+
+  200: { message: 'OK', code: 200 },
+  201: { message: 'Created', code: 201 },
+  204: { message: 'No Content', code: 204 },
+
+  301: { message: 'Moved Permanently', code: 301 },
+  304: { message: 'Not Modified', code: 304 },
+
+  400: { message: 'Bad Request', code: 400 },
+  401: { message: 'Unauthorized', code: 401 },
+  403: { message: 'Forbidden', code: 403 },
+  404: { message: 'Not Found', code: 404 },
+  422: { message: 'Unprocessable Entity', code: 422 },
+
+  500: { message: 'Internal Server Error', code: 500 },
+  502: { message: 'Bad Gateway', code: 502 },
+  503: { message: 'Service Unavailable', code: 503 },
+  504: { message: 'Gateway Timeout', code: 504 },
+};
