@@ -18,6 +18,8 @@ export const confirmOTP = async (code: string) => {
     } else {
     }
 
+    console.log({ code, userId });
+
     const otp: Otp | null = await prisma.otp.findFirst({
       where: {
         code,
@@ -29,7 +31,6 @@ export const confirmOTP = async (code: string) => {
     if (!otp) {
       return { message: 'Wrong OTP', status: HttpStatusCodes[404] };
     }
-
     // Catch OTP Expired
     if (otp?.createdAt) {
       const checkLifeTime = new Date().getTime() - new Date(otp.createdAt).getTime() > OTPLifetime + delayTime;

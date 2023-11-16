@@ -7,6 +7,7 @@ import GithubProvider from 'next-auth/providers/github';
 import FacebookProvider from 'next-auth/providers/facebook';
 import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
+import { setCookies } from '../../../actions/cookies';
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -39,12 +40,14 @@ export const authOptions: AuthOptions = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid email or password');
         }
+ 
         const user = await prisma.user.findUnique({
           where: {
             email: credentials?.email,
           },
         });
         if (!user) throw new Error('User not found');
+
         if (!user.email) {
           throw new Error('Invalid email');
         }
@@ -67,7 +70,15 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-  
+    // // session(params) {
+    // //   console.log({params});
+    // //   params.session.user
+    // //     return params.session
+    // // },
+    // redirect(params) {
+    //   console.log({params});
+    //   return '/'
+    // },
   }
 };
 export default NextAuth(authOptions);
