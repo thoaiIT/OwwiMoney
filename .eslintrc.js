@@ -22,6 +22,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
+    'eslint:recommended',
+    'plugin:react/recommended',
   ],
   ignorePatterns: ['node_modules/', 'pages/'],
   rules: {
@@ -33,6 +35,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'off',
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
+    'react/jsx-key': ['error', { checkFragmentShorthand: true }],
     'react/jsx-max-props-per-line': ['error', { maximum: 1 }],
     'react/jsx-boolean-value': 'error',
     'jsx-a11y/alt-text': ['error', { elements: ['img'] }],
@@ -65,7 +68,6 @@ module.exports = {
         vars: 'all',
         varsIgnorePattern: '^_',
         args: 'after-used',
-        argsIgnorePattern: '^_',
       },
     ],
     'import/no-unresolved': 'error',
@@ -73,6 +75,11 @@ module.exports = {
     'import/default': 'error',
     'import/namespace': 'error',
     'import/export': 'error',
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
   },
   root: true,
 };
