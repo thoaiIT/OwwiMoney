@@ -6,7 +6,15 @@ module.exports = {
     node: true,
     es2022: true,
   },
-  plugins: ['react', 'react-hooks', 'jsx-a11y', 'prettier', 'eslint-plugin-no-inline-styles', 'unused-imports'],
+  plugins: [
+    'react',
+    'react-hooks',
+    'jsx-a11y',
+    'prettier',
+    'eslint-plugin-no-inline-styles',
+    'unused-imports',
+    'import',
+  ],
   extends: [
     'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
@@ -14,6 +22,8 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
     'plugin:prettier/recommended',
     'plugin:react-hooks/recommended',
+    'eslint:recommended',
+    'plugin:react/recommended',
   ],
   ignorePatterns: ['node_modules/', 'pages/'],
   rules: {
@@ -25,6 +35,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/display-name': 'off',
     'react/jsx-first-prop-new-line': ['error', 'multiline'],
+    'react/jsx-key': ['error', { checkFragmentShorthand: true }],
     'react/jsx-max-props-per-line': ['error', { maximum: 1 }],
     'react/jsx-boolean-value': 'error',
     'jsx-a11y/alt-text': ['error', { elements: ['img'] }],
@@ -49,8 +60,26 @@ module.exports = {
     'no-inline-styles/no-inline-styles': 2,
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-var-requires': 'warn',
-    'unused-imports/no-unused-imports': 'error',
-    'unused-imports/no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
+    'no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'warn',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+      },
+    ],
+    'import/no-unresolved': 'error',
+    'import/named': 'error',
+    'import/default': 'error',
+    'import/namespace': 'error',
+    'import/export': 'error',
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
   },
   root: true,
 };

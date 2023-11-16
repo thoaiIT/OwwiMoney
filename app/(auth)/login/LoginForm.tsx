@@ -1,23 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Heading from '../../components/login/Heading';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import Input from '../../components/login/input/Input';
-import Button from '../../components/login/button/Button';
-import ButtonIcon from '../../components/login/button/ButtonIcon';
-import GoogleIcon from '../../public/icons/google.svg';
-import FaceBookIcon from '../../public/icons/facebook.svg';
-import GitHubIcon from '../../public/icons/github.svg';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { setCookies } from '../../actions/cookies';
-
-interface LoginFormProps {
-  currentUser: any | null;
-}
+import { useState } from 'react';
+import * as Yup from 'yup';
+import { setCookies } from '../../../actions/cookies';
+import { CommonButton } from '../../../components/button';
+import Heading from '../../../components/login/Heading';
+import Input from '../../../components/login/input/Input';
+import FaceBookIcon from '../../../public/icons/facebook.svg';
+import GitHubIcon from '../../../public/icons/github.svg';
+import GoogleIcon from '../../../public/icons/google.svg';
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -25,9 +21,10 @@ const schema = Yup.object().shape({
   password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
 });
 
-const LoginForm: React.FC<LoginFormProps> = () => {
+const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  // const { data } = useSession();
 
   const formik = useFormik({
     initialValues: {
@@ -47,11 +44,13 @@ const LoginForm: React.FC<LoginFormProps> = () => {
         setIsLoading(false);
 
         if (callback?.ok) {
+          // console.log(callback);
           await setCookies('isAuthenticated', 'true');
-          router.push('/dashboard');
+          // router.push('/dashboard');
           router.refresh();
         }
         if (callback?.error) {
+          console.log(callback);
           console.log('error');
         }
       });
@@ -101,38 +100,44 @@ const LoginForm: React.FC<LoginFormProps> = () => {
           Forget Password?
         </Link>
       </p>
-      <Button
-        custom="xl:w-[70%] bg-btn-color
-        text-white rounded-full"
-        label={isLoading ? 'Loading...' : 'Sign in'}
-        onClick={handleSubmit}
-        disabled={isLoading}
-      />
+      <CommonButton
+        intent={'secondary'}
+        className="xl:w-[70%]"
+        onClick={() => handleSubmit()}
+      >
+        {isLoading ? 'Loading' : 'Sign In'}
+      </CommonButton>
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
       <div className="xl:w-[70%] grid grid-cols-3 gap-2">
-        <ButtonIcon
-          iconImage={GoogleIcon}
-          width={22}
-          height={22}
-          description={'Login with Google'}
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={GitHubIcon}
-          width={22}
-          height={22}
-          description={'Login with Github'}
+        >
+          <Image
+            src={GoogleIcon}
+            alt=""
+          />
+        </CommonButton>
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
-        <ButtonIcon
-          iconImage={FaceBookIcon}
-          width={22}
-          height={22}
-          description={'Login with Facebook'}
+        >
+          <Image
+            src={GitHubIcon}
+            alt=""
+          />
+        </CommonButton>
+        <CommonButton
+          intent={'outline'}
           onClick={() => ''}
-        />
+        >
+          <Image
+            src={FaceBookIcon}
+            alt=""
+          />
+        </CommonButton>
       </div>
       <div className="xl:w-[70%]">
         <p className="text-sm text-gray-400 text-center">
