@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { VscArrowRight } from 'react-icons/vsc';
+import { VscArrowLeft } from 'react-icons/vsc';
 import { CommonButton } from '../components/button';
 import Owwi404 from '../public/img/Owwi_404.png';
 
@@ -38,8 +38,8 @@ export default function NotFound() {
               router.back();
             }}
           >
+            <VscArrowLeft className="mr-2" />
             Go back
-            <VscArrowRight className="ml-6" />
           </CommonButton>
         </div>
       </div>
@@ -50,8 +50,8 @@ export default function NotFound() {
           height={600}
           alt="404"
         />
-        <div className="xl:hidden">
-          <p className="text-2xl mb-4">Page not found</p>
+        <div className="xl:hidden flex flex-col items-center">
+          <p className="text-3xl mb-4 font-medium">Page not found</p>
           <CommonButton
             intent={'secondary'}
             className="w-48 flex items-center"
@@ -59,8 +59,8 @@ export default function NotFound() {
               router.back();
             }}
           >
+            <VscArrowLeft className="mr-2" />
             Go back
-            <VscArrowRight className="ml-6" />
           </CommonButton>
         </div>
       </div>
