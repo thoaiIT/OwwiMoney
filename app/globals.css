@@ -27,3 +27,12 @@ html.dark {
 .remove-arrow {
   -moz-appearance: textfield;
 }
+
+@layer utilities {
+  .tableTab {
+    @apply text-base font-bold cursor-pointer;
+  }
+  .tableTabActive {
+    @apply data-[state=active]:text-base data-[state=active]:font-bold cursor-pointer data-[state=active]:border-b-2 data-[state=active]:border-blue-500;
+  }
+}
