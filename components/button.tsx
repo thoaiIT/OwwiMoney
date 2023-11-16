@@ -68,4 +68,4 @@ const CommonButton = forwardRef<HTMLButtonElement, ButtonProps>(
 
 CommonButton.displayName = 'Button';
 
-export { CommonButton, buttonVariants };
+export { buttonVariants, CommonButton };
