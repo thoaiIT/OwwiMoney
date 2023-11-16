@@ -1,10 +1,10 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import './globals.css';
 import '@radix-ui/themes/styles.css';
-import { ThemeContextProvider } from '../context/theme-context';
+import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
+import type { ReactNode } from 'react';
 import ToastProvider from '../components/toast/ToastProvider';
+import { ThemeContextProvider } from '../context/theme-context';
+import './globals.css';
 
 const quickSand = Quicksand({
   variable: '--display-font',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: '$$$',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
