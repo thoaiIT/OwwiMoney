@@ -1,8 +1,10 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import '@radix-ui/themes/styles.css';
 import { ThemeContextProvider } from '../context/theme-context';
 import { Quicksand } from 'next/font/google';
+import ToastProvider from '../components/toast/ToastProvider';
 
 const quickSand = Quicksand({
   variable: '--display-font',
@@ -24,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
         <div className="flex flex-col min-h-screen">
-          <ThemeContextProvider>{children}</ThemeContextProvider>
+          <ToastProvider>
+            <ThemeContextProvider>{children}</ThemeContextProvider>
+          </ToastProvider>
         </div>
       </body>
     </html>

@@ -1,7 +1,5 @@
 'use server';
-import { Server } from 'socket.io';
-
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export async function GET(req: any, res: any) {
   console.log({ req, res });

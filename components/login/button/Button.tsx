@@ -1,6 +1,6 @@
 'use client';
-
 import type { IconType } from 'react-icons/lib';
+import React from 'react';
 
 interface ButtonProps {
   label: string;
