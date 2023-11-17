@@ -1,6 +1,6 @@
-import React, { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode } from 'react';
-import { tailwindMerge } from '../utils/helper';
 import { cva } from 'class-variance-authority';
+import { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode } from 'react';
+import { tailwindMerge } from '../utils/helper';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   intent?: 'primary' | 'secondary' | 'outline' | 'disabled' | 'simple';
@@ -8,6 +8,8 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
   icon?: ReactNode;
+  label?: string;
+  errors?: string;
 }
 
 const textFieldVariants = cva(
@@ -31,15 +33,26 @@ const textFieldVariants = cva(
 );
 
 const CommonInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ intent, placeholder, className, type = 'text', ...props }, ref) => {
+  ({ intent, placeholder, className, type = 'text', label, errors, ...props }, ref) => {
     return (
-      <input
-        type={type}
-        placeholder={placeholder}
-        ref={ref}
-        className={tailwindMerge(textFieldVariants({ intent: intent, className: className }))}
-        {...props}
-      />
+      <div>
+        <p className={`mb-2 ${errors ? 'text-red-500' : ''}`}>{label}</p>
+        <input
+          type={type}
+          placeholder={placeholder}
+          ref={ref}
+          className={tailwindMerge(
+            textFieldVariants({
+              intent: intent,
+              className: `${className} ${
+                errors ? 'border-red-600 border-[1px] focus-visible:ring-red-500 focus-visible:border-red-500 ' : ''
+              }`,
+            }),
+          )}
+          {...props}
+        />
+        {!!errors && <p className="text-sm text-red-500 mt-2">{errors}</p>}
+      </div>
     );
   },
 );

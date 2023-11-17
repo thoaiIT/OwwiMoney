@@ -1,16 +1,16 @@
 'use client';
 
+import { yupResolver } from '@hookform/resolvers/yup';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { sendOTP } from '../../../actions/OTP/sendOTP';
+import { CommonButton } from '../../../components/button';
+import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
 import OwwiFigure from '../../../public/img/Owwi_figure.png';
-import Input from '../../../components/login/input/Input';
-import { useEffect, useState } from 'react';
-import Button from '../../../components/login/button/Button';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { confirmOTP } from '../../../actions/OTP/confirmOTP';
-import { sendOTP } from '../../../actions/OTP/sendOTP';
-import { useRouter } from 'next/navigation';
 
 const schema = Yup.object().shape({
   verification: Yup.string()
@@ -22,8 +22,19 @@ const schema = Yup.object().shape({
 const VerificationForm = () => {
   // const [value, setValue] = useState<number | ''>('');
   const router = useRouter();
-  const [time, setTime] = useState(5);
+  const [time, setTime] = useState(10);
   const [resend, setResend] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    values: {
+      verification: '',
+    },
+    resolver: yupResolver(schema),
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,34 +42,6 @@ const VerificationForm = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, [resend]);
-
-  const formik = useFormik({
-    initialValues: {
-      verification: '',
-    },
-
-    // Pass the Yup schema to validate the form
-    validationSchema: schema,
-
-    // Handle form submission
-    onSubmit: async ({ verification }: { verification: string }) => {
-      // Make a request to your backend to store the data
-      console.log({ verification });
-
-      const result = await confirmOTP(String(verification));
-      if (result.status && result.status.code === 201) {
-        //Authorize
-
-        router.push('/');
-      } else {
-        // Show error
-      }
-      console.log({ result });
-    },
-  });
-
-  // Destructure the formik object
-  const { errors, touched, values, handleChange, handleSubmit } = formik;
 
   const displayTime = () => {
     const minutes = Math.floor(time / 60);
@@ -82,6 +65,10 @@ const VerificationForm = () => {
   const resendOTPHandler = async () => {
     await sendOTP();
   };
+
+  const handleSubmitForm = handleSubmit((values: { verification: string }) => {
+    console.log(values);
+  });
   return (
     <>
       <div className="flex flex-col justify-center">
@@ -100,22 +87,31 @@ const VerificationForm = () => {
         />
       </div>
       <p className="text-gray-400">Enter your 6 digits code that you received on your email.</p>
-      <Input
-        id="verification"
-        custom="text-center border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow"
-        onChange={handleChange}
-        type="number"
-        value={values.verification}
-        errors={errors.verification}
-        touched={touched.verification}
-        resend={resend}
+      <Controller
+        name="verification"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            value={value}
+            onChange={(e) => {
+              let numericValue = e.target.value.replace(/\D/g, '');
+              numericValue = numericValue.length > 0 && numericValue[0] !== '0' ? numericValue : '';
+              onChange(numericValue);
+            }}
+            type="text"
+            className="text-center border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow p-6"
+            errors={errors.verification?.message}
+            maxLength={6}
+          />
+        )}
       />
       <div className="text-color-resend text-center ">{displayTime()}</div>
-      <Button
-        label="VERIFY"
-        onClick={handleSubmit}
-        custom="rounded-[5px] bg-dark-blue text-white"
-      />
+      <CommonButton
+        className="rounded-[5px] bg-dark-blue text-white hover:bg-blue-950"
+        onClick={handleSubmitForm}
+      >
+        VERIFY
+      </CommonButton>
       {time === 0 && (
         <p className="text-gray-400 mt-1 text-center">
           If you didn’t receive a code!
