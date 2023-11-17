@@ -42,10 +42,10 @@ const LoginForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleSubmitForm = handleSubmit((values: LoginModel) => {
+  const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
     console.log(values);
 
-    signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+    await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
       setIsLoading(false);
 
       if (callback?.ok) {

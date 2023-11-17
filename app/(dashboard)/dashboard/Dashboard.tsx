@@ -1,5 +1,6 @@
 'use client';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const Dashboard: React.FC<any> = () => {
@@ -15,15 +16,7 @@ const Dashboard: React.FC<any> = () => {
     <div>
       Dashboard
       <hr />
-      <button
-        onClick={() => {
-          signOut({ redirect: false }).then(async () => {
-            router.push('/login');
-          });
-        }}
-      >
-        logout
-      </button>
+      <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
       <p>{session?.user?.email}</p>
     </div>
   );
