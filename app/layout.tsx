@@ -2,8 +2,8 @@ import '@radix-ui/themes/styles.css';
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
 import React from 'react';
-import AuthProvider from '../components/AuthProvider';
-import ToastProvider from '../components/toast/ToastProvider';
+import AuthProvider from '../context/AuthProvider';
+import ToastProvider from '../context/ToastProvider';
 import { ThemeContextProvider } from '../context/theme-context';
 import './globals.css';
 
