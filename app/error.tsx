@@ -1,12 +1,15 @@
 'use client';
+
 import { CommonButton } from '@/components/button';
-import Owwi404 from '@/public/img/Owwi_404.png';
+import OwwiError from '@/public/img/Owwi_error.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { GrPowerReset } from 'react-icons/gr';
 import { VscArrowLeft } from 'react-icons/vsc';
 
-export default function NotFound() {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const router = useRouter();
+
   return (
     <div className="relative xl:grid xl:grid-cols-2 h-screen p-4 flex items-center justify-center">
       <svg
@@ -26,13 +29,41 @@ export default function NotFound() {
       </svg>
       <div className="text-black xl:flex items-center justify-center hidden">
         <div className="mx-10 pl-20 flex flex-col gap-4">
-          <div className="font-bold text-5xl">Oops...</div>
-          <div className="font-medium text-6xl">Page not found</div>
-          <div className="font-normal text-3xl">
-            ...maybe the page you’re looking for is not found or never existed.
+          <div className="font-medium text-6xl">I have bad news for you</div>
+          <div className="font-normal text-3xl text-red-600">{error.message}</div>
+          <div className="flex gap-4">
+            <CommonButton
+              intent={'outline'}
+              className="w-48 flex items-center"
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <VscArrowLeft className="mr-2" />
+              Go back
+            </CommonButton>
+            <CommonButton
+              intent={'secondary'}
+              className="w-48 flex items-center"
+              onClick={() => reset()}
+            >
+              Reload
+              <GrPowerReset className="ml-2" />
+            </CommonButton>
           </div>
+        </div>
+      </div>
+      <div className="text-black flex flex-col items-center justify-center gap-2">
+        <Image
+          src={OwwiError}
+          width={600}
+          height={600}
+          alt="404"
+        />
+        <div className="xl:hidden flex flex-col items-center gap-4">
+          <p className="text-3xl font-medium text-red-600">{error.message}</p>
           <CommonButton
-            intent={'secondary'}
+            intent={'outline'}
             className="w-48 flex items-center"
             onClick={() => {
               router.back();
@@ -41,26 +72,13 @@ export default function NotFound() {
             <VscArrowLeft className="mr-2" />
             Go back
           </CommonButton>
-        </div>
-      </div>
-      <div className="text-black flex flex-col items-center justify-center gap-2">
-        <Image
-          src={Owwi404}
-          width={600}
-          height={600}
-          alt="404"
-        />
-        <div className="xl:hidden flex flex-col items-center">
-          <p className="text-3xl mb-4 font-medium">Page not found</p>
           <CommonButton
             intent={'secondary'}
             className="w-48 flex items-center"
-            onClick={() => {
-              router.back();
-            }}
+            onClick={() => reset()}
           >
-            <VscArrowLeft className="mr-2" />
-            Go back
+            Reload
+            <GrPowerReset className="ml-2" />
           </CommonButton>
         </div>
       </div>
