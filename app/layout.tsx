@@ -1,10 +1,9 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import './globals.css';
+import ToastProvider from '@/components/toast/ToastProvider';
+import { ThemeContextProvider } from '@/context/theme-context';
 import '@radix-ui/themes/styles.css';
-import { ThemeContextProvider } from '../context/theme-context';
+import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
-import ToastProvider from '../components/toast/ToastProvider';
+import React from 'react';
 
 const quickSand = Quicksand({
   variable: '--display-font',

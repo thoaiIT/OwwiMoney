@@ -1,9 +1,9 @@
 'use client';
+import { CommonButton } from '@/components/button';
+import Owwi404 from '@/public/img/Owwi_404.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { VscArrowLeft } from 'react-icons/vsc';
-import { CommonButton } from '../components/button';
-import Owwi404 from '../public/img/Owwi_404.png';
 
 export default function NotFound() {
   const router = useRouter();

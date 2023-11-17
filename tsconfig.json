@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     /* Base Options: */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*", ""]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
