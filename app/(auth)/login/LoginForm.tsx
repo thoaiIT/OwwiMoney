@@ -1,6 +1,7 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -43,6 +44,20 @@ const LoginForm = () => {
 
   const handleSubmitForm = handleSubmit((values: LoginModel) => {
     console.log(values);
+
+    signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+      setIsLoading(false);
+
+      if (callback?.ok) {
+        // console.log(callback);
+        router.push('/dashboard');
+        router.refresh();
+      }
+      if (callback?.error) {
+        console.log(callback);
+        console.log('error');
+      }
+    });
   });
 
   return (
