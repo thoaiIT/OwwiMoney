@@ -1,18 +1,25 @@
-import React, { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode } from 'react';
-import { tailwindMerge } from '../utils/helper';
-import { cva } from 'class-variance-authority';
+'use client';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+import { cva } from 'class-variance-authority';
+import type { ChangeEvent, HTMLInputTypeAttribute, ReactNode } from 'react';
+import type { FieldErrors } from 'react-hook-form';
+import { tailwindMerge } from '../utils/helper';
+
+export interface InputProps {
   intent?: 'primary' | 'secondary' | 'outline' | 'disabled' | 'simple';
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
   icon?: ReactNode;
+  name: string;
+  value?: string;
+  errors?: FieldErrors;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const textFieldVariants = cva(
   [
-    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+    'flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
@@ -30,18 +37,54 @@ const textFieldVariants = cva(
   },
 );
 
-const CommonInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ intent, placeholder, className, type = 'text', ...props }, ref) => {
-    return (
+const CommonInput = ({
+  intent,
+  placeholder,
+  className,
+  value,
+  type = 'text',
+  icon,
+  name,
+  errors,
+  onChange,
+  ...props
+}: InputProps) => {
+  return (
+    <div className="w-full relative">
+      {icon && icon}
       <input
+        value={value}
+        onChange={onChange}
         type={type}
-        placeholder={placeholder}
-        ref={ref}
-        className={tailwindMerge(textFieldVariants({ intent: intent, className: className }))}
+        placeholder={placeholder ? placeholder : ' '}
+        className={tailwindMerge([textFieldVariants({ intent: intent, className: className })])}
+        disabled={intent === 'disabled'}
         {...props}
       />
-    );
-  },
-);
+      {!!errors && (
+        <label
+          htmlFor={name}
+          className={`
+          absolute
+          text-md
+          duration-100
+          transform
+          -translate-y-3
+          top-5
+          z-100
+          origin-[0]
+          peer-placeholder-shown:scale-100
+          peer-placeholder-shown:translate-y-0
+          peer-focus:scale-75
+          peer-focus:-translate-y-4
+          ${errors[name] ? 'text-red-500' : 'text-gray-400'}
+        `}
+        >
+          {errors[name]?.message?.toString() || 'Invalid input'}
+        </label>
+      )}
+    </div>
+  );
+};
 
 export default CommonInput;

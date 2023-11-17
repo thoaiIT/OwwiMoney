@@ -2,9 +2,9 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import React, { useEffect, useState } from 'react';
-import { tailwindMerge } from '../utils/helper';
-import { SlArrowDown } from 'react-icons/sl';
 import { BsCheck, BsSearch } from 'react-icons/bs';
+import { SlArrowDown } from 'react-icons/sl';
+import { tailwindMerge } from '../utils/helper';
 import CommonInput from './input';
 
 type dataType = {
@@ -83,6 +83,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             <div className="flex items-center">
               <BsSearch className="w-4 ml-3" />
               <CommonInput
+                name="search"
                 intent="simple"
                 placeholder="Search here... "
                 onChange={(e) => {
