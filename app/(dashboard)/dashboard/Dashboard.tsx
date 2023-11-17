@@ -1,17 +1,16 @@
 'use client';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { deleteCookies, setCookies } from '../../../actions/cookies';
 
-const Dashboard: React.FC<any> = ({ currentUser }) => {
+const Dashboard: React.FC<any> = () => {
   const router = useRouter();
-  console.log({ currentUser, check: currentUser && !currentUser.emailConfirmed });
-  if (currentUser && !currentUser.emailConfirmed) {
-    (async () => {
-      await setCookies('emailConfirmed', currentUser.emailConfirmed);
-      // router.push('/verification');
-    })();
-  }
+  const { data: session } = useSession({
+    required: true,
+    // onUnauthenticated() {
+    //   redirect("/api/auth/signin?callbackUrl=/ClientMember");
+    // },
+  });
+
   return (
     <div>
       Dashboard
@@ -19,14 +18,13 @@ const Dashboard: React.FC<any> = ({ currentUser }) => {
       <button
         onClick={() => {
           signOut({ redirect: false }).then(async () => {
-            await deleteCookies('isAuthenticated');
-            await deleteCookies('emailConfirmed');
             router.push('/login');
           });
         }}
       >
         logout
       </button>
+      <p>{session?.user?.email}</p>
     </div>
   );
 };

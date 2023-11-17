@@ -1,17 +1,20 @@
 'use client';
 
+import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { CommonButton } from '../../../components/button';
+import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
 
-import { useState } from 'react';
-import Input from '../../../components/login/input/Input';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { registerUser } from '../../../actions/user/registerUser';
-import { useRouter } from 'next/navigation';
-import type { ObjectWithDynamicKeys } from '../../../helper/type';
-import { setCookies } from '../../../actions/cookies';
-import { CommonButton } from '../../../components/button';
+interface RegisterModel {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 const getCharacterValidationError = (str: string) => {
   return `Your password must have at least 1 ${str} character`;
@@ -35,40 +38,22 @@ const RegisterForm = () => {
   const router = useRouter();
   const [isLoading] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    values: {
       email: '',
       password: '',
       confirmPassword: '',
     },
-
-    // Pass the Yup schema to validate the form
-    validationSchema: schema,
-
-    // Handle form submission
-    onSubmit: async ({ email, password, confirmPassword }: ObjectWithDynamicKeys<any>) => {
-      // Make a request to your backend to store the data
-      console.log({ email, password, confirmPassword });
-
-      const result = await registerUser({
-        email,
-        password,
-        name: email.split('@')[0] || 'user',
-      });
-      if (result?.body?.userId) {
-        const id = result?.body?.userId;
-        await setCookies('userId', id, true);
-        Promise.all([setCookies('userId', id)]).then(() => {
-          router.push('/verification?type=register');
-        });
-        // router.push(); //`/otp/register-user/${result?.body?.userId}`
-      }
-      console.log({ result });
-    },
+    resolver: yupResolver(schema),
   });
 
-  // Destructure the formik object
-  const { errors, touched, values, handleChange, handleSubmit } = formik;
+  const handleSubmitForm = handleSubmit((values: RegisterModel) => {
+    console.log(values);
+  });
 
   return (
     <>
@@ -80,39 +65,51 @@ const RegisterForm = () => {
         title="Sign Up to Get Started"
         custom="text-3xl text-center xl:text-start font-light"
       />
-      <Input
-        id={'email'}
-        label="Email"
-        type="email"
-        placeholder="username@gmail.com"
-        onChange={handleChange}
-        value={values.email}
-        errors={errors.email as any}
-        touched={touched.email as any}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="email"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            label="Email"
+            value={value}
+            onChange={onChange}
+            placeholder="Username@gmail.com"
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors.email?.message}
+          />
+        )}
       />
-      <Input
-        id={'password'}
-        label="Password"
-        type="password"
-        placeholder="Password"
-        onChange={handleChange}
-        value={values.password}
-        errors={errors.password as any}
-        touched={touched.password as any}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="password"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            label="Password"
+            type="password"
+            value={value}
+            onChange={onChange}
+            placeholder="Password"
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors.password?.message}
+          />
+        )}
       />
-      <Input
-        id={'confirmPassword'}
-        label="Confirm password"
-        type="password"
-        placeholder="Confirm password"
-        onChange={handleChange}
-        value={values.confirmPassword}
-        errors={errors.confirmPassword as any}
-        touched={touched.confirmPassword as any}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="confirmPassword"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            label="Confirm Password"
+            type="password"
+            value={value}
+            onChange={onChange}
+            placeholder="Confirm Password"
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors.confirmPassword?.message}
+          />
+        )}
       />
+
       <p className="text-sm flex items-center">
         Have an account yet?
         <Link
@@ -125,7 +122,7 @@ const RegisterForm = () => {
       <CommonButton
         intent={'secondary'}
         className="xl:w-[70%]"
-        onClick={() => handleSubmit()}
+        onClick={handleSubmitForm}
       >
         {isLoading ? 'Loading' : 'Register'}
       </CommonButton>

@@ -1,10 +1,11 @@
-import { getCurrentUser } from '../../../actions/user/getCurrentUser';
+import { getServerSession } from 'next-auth';
+import { options } from '../../api/auth/[...nextauth]/options';
 import Dashboard from './Dashboard';
 
 const Page = async () => {
-  const currentUser = await getCurrentUser();
-  console.log('???');
-  return <Dashboard currentUser={currentUser} />;
+  const session = await getServerSession(options);
+  console.log('Dashboard', session?.user);
+  return <Dashboard />;
 };
 
 export default Page;
