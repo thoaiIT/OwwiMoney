@@ -1,11 +1,11 @@
 'use client';
 
+import { CommonButton } from '@/components/button';
+import OwwiError from '@/public/img/Owwi_error.png';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { GrPowerReset } from 'react-icons/gr';
 import { VscArrowLeft } from 'react-icons/vsc';
-import { CommonButton } from '../components/button';
-import OwwiError from '../public/img/Owwi_error.png';
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   const router = useRouter();
