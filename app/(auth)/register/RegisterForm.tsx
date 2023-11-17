@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
@@ -51,8 +52,17 @@ const RegisterForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleSubmitForm = handleSubmit((values: RegisterModel) => {
-    console.log(values);
+  const handleSubmitForm = handleSubmit(async (values: RegisterModel) => {
+    const { email, password } = values;
+    const result = await registerUser({
+      email,
+      password,
+      name: email.split('@')[0] || 'user',
+    });
+    if (result?.body?.userId) {
+      router.push('/verification?type=register');
+    }
+    console.log({ result });
   });
 
   return (

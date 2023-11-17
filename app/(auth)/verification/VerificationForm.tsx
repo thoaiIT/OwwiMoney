@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import { confirmOTP } from '../../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../../actions/OTP/sendOTP';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
@@ -52,22 +53,22 @@ const VerificationForm = () => {
     return formattedTime;
   };
 
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputValue = event.target.value;
-
-  //   const numericValue = inputValue.replace(/[^0-9]/g, '');
-
-  //   const truncatedValue = numericValue.slice(0, 6);
-
-  //   setValue(truncatedValue === '' ? '' : parseInt(truncatedValue, 10));
-  // };
-
   const resendOTPHandler = async () => {
     await sendOTP();
   };
 
-  const handleSubmitForm = handleSubmit((values: { verification: string }) => {
+  const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
     console.log(values);
+    const { verification } = values;
+    const result = await confirmOTP(verification);
+    if (result.status && result.status.code === 201) {
+      //Authorize
+
+      router.push('/login');
+    } else {
+      // Show error
+    }
+    console.log({ result });
   });
   return (
     <>
