@@ -4,6 +4,7 @@ import '@radix-ui/themes/styles.css';
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
 import React from 'react';
+import './globals.css';
 
 const quickSand = Quicksand({
   variable: '--display-font',
