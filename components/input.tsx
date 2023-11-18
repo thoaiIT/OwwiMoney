@@ -14,6 +14,7 @@ export interface InputProps {
   name: string;
   value?: string;
   errors?: FieldErrors;
+  maxLength?: number;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -47,12 +48,14 @@ const CommonInput = ({
   name,
   errors,
   onChange,
+  maxLength,
   ...props
 }: InputProps) => {
   return (
     <div className="w-full relative">
       {icon && icon}
       <input
+        maxLength={maxLength}
         value={value}
         onChange={onChange}
         type={type}

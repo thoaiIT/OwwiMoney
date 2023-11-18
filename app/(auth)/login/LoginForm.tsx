@@ -1,19 +1,24 @@
 'use client';
 
-import { useFormik } from 'formik';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { setCookies } from '../../../actions/cookies';
 import { CommonButton } from '../../../components/button';
+import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
-import Input from '../../../components/login/input/Input';
 import FaceBookIcon from '../../../public/icons/facebook.svg';
 import GitHubIcon from '../../../public/icons/github.svg';
 import GoogleIcon from '../../../public/icons/google.svg';
+
+interface LoginModel {
+  email: string;
+  password: string;
+}
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -24,41 +29,36 @@ const schema = Yup.object().shape({
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const { data } = useSession();
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    values: {
       email: '',
       password: '',
     },
-
-    // Pass the Yup schema to validate the form
-    validationSchema: schema,
-
-    // Handle form submission
-    onSubmit: async ({ email, password }) => {
-      setIsLoading(true);
-      // Make a request to your backend to store the data
-
-      signIn('credentials', { email, password, redirect: false }).then(async (callback) => {
-        setIsLoading(false);
-
-        if (callback?.ok) {
-          // console.log(callback);
-          await setCookies('isAuthenticated', 'true');
-          // router.push('/dashboard');
-          router.refresh();
-        }
-        if (callback?.error) {
-          console.log(callback);
-          console.log('error');
-        }
-      });
-    },
+    resolver: yupResolver(schema),
   });
 
-  // Destructure the formik object
-  const { errors, touched, values, handleChange, handleSubmit } = formik;
+  const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
+    console.log(values);
+
+    await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+      setIsLoading(false);
+
+      if (callback?.ok) {
+        // console.log(callback);
+        router.push('/dashboard');
+        router.refresh();
+      }
+      if (callback?.error) {
+        console.log(callback);
+        console.log('error');
+      }
+    });
+  });
 
   return (
     <>
@@ -70,27 +70,34 @@ const LoginForm = () => {
         title="Login"
         custom="mt-2 text-3xl text-center xl:text-start"
       />
-      <Input
-        id={'email'}
-        label="Email"
-        type="email"
-        placeholder="username@gmail.com"
-        onChange={handleChange}
-        value={values.email}
-        errors={errors.email}
-        touched={touched.email}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="email"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            name="Email"
+            value={value}
+            onChange={onChange}
+            placeholder="Username@gmail.com"
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors}
+          />
+        )}
       />
-      <Input
-        id={'password'}
-        label="Password"
-        type="password"
-        placeholder="Password"
-        value={values.password}
-        errors={errors.password}
-        touched={touched.password}
-        onChange={handleChange}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="password"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            name="password"
+            type="password"
+            value={value}
+            onChange={onChange}
+            placeholder="Password"
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
+          />
+        )}
       />
       <p className="text-sm">
         <Link
@@ -103,7 +110,7 @@ const LoginForm = () => {
       <CommonButton
         intent={'secondary'}
         className="xl:w-[70%]"
-        onClick={() => handleSubmit()}
+        onClick={handleSubmitForm}
       >
         {isLoading ? 'Loading' : 'Sign In'}
       </CommonButton>

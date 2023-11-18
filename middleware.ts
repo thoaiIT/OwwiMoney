@@ -1,31 +1,22 @@
-import { cookies } from 'next/headers';
+import { withAuth, type NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
-// Limit the middleware to paths starting with `/api/`
-const protectedRoutes = ['/dashboard', '/transactions', '/verification'];
-const authRoutes = ['/login', '/register', '/verification'];
+export default withAuth(
+  (request: NextRequestWithAuth) => {
+    const session = request?.nextauth?.token;
 
-export function middleware(request: NextRequest) {
-  const cookieStore = cookies();
-  const isAuthenticated = cookieStore.get('isAuthenticated')?.value;
+    if (session && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register'))
+      return NextResponse.redirect(new URL('/dashboard', request.url));
 
-  if (request.nextUrl.pathname.startsWith('/verification')) {
-    if (!request.cookies.get('userId')?.value) {
-      const response = NextResponse.redirect(new URL('/', request.url));
-      return response;
-    }
-  }
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: () => true,
+    },
+  },
+);
 
-  if (!isAuthenticated && protectedRoutes.includes(request.nextUrl.pathname)) {
-    const absoluteURL = new URL('/login', request.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
-
-  if (!!isAuthenticated && authRoutes.includes(request.nextUrl.pathname)) {
-    const absoluteURL = new URL('/dashboard', request.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
-
-  return NextResponse.next();
-}
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+};

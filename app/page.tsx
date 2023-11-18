@@ -1,12 +1,12 @@
 'use client';
 
 import { Box, Flex } from '@radix-ui/themes';
-import CommonInput from '../components/input';
 
+import CommonInput from '@/components/input';
+import ThemeSwitch from '@/components/theme-switch';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
 import CommonCombobox from '../components/combobox';
 import DialogForm from '../components/dialog/formDialog';
-import ThemeSwitch from '../ui/components/theme-switch';
 
 const frameworks = [
   {
