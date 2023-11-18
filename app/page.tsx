@@ -3,6 +3,7 @@
 import { Box, Flex } from '@radix-ui/themes';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
 import CommonCombobox from '../components/combobox';
+import CommonDatePicker from '../components/datepicker';
 import DialogForm from '../components/dialog/formDialog';
 import CommonInput from '../components/input';
 import ThemeSwitch from '../components/theme-switch';
@@ -114,6 +115,7 @@ export default function Home() {
             </fieldset>
           </DialogForm>
         </Box>
+        <CommonDatePicker />
       </Flex>
     </div>
   );
