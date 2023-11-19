@@ -1,10 +1,12 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { confirmOTP } from '../../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../../actions/OTP/sendOTP';
@@ -23,8 +25,9 @@ const schema = Yup.object().shape({
 const VerificationForm = () => {
   // const [value, setValue] = useState<number | ''>('');
   const router = useRouter();
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
+  const { data: session, update } = useSession();
 
   const {
     control,
@@ -36,6 +39,10 @@ const VerificationForm = () => {
     },
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    sendOTP();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -58,15 +65,15 @@ const VerificationForm = () => {
   };
 
   const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
-    console.log(values);
     const { verification } = values;
     const result = await confirmOTP(verification);
     if (result.status && result.status.code === 201) {
-      //Authorize
-
-      router.push('/login');
+      await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
+      toast.success('Verification updated successfully');
+      router.push('/dashboard');
     } else {
       // Show error
+      toast.error(result.message as string);
     }
     console.log({ result });
   });

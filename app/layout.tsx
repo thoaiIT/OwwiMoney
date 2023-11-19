@@ -2,6 +2,8 @@ import '@radix-ui/themes/styles.css';
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
 import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from '../context/AuthProvider';
 import ToastProvider from '../context/ToastProvider';
 import { ThemeContextProvider } from '../context/theme-context';
@@ -26,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${quickSand.variable} !scroll-smooth`}
     >
       <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
+        <ToastContainer />
         <AuthProvider>
           <div className="flex flex-col min-h-screen">
             <ToastProvider>

@@ -1,12 +1,14 @@
 'use client';
 
+import { deleteCookies } from '@/actions/cookies';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
@@ -28,6 +30,7 @@ const schema = Yup.object().shape({
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession();
   const router = useRouter();
 
   const {
@@ -43,23 +46,31 @@ const LoginForm = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
-    console.log(values);
-
+    setIsLoading(true);
     await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
       setIsLoading(false);
-
       if (callback?.ok) {
-        // console.log(callback);
+        console.log(callback);
+        toast.success('Login Successfully !');
+        // success({
+        //   message:
+        //     'Toast message ---- fuidsfiusdhfiudsgfyudfuidsgfob sgfdf dfiusfoi:' +
+        //     (Math.trunc(Math.random() * 900000000) + 100000000).toString(),
+        // });
         router.push('/dashboard');
         router.refresh();
       }
       if (callback?.error) {
         console.log(callback);
-        console.log('error');
+        toast.error('Invalid email or password !');
+        // error({ message: 'Toast message ---- :' + (Math.trunc(Math.random() * 900000000) + 100000000).toString() });
       }
     });
   });
 
+  useEffect(() => {
+    if (!session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
+  }, []);
   return (
     <>
       <Heading
@@ -111,8 +122,9 @@ const LoginForm = () => {
         intent={'secondary'}
         className="xl:w-[70%]"
         onClick={handleSubmitForm}
+        disabled={isLoading}
       >
-        {isLoading ? 'Loading' : 'Sign In'}
+        {isLoading ? 'Loading...' : 'Sign In'}
       </CommonButton>
       <div className="xl:w-[70%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
