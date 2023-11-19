@@ -84,7 +84,7 @@ const RegisterForm = () => {
   });
 
   useEffect(() => {
-    if (!session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
+    if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
   }, []);
   return (
     <>
