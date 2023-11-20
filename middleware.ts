@@ -7,12 +7,11 @@ const afterAuthRoutes = ['/login', '/register'];
 export default withAuth(
   (request: NextRequestWithAuth) => {
     const session = request?.nextauth?.token;
-    const emailConfirmed = request?.nextauth?.token?.emailConfirmed;
 
     if (!session && protectedRoutes.includes(request.nextUrl.pathname))
       return NextResponse.redirect(new URL('/login', request.url));
     if (session && afterAuthRoutes.includes(request.nextUrl.pathname))
-      if (emailConfirmed) return NextResponse.redirect(new URL('/dashboard', request.url));
+      return NextResponse.redirect(new URL('/dashboard', request.url));
 
     return NextResponse.next();
   },

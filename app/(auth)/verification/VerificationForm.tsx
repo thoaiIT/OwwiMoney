@@ -3,9 +3,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { CiLogout } from 'react-icons/ci';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { confirmOTP } from '../../../actions/OTP/confirmOTP';
@@ -79,6 +81,13 @@ const VerificationForm = () => {
   });
   return (
     <>
+      <Link
+        href="/api/auth/signout?callbackUrl=/login"
+        className="text-color-resend hover:text-orange-600 hover:underline flex items-center font-semibold"
+      >
+        <CiLogout className="mr-2 " />
+        Logout
+      </Link>
       <div className="flex flex-col justify-center">
         <Image
           src={OwwiFigure}

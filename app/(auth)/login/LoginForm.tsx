@@ -1,11 +1,10 @@
 'use client';
 
-import { deleteCookies } from '@/actions/cookies';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -30,8 +29,8 @@ const schema = Yup.object().shape({
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const {
     control,
@@ -51,14 +50,8 @@ const LoginForm = () => {
       setIsLoading(false);
       if (callback?.ok) {
         console.log(callback);
-        toast.success('Login Successfully !');
-        // success({
-        //   message:
-        //     'Toast message ---- fuidsfiusdhfiudsgfyudfuidsgfob sgfdf dfiusfoi:' +
-        //     (Math.trunc(Math.random() * 900000000) + 100000000).toString(),
-        // });
         router.push('/dashboard');
-        router.refresh();
+        toast.success('Login Successfully !');
       }
       if (callback?.error) {
         console.log(callback);
@@ -69,8 +62,12 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
-  }, [session]);
+    const callbackError = searchParams?.get('error');
+
+    if (callbackError === 'OAuthAccountNotLinked') {
+      toast.error('whoops, there may already be an account with that email');
+    }
+  }, [searchParams]);
   return (
     <>
       <Heading
@@ -132,7 +129,9 @@ const LoginForm = () => {
       <div className="xl:w-[80%] grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('google', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GoogleIcon}
@@ -141,7 +140,9 @@ const LoginForm = () => {
         </CommonButton>
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('github', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GitHubIcon}
