@@ -69,13 +69,13 @@ const NewPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Enter new password"
+            name="Enter new password"
             value={value}
             onChange={onChange}
             type="password"
             placeholder="7 symbols at least"
             className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors.password?.message}
+            errors={errors}
           />
         )}
       />
@@ -84,13 +84,13 @@ const NewPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Confirm password"
+            name="Confirm password"
             value={value}
             onChange={onChange}
             type="password"
             placeholder="7 symbols at least"
             className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors.confirmPassword?.message}
+            errors={errors}
           />
         )}
       />

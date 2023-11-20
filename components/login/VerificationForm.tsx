@@ -129,6 +129,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
+            name="verification"
             value={value}
             onChange={(e) => {
               let numericValue = e.target.value.replace(/\D/g, '');
@@ -137,7 +138,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
             }}
             type="text"
             className="text-center border-blue-sm border-[2px] rounded-[5px] text-blue-900 text-2xl remove-arrow p-6"
-            errors={errors.verification?.message}
+            errors={errors}
             maxLength={6}
           />
         )}

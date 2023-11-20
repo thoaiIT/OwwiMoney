@@ -84,12 +84,12 @@ const LoginForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Email"
+            name="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors.email?.message}
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors}
           />
         )}
       />
@@ -98,13 +98,13 @@ const LoginForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Password"
+            name="password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.password?.message}
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
           />
         )}
       />

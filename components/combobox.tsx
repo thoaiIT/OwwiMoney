@@ -90,6 +90,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             <div className="flex items-center">
               <BsSearch className="w-4 ml-3" />
               <CommonInput
+                name="search"
                 intent="simple"
                 placeholder="Search here... "
                 onChange={(e) => {

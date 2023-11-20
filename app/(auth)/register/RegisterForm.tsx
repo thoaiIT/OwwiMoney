@@ -96,12 +96,12 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Email"
+            name="email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors.email?.message}
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors}
           />
         )}
       />
@@ -110,13 +110,13 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Password"
+            name="password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.password?.message}
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
           />
         )}
       />
@@ -125,13 +125,13 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Confirm Password"
+            name="confirmPassword"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Confirm Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.confirmPassword?.message}
+            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
           />
         )}
       />
