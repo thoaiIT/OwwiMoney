@@ -60,7 +60,6 @@ export default function Home() {
             widthSelection={400}
             maxVisibleItems={5}
             placeholder={'Select framework...'}
-            isDisabled
           />
         </CardContent>
         <CardFooter>
