@@ -1,11 +1,10 @@
 'use client';
 
-import { deleteCookies } from '@/actions/cookies';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -40,7 +39,6 @@ const schema = Yup.object().shape({
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
 
   const {
@@ -83,9 +81,6 @@ const RegisterForm = () => {
     }
   });
 
-  useEffect(() => {
-    if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
-  }, []);
   return (
     <>
       <Heading

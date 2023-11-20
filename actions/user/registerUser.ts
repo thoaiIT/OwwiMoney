@@ -1,19 +1,19 @@
 'use server';
-import prisma from '../../helper/lib/prismadb';
-import bcrypt from 'bcrypt';
 import type { User } from '@prisma/client';
-import { GenerateOTP } from '../../utils';
-import { registerOTPTemplate } from '../mail/registerOTPTemplate';
-import { registerOTP } from '../OTP/registerOTP';
+import bcrypt from 'bcrypt';
 import { sendEmail } from '../../helper/lib/email';
+import prisma from '../../helper/lib/prismadb';
 import { HttpStatusCodes } from '../../helper/type';
+import { GenerateOTP } from '../../utils';
+import { registerOTP } from '../OTP/registerOTP';
+import { registerOTPTemplate } from '../mail/registerOTPTemplate';
 
 export type UserCreateType = Pick<User, 'email' | 'name' | 'password'>;
 
 export const registerUser = async ({ email, password, name }: UserCreateType) => {
   try {
     // Validate filelds
-
+    console.log({ password });
     // Check empty fields
     if (!email || !password || !name) {
       return { message: 'Invalid fields!', status: HttpStatusCodes[422] };
