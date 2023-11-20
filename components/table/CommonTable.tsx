@@ -1,6 +1,17 @@
 import { CommonCard } from '@/components/card';
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons';
 import { Table } from '@radix-ui/themes';
 import { useState } from 'react';
+
+enum enumTable {
+  name = 'hello',
+  base = '1',
+}
+
+enum enumTableB {
+  name = 'hello',
+  base = '1',
+}
 
 type ColumnType<T> = {
   label: string;
@@ -18,10 +29,14 @@ type TableProps<T> = {
 };
 
 const sortStates = ['default', 'asc', 'desc'];
+const icons = [null, <ArrowUpIcon key="arrow-up" />, <ArrowDownIcon key="arrow-down" />];
 
 const CommonTable = <TData,>({ data, columns }: TableProps<TData>): JSX.Element => {
   const [dataRender, setDataRender] = useState<TData[]>(data);
   const [sortState, setSortState] = useState(0);
+
+  // const a = enumTableB.base;
+  // console.log({ hehe: a as keyof typeof enumTable, haha: typeof enumTable });
 
   const sortHandler = (field: keyof TData) => {
     const nextSortState = sortState + 1 >= sortStates.length ? 0 : sortState + 1;
@@ -54,7 +69,10 @@ const CommonTable = <TData,>({ data, columns }: TableProps<TData>): JSX.Element 
                         : () => {}
                     }
                   >
-                    {column.label}
+                    <div className="flex justify-between">
+                      <div>{column.label}</div>
+                      <div>{icons[sortState]}</div>
+                    </div>
                   </Table.ColumnHeaderCell>
                 );
               })}

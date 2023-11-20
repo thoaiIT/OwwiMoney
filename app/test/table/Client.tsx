@@ -15,7 +15,7 @@ export default function Client() {
         data={data}
         columns={[
           { label: 'Email', field: 'email', sortable: true },
-          { label: 'Full Name', field: 'fullName', sortable: false },
+          { label: 'Full Name', field: 'fullName' },
         ]}
       />
     </div>
