@@ -90,7 +90,7 @@ const LoginForm = () => {
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
             errors={errors.email?.message}
           />
         )}
@@ -105,7 +105,7 @@ const LoginForm = () => {
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
             errors={errors.password?.message}
           />
         )}
@@ -120,16 +120,16 @@ const LoginForm = () => {
       </p>
       <CommonButton
         intent={'secondary'}
-        className="xl:w-[70%]"
+        className="xl:w-[80%]"
         onClick={handleSubmitForm}
         disabled={isLoading}
       >
         {isLoading ? 'Loading...' : 'Sign In'}
       </CommonButton>
-      <div className="xl:w-[70%] mt-1">
+      <div className="xl:w-[80%] mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
-      <div className="xl:w-[70%] grid grid-cols-3 gap-2">
+      <div className="xl:w-[80%] grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}
           onClick={() => ''}
@@ -158,7 +158,7 @@ const LoginForm = () => {
           />
         </CommonButton>
       </div>
-      <div className="xl:w-[70%]">
+      <div className="xl:w-[80%]">
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
           <Link
