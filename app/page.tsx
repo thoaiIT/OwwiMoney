@@ -1,5 +1,6 @@
 'use client';
 
+import { CommonTabs, TabsContent, TabsList } from '@/components/Tab';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import CommonCombobox from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
@@ -59,10 +60,22 @@ export default function Home() {
             widthSelection={400}
             maxVisibleItems={5}
             placeholder={'Select framework...'}
+            isDisabled
           />
         </CardContent>
         <CardFooter>
-          <p>Card Footer</p>
+          <CommonTabs defaultValue="account">
+            <TabsList
+              tabNames={[
+                { value: 'account', label: 'Account' },
+                { value: 'password', label: 'Password' },
+                { value: 'email', label: 'Email' },
+              ]}
+            />
+            <TabsContent value="account">{'Tabbbbb account'}</TabsContent>
+            <TabsContent value="password">{'Tabbbbb Password'}</TabsContent>
+            <TabsContent value="email">{'EmailEmailEmailEmail'}</TabsContent>
+          </CommonTabs>
         </CardFooter>
       </CommonCard>
       <Flex
