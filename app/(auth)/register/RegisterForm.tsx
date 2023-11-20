@@ -67,7 +67,7 @@ const RegisterForm = () => {
         setIsLoading(false);
         if (callback?.ok) {
           toast.success('Register successfully');
-          router.push('/dashboard');
+          router.replace('/dashboard');
           router.refresh();
         }
         if (callback?.error) {
