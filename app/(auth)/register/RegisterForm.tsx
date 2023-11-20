@@ -94,7 +94,7 @@ const RegisterForm = () => {
       />
       <Heading
         title="Sign Up to Get Started"
-        custom="text-3xl text-center xl:text-start font-light"
+        custom="text-4xl text-center xl:text-start font-light"
       />
       <Controller
         name="email"
