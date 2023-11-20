@@ -1,8 +1,8 @@
 'use client';
 
-import CommonCombobox from '@/components/Combobox';
 import { CommonTabs, TabsContent, TabsList } from '@/components/Tab';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
+import CommonCombobox from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
 import ThemeSwitch from '@/components/theme-switch';
