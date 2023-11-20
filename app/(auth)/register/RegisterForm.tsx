@@ -1,11 +1,10 @@
 'use client';
 
-import { deleteCookies } from '@/actions/cookies';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -40,7 +39,6 @@ const schema = Yup.object().shape({
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
 
   const {
@@ -83,9 +81,6 @@ const RegisterForm = () => {
     }
   });
 
-  useEffect(() => {
-    if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
-  }, []);
   return (
     <>
       <Heading
@@ -94,7 +89,7 @@ const RegisterForm = () => {
       />
       <Heading
         title="Sign Up to Get Started"
-        custom="text-3xl text-center xl:text-start font-light"
+        custom="text-4xl text-center xl:text-start font-light"
       />
       <Controller
         name="email"
@@ -105,7 +100,7 @@ const RegisterForm = () => {
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
             errors={errors.email?.message}
           />
         )}
@@ -120,7 +115,7 @@ const RegisterForm = () => {
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
             errors={errors.password?.message}
           />
         )}
@@ -135,7 +130,7 @@ const RegisterForm = () => {
             value={value}
             onChange={onChange}
             placeholder="Confirm Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
             errors={errors.confirmPassword?.message}
           />
         )}
@@ -152,7 +147,6 @@ const RegisterForm = () => {
       </p>
       <CommonButton
         intent={'secondary'}
-        className="xl:w-[70%]"
         disabled={isLoading}
         onClick={handleSubmitForm}
       >

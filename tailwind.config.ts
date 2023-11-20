@@ -105,10 +105,11 @@ module.exports = {
           400: '#DFE7D5',
           500: '#E8EBD9',
         },
-        card: {
-          DEFAULT: 'var(--card)',
-          foreground: 'var(--card-foreground)',
-          hover: 'var(--card-hover)',
+        theme: {
+          DEFAULT: 'var(--theme)',
+          foreground: 'var(--theme-foreground)',
+          hover: 'var(--theme-hover)',
+          text: 'var(--theme-text)',
         },
       },
       fontSize: {
