@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 type ColumnType<T> = {
   label: string;
-  field: string;
+  field: keyof T;
   customRender?: (row: T) => React.ReactNode;
   textAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
   headerTextAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
@@ -23,17 +23,15 @@ const CommonTable = <TData,>({ data, columns }: TableProps<TData>): JSX.Element 
   const [dataRender, setDataRender] = useState<TData[]>(data);
   const [sortState, setSortState] = useState(0);
 
-  const sortHandler = (field: string) => {
+  const sortHandler = (field: keyof TData) => {
     const nextSortState = sortState + 1 >= sortStates.length ? 0 : sortState + 1;
     setSortState(nextSortState);
 
-    setDataRender((prevData) => {
+    setDataRender(() => {
       const updatedData = [...data.map((item) => ({ ...item }))];
       console.log({ type: sortStates[nextSortState] });
-      if (sortStates[nextSortState] === 'desc')
-        return updatedData.sort((a: any, b: any) => (b[field] < a[field] ? -1 : 1));
-      if (sortStates[nextSortState] === 'asc')
-        return updatedData.sort((a: any, b: any) => (b[field] > a[field] ? -1 : 1));
+      if (sortStates[nextSortState] === 'desc') return updatedData.sort((a, b) => (b[field] < a[field] ? -1 : 1));
+      if (sortStates[nextSortState] === 'asc') return updatedData.sort((a, b) => (b[field] > a[field] ? -1 : 1));
       return data;
     });
   };
@@ -71,7 +69,7 @@ const CommonTable = <TData,>({ data, columns }: TableProps<TData>): JSX.Element 
                   {columns.map((column, idx) => {
                     return (
                       <Table.Cell key={`body-row-cell-${column.label}-${idx}`}>
-                        {(row as any)[column.field as string]}
+                        {row[column.field] as React.ReactNode}
                       </Table.Cell>
                     );
                   })}
