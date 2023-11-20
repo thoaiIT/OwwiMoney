@@ -51,6 +51,7 @@ const LoginForm = () => {
       if (callback?.ok) {
         console.log(callback);
         router.push('/dashboard');
+        router.refresh();
         toast.success('Login Successfully !');
       }
       if (callback?.error) {
