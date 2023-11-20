@@ -70,7 +70,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
-  }, []);
+  }, [session]);
   return (
     <>
       <Heading
