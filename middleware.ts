@@ -2,7 +2,7 @@ import { withAuth, type NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 const protectedRoutes = ['/dashboard', '/transactions', '/verification'];
-const afterAuthRoutes = ['/login', '/register'];
+const afterAuthRoutes = ['/login', '/register', '/forgotpassword', '/emailverification', '/newpassword'];
 
 export default withAuth(
   (request: NextRequestWithAuth) => {

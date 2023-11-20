@@ -7,19 +7,24 @@ import { HttpStatusCodes } from '../../helper/type';
 const delayTime = 10000;
 const OTPLifetime = 60000;
 
-export const confirmOTP = async (code: string) => {
+export const confirmOTP = async (code: string, email?: string) => {
   try {
     const session = await getServerSession(options);
     const userIdCookies = session?.user?.userId;
 
     let userId;
+    let user;
+
     if (userIdCookies) {
       userId = userIdCookies;
+    } else if (email) {
+      user = await prisma.user.findFirst({
+        where: { email },
+      });
+      userId = user?.id;
     } else {
       userId = '';
     }
-
-    console.log({ code, userId });
 
     const otp: Otp | null = await prisma.otp.findFirst({
       where: {
