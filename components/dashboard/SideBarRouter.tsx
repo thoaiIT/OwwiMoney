@@ -33,7 +33,7 @@ const SideBarRouter = () => {
     <ul className="mt-10">
       <ListItem
         title="Dashboard"
-        href="/"
+        href="/dashboard"
       />
       <ListItem
         title="My wallet"

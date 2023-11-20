@@ -1,3 +1,4 @@
+import NextProgress from '@/components/ProgressBar';
 import AuthProvider from '@/context/AuthProvider';
 import ToastProvider from '@/context/ToastProvider';
 import '@radix-ui/themes/styles.css';
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${quickSand.variable} !scroll-smooth`}
     >
       <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
+        <NextProgress />
         <ToastContainer />
         <AuthProvider>
           <div className="flex flex-col min-h-screen">

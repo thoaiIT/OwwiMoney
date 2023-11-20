@@ -1,21 +1,27 @@
 'use client';
 
+import { forgetPassword } from '@/actions/user/forgetPassword';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CiLogout } from 'react-icons/ci';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { confirmOTP } from '../../../actions/OTP/confirmOTP';
-import { sendOTP } from '../../../actions/OTP/sendOTP';
-import { CommonButton } from '../../../components/button';
-import CommonInput from '../../../components/input';
-import Heading from '../../../components/login/Heading';
-import OwwiFigure from '../../../public/img/Owwi_figure.png';
+import { confirmOTP } from '../../actions/OTP/confirmOTP';
+import { sendOTP } from '../../actions/OTP/sendOTP';
+import OwwiFigure from '../../public/img/Owwi_figure.png';
+import { CommonButton } from '../button';
+import CommonInput from '../input';
+import Heading from './Heading';
+
+interface VerificationFormProps {
+  type?: string;
+  email?: string;
+}
 
 const schema = Yup.object().shape({
   verification: Yup.string()
@@ -24,8 +30,7 @@ const schema = Yup.object().shape({
     .min(6, '6 digits code required'),
 });
 
-const VerificationForm = () => {
-  // const [value, setValue] = useState<number | ''>('');
+const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
   const router = useRouter();
   const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
@@ -43,7 +48,11 @@ const VerificationForm = () => {
   });
 
   useEffect(() => {
-    sendOTP();
+    if (type !== 'EmailVerification' && !session?.user?.emailConfirmed) sendOTP();
+  }, []);
+
+  useEffect(() => {
+    if (session?.user?.emailConfirmed) redirect('/dashboard');
   }, []);
 
   useEffect(() => {
@@ -63,31 +72,42 @@ const VerificationForm = () => {
   };
 
   const resendOTPHandler = async () => {
-    await sendOTP();
+    if (type !== 'EmailVerification') await sendOTP();
+    else {
+      await forgetPassword({ email: email as string });
+    }
   };
 
   const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
     const { verification } = values;
-    const result = await confirmOTP(verification);
+    const result = await confirmOTP(verification, email);
     if (result.status && result.status.code === 201) {
-      await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
+      if (type !== 'EmailVerification') {
+        await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
+        router.replace('/dashboard');
+      } else {
+        router.replace('/newpassword');
+      }
       toast.success('Verification updated successfully');
-      router.push('/dashboard');
     } else {
       // Show error
       toast.error(result.message as string);
     }
     console.log({ result });
   });
+
   return (
     <>
-      <Link
-        href="/api/auth/signout?callbackUrl=/login"
-        className="text-color-resend hover:text-orange-600 hover:underline flex items-center font-semibold"
-      >
-        <CiLogout className="mr-2 " />
-        Logout
-      </Link>
+      {type !== 'EmailVerification' && (
+        <Link
+          href="/api/auth/signout?callbackUrl=/login"
+          className="text-color-resend hover:text-orange-600 hover:underline flex items-center font-semibold"
+        >
+          <CiLogout className="mr-2 " />
+          Logout
+        </Link>
+      )}
+
       <div className="flex flex-col justify-center">
         <Image
           src={OwwiFigure}
@@ -138,7 +158,7 @@ const VerificationForm = () => {
             onClick={() => {
               console.log('click');
               setResend(true);
-              setTime(5);
+              setTime(60);
               resendOTPHandler();
             }}
           >

@@ -1,12 +1,8 @@
 'use server';
 import type { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { sendEmail } from '../../helper/lib/email';
 import prisma from '../../helper/lib/prismadb';
 import { HttpStatusCodes } from '../../helper/type';
-import { GenerateOTP } from '../../utils';
-import { registerOTP } from '../OTP/registerOTP';
-import { registerOTPTemplate } from '../mail/registerOTPTemplate';
 
 export type UserCreateType = Pick<User, 'email' | 'name' | 'password'>;
 
@@ -37,14 +33,14 @@ export const registerUser = async ({ email, password, name }: UserCreateType) =>
 
     if (!user) return { message: 'Cannot create user!', status: HttpStatusCodes[500] };
 
-    const otp = GenerateOTP();
-    const template = registerOTPTemplate(otp.toString(), name);
-    await registerOTP(otp.toString(), user.id);
-    await sendEmail({
-      to: email,
-      subject: 'Welcome to OwwiMoney',
-      html: template,
-    });
+    // const otp = GenerateOTP();
+    // const template = registerOTPTemplate(otp.toString(), name);
+    // await registerOTP(otp.toString(), user.id);
+    // await sendEmail({
+    //   to: email,
+    //   subject: 'Welcome to OwwiMoney',
+    //   html: template,
+    // });
 
     return { message: 'User Created', body: { userId: user.id }, status: HttpStatusCodes[201] };
   } catch (error) {
