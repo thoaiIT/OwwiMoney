@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Container from '../../../components/login/Container';
 import FormWrap from '../../../components/login/FormWrap';
-import RegisterForm from './RegisterForm';
 import OwwiFigure from '../../../public/img/Owwi_figure.png';
+import RegisterForm from './RegisterForm';
 
 const Page = () => {
   return (

@@ -1,13 +1,14 @@
 'use client';
 
+import { CommonTabs, TabsContent, TabsList } from '@/components/Tab';
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
+import CommonCombobox from '@/components/combobox';
+import CommonDatePicker from '@/components/datepicker';
+import DialogForm from '@/components/dialog/formDialog';
+import CommonInput from '@/components/input';
+import ThemeSwitch from '@/components/theme-switch';
+import type { EventFor } from '@/helper/type';
 import { Box, Flex } from '@radix-ui/themes';
-import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '../components/card';
-import CommonCombobox from '../components/combobox';
-import CommonDatePicker from '../components/datepicker';
-import DialogForm from '../components/dialog/formDialog';
-import CommonInput from '../components/input';
-import ThemeSwitch from '../components/theme-switch';
-import type { EventFor } from '../types';
 const frameworks = [
   {
     value: 'next.js',
@@ -62,7 +63,18 @@ export default function Home() {
           />
         </CardContent>
         <CardFooter>
-          <p>Card Footer</p>
+          <CommonTabs defaultValue="account">
+            <TabsList
+              tabNames={[
+                { value: 'account', label: 'Account' },
+                { value: 'password', label: 'Password' },
+                { value: 'email', label: 'Email' },
+              ]}
+            />
+            <TabsContent value="account">{'Tabbbbb account'}</TabsContent>
+            <TabsContent value="password">{'Tabbbbb Password'}</TabsContent>
+            <TabsContent value="email">{'EmailEmailEmailEmail'}</TabsContent>
+          </CommonTabs>
         </CardFooter>
       </CommonCard>
       <Flex

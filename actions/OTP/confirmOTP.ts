@@ -1,21 +1,22 @@
 'use server';
+import { options } from '@/app/api/auth/[...nextauth]/options';
 import type { Otp } from '@prisma/client';
+import { getServerSession } from 'next-auth';
 import prisma from '../../helper/lib/prismadb';
 import { HttpStatusCodes } from '../../helper/type';
-import { cookies } from 'next/headers';
-import { decrypt } from '../../helper/lib/hash';
 const delayTime = 10000;
 const OTPLifetime = 60000;
 
 export const confirmOTP = async (code: string) => {
   try {
-    const cookieStore = cookies();
-    const userIdCookies = decrypt(cookieStore.get('userId')?.value || '');
+    const session = await getServerSession(options);
+    const userIdCookies = session?.user?.userId;
 
     let userId;
     if (userIdCookies) {
       userId = userIdCookies;
     } else {
+      userId = '';
     }
 
     console.log({ code, userId });
@@ -42,7 +43,7 @@ export const confirmOTP = async (code: string) => {
 
     await prisma.user.update({ where: { id: String(userId) }, data: { emailConfirmed: true } });
     await prisma.otp.delete({ where: { id: otp.id } });
-    cookieStore.delete('userId');
+
     return { message: 'Register success', status: HttpStatusCodes[201] };
   } catch (err) {
     return { message: err, status: HttpStatusCodes[500] };
