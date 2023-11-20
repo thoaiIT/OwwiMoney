@@ -1,11 +1,16 @@
 import { withAuth, type NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
+const protectedRoutes = ['/dashboard', '/transactions', '/verification'];
+const afterAuthRoutes = ['/login', '/register'];
+
 export default withAuth(
   (request: NextRequestWithAuth) => {
     const session = request?.nextauth?.token;
 
-    if (session && (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register'))
+    if (!session && protectedRoutes.includes(request.nextUrl.pathname))
+      return NextResponse.redirect(new URL('/login', request.url));
+    if (session && afterAuthRoutes.includes(request.nextUrl.pathname))
       return NextResponse.redirect(new URL('/dashboard', request.url));
 
     return NextResponse.next();

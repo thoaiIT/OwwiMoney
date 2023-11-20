@@ -10,35 +10,26 @@ export const options: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GitHubProvider({
-      profile(profile) {
-        console.log('Profile Github: ', profile);
-
-        const userRole = 'Github User';
-
-        return {
-          ...profile,
-          role: userRole,
-          emailConfirmed: true,
-        };
-      },
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
     GoogleProvider({
-      profile(profile) {
-        console.log('Profile Google: ', profile);
-
-        const userRole = 'Google User';
-
-        return {
-          ...profile,
-          id: profile.sub,
-          role: userRole,
-          emailConfirmed: true,
-        };
-      },
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
     CredentialProvider({
       name: 'Credentials',
@@ -66,7 +57,7 @@ export const options: AuthOptions = {
           if (!user) throw new Error('User not found');
 
           if (user) {
-            const match = await bcrypt.compare(credentials.password, user.password);
+            const match = await bcrypt.compare(credentials.password, user.password as string);
 
             if (match) {
               return {
@@ -84,12 +75,9 @@ export const options: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.userId = user.id;
-        token.emailConfirmed = user.emailConfirmed;
-      }
-      return token;
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === 'update') return { ...token, ...session.user };
+      return { ...token, ...user };
     },
     async session({ session, token }) {
       if (session.user) {

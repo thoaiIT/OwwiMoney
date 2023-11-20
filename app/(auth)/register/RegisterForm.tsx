@@ -1,11 +1,14 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
@@ -35,8 +38,8 @@ const schema = Yup.object().shape({
 });
 
 const RegisterForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [isLoading] = useState(false);
 
   const {
     control,
@@ -51,8 +54,31 @@ const RegisterForm = () => {
     resolver: yupResolver(schema),
   });
 
-  const handleSubmitForm = handleSubmit((values: RegisterModel) => {
-    console.log(values);
+  const handleSubmitForm = handleSubmit(async (values: RegisterModel) => {
+    setIsLoading(true);
+    const { email, password } = values;
+    const result = await registerUser({
+      email,
+      password,
+      name: email.split('@')[0] || 'user',
+    });
+    if (result?.body?.userId) {
+      await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+        setIsLoading(false);
+        if (callback?.ok) {
+          toast.success('Register successfully');
+          router.push('/dashboard');
+          router.refresh();
+        }
+        if (callback?.error) {
+          console.log(callback);
+          console.log('error');
+        }
+      });
+    } else {
+      setIsLoading(false);
+      toast.error(result.message as string);
+    }
   });
 
   return (
@@ -63,7 +89,7 @@ const RegisterForm = () => {
       />
       <Heading
         title="Sign Up to Get Started"
-        custom="text-3xl text-center xl:text-start font-light"
+        custom="text-4xl text-center xl:text-start font-light"
       />
       <Controller
         name="email"
@@ -121,10 +147,10 @@ const RegisterForm = () => {
       </p>
       <CommonButton
         intent={'secondary'}
-        className="xl:w-[70%]"
+        disabled={isLoading}
         onClick={handleSubmitForm}
       >
-        {isLoading ? 'Loading' : 'Register'}
+        {isLoading ? 'Loading...' : 'Register'}
       </CommonButton>
     </>
   );

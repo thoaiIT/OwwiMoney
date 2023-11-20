@@ -1,11 +1,16 @@
 'use client';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { CiLogout } from 'react-icons/ci';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { confirmOTP } from '../../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../../actions/OTP/sendOTP';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
@@ -22,8 +27,9 @@ const schema = Yup.object().shape({
 const VerificationForm = () => {
   // const [value, setValue] = useState<number | ''>('');
   const router = useRouter();
-  const [time, setTime] = useState(10);
+  const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
+  const { data: session, update } = useSession();
 
   const {
     control,
@@ -35,6 +41,10 @@ const VerificationForm = () => {
     },
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    sendOTP();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,25 +62,32 @@ const VerificationForm = () => {
     return formattedTime;
   };
 
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputValue = event.target.value;
-
-  //   const numericValue = inputValue.replace(/[^0-9]/g, '');
-
-  //   const truncatedValue = numericValue.slice(0, 6);
-
-  //   setValue(truncatedValue === '' ? '' : parseInt(truncatedValue, 10));
-  // };
-
   const resendOTPHandler = async () => {
     await sendOTP();
   };
 
-  const handleSubmitForm = handleSubmit((values: { verification: string }) => {
-    console.log(values);
+  const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
+    const { verification } = values;
+    const result = await confirmOTP(verification);
+    if (result.status && result.status.code === 201) {
+      await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
+      toast.success('Verification updated successfully');
+      router.push('/dashboard');
+    } else {
+      // Show error
+      toast.error(result.message as string);
+    }
+    console.log({ result });
   });
   return (
     <>
+      <Link
+        href="/api/auth/signout?callbackUrl=/login"
+        className="text-color-resend hover:text-orange-600 hover:underline flex items-center font-semibold"
+      >
+        <CiLogout className="mr-2 " />
+        Logout
+      </Link>
       <div className="flex flex-col justify-center">
         <Image
           src={OwwiFigure}
