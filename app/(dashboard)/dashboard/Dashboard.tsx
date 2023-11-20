@@ -1,29 +1,22 @@
 'use client';
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
 
-const Dashboard: React.FC<any> = () => {
-  const router = useRouter();
+const Dashboard = () => {
   const { data: session } = useSession({
     required: true,
-    // onUnauthenticated() {
-    //   redirect("/api/auth/signin?callbackUrl=/ClientMember");
-    // },
   });
-
+  useEffect(() => {
+    if (!session?.user?.emailConfirmed) redirect('/verification');
+    console.log(session);
+  });
   return (
     <div>
       Dashboard
       <hr />
-      <button
-        onClick={() => {
-          signOut({ redirect: false }).then(async () => {
-            router.push('/login');
-          });
-        }}
-      >
-        logout
-      </button>
+      <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
       <p>{session?.user?.email}</p>
     </div>
   );
