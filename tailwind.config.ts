@@ -109,6 +109,7 @@ module.exports = {
           DEFAULT: 'var(--theme)',
           foreground: 'var(--theme-foreground)',
           hover: 'var(--theme-hover)',
+          text: 'var(--theme-text)',
         },
       },
       fontSize: {

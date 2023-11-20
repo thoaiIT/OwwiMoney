@@ -10,6 +10,7 @@ html {
   --theme: #ffffff;
   --theme-foreground: #1c2024;
   --theme-hover: #e0e0e0;
+  --theme-text: #3f72af;
 }
 
 html.dark {
@@ -17,6 +18,7 @@ html.dark {
   --theme: #112d4e;
   --theme-foreground: #f9f7f7;
   --theme-hover: #0c243f;
+  --theme-text: #4698d0;
 }
 
 .remove-arrow::-webkit-inner-spin-button,
