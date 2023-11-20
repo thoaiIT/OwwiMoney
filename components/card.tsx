@@ -6,7 +6,7 @@ const CommonCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
     <div
       ref={ref}
       className={tailwindMerge(
-        'w-max min-h-max min-w-max bg-card text-card-foreground shadow-lg rounded-3xl',
+        'w-max min-h-max min-w-max bg-theme text-theme-foreground shadow-lg rounded-3xl',
         className,
       )}
       {...props}
