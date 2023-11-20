@@ -1,11 +1,11 @@
-import AuthProvider from '@/context/AuthProvider';
-import ToastProvider from '@/context/ToastProvider';
 import '@radix-ui/themes/styles.css';
 import type { Metadata } from 'next';
 import { Quicksand } from 'next/font/google';
-import type { ReactNode } from 'react';
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AuthProvider from '../context/AuthProvider';
+import ToastProvider from '../context/ToastProvider';
 import { ThemeContextProvider } from '../context/theme-context';
 import './globals.css';
 
@@ -21,20 +21,18 @@ export const metadata: Metadata = {
   description: '$$$',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       className={`${quickSand.variable} !scroll-smooth`}
     >
-      <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
+      <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode min-h-screen`}>
         <ToastContainer />
         <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            <ToastProvider>
-              <ThemeContextProvider>{children}</ThemeContextProvider>
-            </ToastProvider>
-          </div>
+          <ToastProvider>
+            <ThemeContextProvider>{children}</ThemeContextProvider>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

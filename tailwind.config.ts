@@ -110,6 +110,7 @@ module.exports = {
           foreground: 'var(--theme-foreground)',
           hover: 'var(--theme-hover)',
           text: 'var(--theme-text)',
+          component: 'var(--theme-component)',
         },
       },
       fontSize: {

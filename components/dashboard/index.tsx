@@ -9,10 +9,10 @@ import SideBar from './SideBar';
 
 const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="md:container p-5">
-      <div className="flex">
+    <div className="md:container">
+      <div className="flex h-screen">
         <SideBar />
-        <ScrollCustom className="h-screen w-full lg:w-2/4 md:w-3/4 lg:px-8 lg:py-4 xl:px-12  md:p-6">
+        <ScrollCustom className="h-full w-full lg:w-4/5 md:w-3/5 lg:px-8 lg:py-4 xl:px-12 md:p-6">
           {children}
         </ScrollCustom>
         <Suspense fallback={<Loading />}>
