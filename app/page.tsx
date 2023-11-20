@@ -1,8 +1,8 @@
 'use client';
 
+import CommonCombobox from '@/components/Combobox';
 import { CommonTabs, TabsContent, TabsList } from '@/components/Tab';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
-import CommonCombobox from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
 import ThemeSwitch from '@/components/theme-switch';
@@ -60,6 +60,7 @@ export default function Home() {
             widthSelection={400}
             maxVisibleItems={5}
             placeholder={'Select framework...'}
+            isDisabled
           />
         </CardContent>
         <CardFooter>

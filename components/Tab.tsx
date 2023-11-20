@@ -7,68 +7,9 @@ type tabsListType = {
   label: string;
 };
 
-// type tabContentType = {
-//   value: string;
-//   children: ReactNode;
-// };
-
 type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
   tabNames: tabsListType[];
 };
-
-// const TabsContent = React.forwardRef<
-//   React.ElementRef<typeof TabsPrimitive.Content>,
-//   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
-// >(({ className, ...props }, ref) => (
-//   <TabsPrimitive.Content
-//     ref={ref}
-//     className={tailwindMerge(
-//       'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-//       className,
-//     )}
-//     {...props}
-//   />
-// ));
-// TabsContent.displayName = TabsPrimitive.Content.displayName;
-
-// const CommonTabs = React.forwardRef<React.ElementRef<typeof TabsPrimitive.Root>, CommonTabsProps>(
-//   ({ className, defaultValue, tabName, contents, ...props }, ref) => {
-//     return (
-//       <TabsPrimitive.Root
-//         ref={ref}
-//         defaultValue={defaultValue}
-//       >
-//         <TabsPrimitive.List
-//           className={tailwindMerge(
-//             'inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
-//             className,
-//           )}
-//         >
-//           {tabName.map((tab) => {
-//             return (
-//               <TabsPrimitive.Trigger
-//                 key={tab.value}
-//                 value={tab.value}
-//               >
-//                 {tab.label}
-//               </TabsPrimitive.Trigger>
-//             );
-//           })}
-//         </TabsPrimitive.List>
-//         {contents.map((content) => {
-//           return (
-//             <TabsPrimitive.Content
-//               key={content.value}
-//               value={content.value}
-//             >
-//               {content.children}
-//             </TabsPrimitive.Content>
-//           );
-//         })}
-//       </TabsPrimitive.Root>
-//     );
-//   },
-// );
 
 const CommonTabs = TabsPrimitive.Root;
 
