@@ -31,5 +31,5 @@ html.dark {
   margin: 0;
 }
 .remove-arrow {
-  -moz-appearance: textfield;
+  --moz-appearance: textfield;
 }
