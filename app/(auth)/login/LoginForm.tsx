@@ -49,6 +49,7 @@ const LoginForm = () => {
         toast.error('Invalid email or password !');
       }
     });
+    setIsLoading(false);
   });
 
   useEffect(() => {

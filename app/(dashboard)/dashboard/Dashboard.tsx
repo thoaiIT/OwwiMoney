@@ -10,7 +10,7 @@ const Dashboard = () => {
   });
   const router = useRouter();
   useEffect(() => {
-    if (!session?.user?.emailConfirmed) router.replace('/verification');
+    if (!session?.user?.emailConfirmed) router.replace('/verification'); // todo: show modal alert
     console.log(session);
   }, [session]);
   return (

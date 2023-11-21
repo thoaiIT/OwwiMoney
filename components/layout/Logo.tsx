@@ -11,9 +11,9 @@ const Logo = () => {
         alt="Logo"
         className="absolute -top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4"
       />
-      <span className="text-[#465685] font-bold text-[46px]">O</span>
-      <span className="text-[#465685] font-bold text-[32px]">WWIMONE</span>
-      <span className="text-[#465685] font-bold text-[46px]">Y</span>
+      <span className="text-theme-logo font-bold text-[46px]">O</span>
+      <span className="text-theme-logo font-bold text-[32px]">WWIMONE</span>
+      <span className="text-theme-logo font-bold text-[46px]">Y</span>
     </div>
   );
 };
