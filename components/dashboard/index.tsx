@@ -1,11 +1,11 @@
 'use client';
 
+import Breadcrumb from '@/components/breadscrumb';
+import SideBar from '@/components/dashboard/SideBar';
+import Loading from '@/components/loading';
+import { ScrollCustom } from '@/components/scroll';
 import { Box } from '@radix-ui/themes';
 import React, { Suspense } from 'react';
-import Breadcrumb from '../breadscrumb';
-import Loading from '../loading';
-import { ScrollCustom } from '../scroll';
-import SideBar from './SideBar';
 
 const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
   return (
