@@ -1,4 +1,5 @@
 'use client';
+import FormSheet from '@/components/Sheet/FormSheet';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,13 @@ const Dashboard = () => {
       Dashboard
       <hr />
       <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
+      <FormSheet
+        titleSheet="Are you sure absolutely sure?"
+        side={'right'}
+        allowCloseOutside
+      >
+        This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+      </FormSheet>
       <p>{session?.user?.email}</p>
     </div>
   );
