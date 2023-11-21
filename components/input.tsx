@@ -15,6 +15,7 @@ export interface InputProps {
   value?: string;
   errors?: FieldErrors;
   maxLength?: number;
+  label?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -47,6 +48,7 @@ const CommonInput = ({
   icon,
   name,
   errors,
+  label,
   onChange,
   maxLength,
   ...props
@@ -54,6 +56,7 @@ const CommonInput = ({
   return (
     <div className="w-full relative">
       {icon && icon}
+      {label && <p className={`mb-2 ${errors && errors[name]?.message ? 'text-red-500' : ''}`}>{label}</p>}
       <input
         maxLength={maxLength}
         value={value}
@@ -68,12 +71,11 @@ const CommonInput = ({
         <label
           htmlFor={name}
           className={`
-          absolute
-          text-md
+          text-sm
+          mt-2
           duration-100
           transform
           -translate-y-3
-          top-5
           z-100
           origin-[0]
           peer-placeholder-shown:scale-100
@@ -83,7 +85,7 @@ const CommonInput = ({
           ${errors[name] ? 'text-red-500' : 'text-gray-400'}
         `}
         >
-          {errors[name]?.message?.toString() || 'Invalid input'}
+          {errors[name]?.message?.toString()}
         </label>
       )}
     </div>
