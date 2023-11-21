@@ -1,13 +1,14 @@
+import * as Checkbox from '@radix-ui/react-checkbox';
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Table } from '@radix-ui/themes';
-import { useState } from 'react';
-
-import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons';
+import clsx from 'clsx';
+import React, { useState } from 'react';
 
 export type ColumnType<T> = {
-  label: string;
+  label: string | React.ReactNode;
   field: keyof T;
   customRender?: (row: T) => React.ReactNode;
-  type?: 'checkbox' | 'number' | 'action';
+  type?: 'checkbox' | 'rowNumber' | 'action';
   textAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
   headerTextAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
   width?: string | number | undefined;
@@ -18,13 +19,14 @@ export type ColumnType<T> = {
 type Props<T> = {
   columns: ColumnType<T>[];
   sortHandler: (nextSortState: string, field: keyof T) => void;
+  selectAllRowHandler: (checked: boolean) => void;
 };
 
 const sortStates = ['default', 'asc', 'desc'];
 
 const icons = [null, <ArrowUpIcon key="arrow-up" />, <ArrowDownIcon key="arrow-down" />];
 
-const TableHeader = <TData,>({ columns, sortHandler }: Props<TData>) => {
+const TableHeader = <TData,>({ columns, sortHandler, selectAllRowHandler }: Props<TData>) => {
   const [columnRender, setColumnRender] = useState<ColumnType<TData>[]>(columns);
 
   const onSort = (field: keyof TData) => {
@@ -35,7 +37,6 @@ const TableHeader = <TData,>({ columns, sortHandler }: Props<TData>) => {
       const updatedColumns = [
         ...prev.map((item, idx) => ({ ...item, currentSort: idx === columnIdx ? nextSortState : item.currentSort })),
       ];
-      console.log({ updatedColumns });
       return updatedColumns;
     });
     sortHandler(String(sortStates[nextSortState]), field);
@@ -46,10 +47,9 @@ const TableHeader = <TData,>({ columns, sortHandler }: Props<TData>) => {
       <Table.Row>
         {columnRender &&
           columnRender.map((column) => {
-            console.log({ icons: column.currentSort || 0 });
             return (
               <Table.ColumnHeaderCell
-                key={column.label}
+                key={`header-column-${column.label}`}
                 onClick={
                   column.sortable
                     ? () => {
@@ -58,9 +58,34 @@ const TableHeader = <TData,>({ columns, sortHandler }: Props<TData>) => {
                     : () => {}
                 }
               >
-                <div className="flex gap-2 items-center">
-                  <div>{column.label}</div>
-                  <span>{icons[column.currentSort || 0]}</span>
+                <div
+                  className={clsx([
+                    'flex gap-1 items-start align-text-top font-semibold align-middle text-color-mute',
+                    column.headerTextAlign === 'center' || column.type === 'action' ? 'justify-center' : '',
+                  ])}
+                >
+                  {column.type === 'checkbox' && (
+                    <>
+                      <Checkbox.Root
+                        className={clsx([
+                          'self-end shadow-blackA4 hover:bg-violet3 flex h-[20px] w-[20px] appearance-none justify-center rounded-[3px] bg-white outline-none border-2',
+                          column.textAlign === 'center' ? 'mx-auto' : '',
+                        ])}
+                        id="c1"
+                        onCheckedChange={selectAllRowHandler}
+                      >
+                        <Checkbox.Indicator className="text-violet11 flex justify-center">
+                          <CheckIcon />
+                        </Checkbox.Indicator>
+                      </Checkbox.Root>
+                    </>
+                  )}
+                  {column.type !== 'checkbox' && (
+                    <>
+                      <div>{column.label}</div>
+                      <span>{icons[column.currentSort || 0]}</span>
+                    </>
+                  )}
                 </div>
               </Table.ColumnHeaderCell>
             );

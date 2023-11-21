@@ -1,62 +1,49 @@
-import { CommonButton } from '@/components/button';
+import type { TableActionProps } from '@/components/table/TableBodyCell';
+import TableBodyCell from '@/components/table/TableBodyCell';
 import type { ColumnType } from '@/components/table/TableHeader';
-import { Checkbox, Table } from '@radix-ui/themes';
+
+import { Table } from '@radix-ui/themes';
 
 type Props<T> = {
   columns: ColumnType<T>[];
   data: T[];
+  keyField: keyof T;
+  selectedKeys: string[];
 };
 
-const TableBody = <TData,>({ columns, data }: Props<TData>) => {
+const TableBody = <TData,>({
+  columns,
+  data,
+  keyField,
+  selectedKeys,
+  selectHandler,
+  editHandler,
+  deleteHandler,
+  customHandler,
+}: Props<TData> & TableActionProps) => {
   return (
     <Table.Body>
       {data &&
         data.map((row, i) => {
           return (
-            <Table.Row key={`body-row-${i}-${new Date().getTime()}`}>
+            <Table.Row
+              key={`body-row-${i}-${new Date().getTime()}`}
+              className={'transition-colors hover:bg-light-blue data-[state=selected]:bg-muted'}
+            >
               {columns.map((column, idx) => {
-                if (column.type === 'action') {
-                  return (
-                    <Table.Cell
-                      key={`body-row-cell-${column.label}-${idx}`}
-                      className="flex gap-1 mb-2"
-                    >
-                      <CommonButton className="rounded-lg">Edit</CommonButton>
-                      <CommonButton className="rounded-lg">Delete</CommonButton>
-                    </Table.Cell>
-                  );
-                }
-                if (column.type === 'number') {
-                  return (
-                    <Table.Cell
-                      key={`body-row-cell-${column.label}-${idx}`}
-                      className="align-middle"
-                    >
-                      {i}
-                    </Table.Cell>
-                  );
-                }
-                if (column.type === 'checkbox') {
-                  return (
-                    <Table.Cell
-                      key={`body-row-cell-${column.label}-${idx}`}
-                      className="align-middle"
-                    >
-                      <Checkbox
-                        size="3"
-                        defaultChecked
-                      />
-                      <input type="checkbox" />
-                    </Table.Cell>
-                  );
-                }
                 return (
-                  <Table.Cell
+                  <TableBodyCell
                     key={`body-row-cell-${column.label}-${idx}`}
-                    className="align-middle"
-                  >
-                    {row[column.field] as React.ReactNode}
-                  </Table.Cell>
+                    column={column}
+                    row={row}
+                    keyField={keyField}
+                    editHandler={editHandler}
+                    deleteHandler={deleteHandler}
+                    customHandler={customHandler}
+                    selectHandler={selectHandler}
+                    order={idx}
+                    checkedRow={selectedKeys.includes(row[keyField] as string)}
+                  />
                 );
               })}
             </Table.Row>

@@ -33,6 +33,7 @@ module.exports = {
         'color-resend': '#F2451C',
         'color-error': '#F03E3E',
         'color-success': '#51cf66',
+        'color-mute': '#71717A',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',
@@ -40,6 +41,14 @@ module.exports = {
           300: '#235e86',
           400: '#2e7db2',
           500: '#4698d0',
+        },
+        danger: {
+          DEFAULT: '#fa5252',
+          100: '#c92a2a',
+          200: '#e03131',
+          300: '#f03e3e',
+          400: '#fa5252',
+          500: '#ff6b6b',
         },
         seasalt: {
           DEFAULT: '#F8F7F7',

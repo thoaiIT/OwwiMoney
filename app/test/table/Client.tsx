@@ -8,20 +8,30 @@ export default function Client() {
     { id: '1113', email: 'mail1@gmail.com', fullName: 'User0002 0002', order: '3' },
     { id: '1114', email: 'mail4@gmail.com', fullName: 'User0004 0004', order: '0' },
   ];
-  console.log({ data });
+
+  const editHandler = (id: string) => {
+    console.log('My custom edit ' + id);
+  };
+
+  const deleteHandler = (id: string) => {
+    console.log('My custom delete ' + id);
+  };
+
   return (
     <div className="flex justify-center mt-1">
       <CommonTable
         data={data}
         columns={[
-          { label: 'No', field: 'id', type: 'number' },
-          { label: 'Checkbox', field: 'id', type: 'checkbox' },
           { label: 'Email', field: 'email', sortable: true },
           { label: 'Full Name', field: 'fullName', sortable: false },
-          { label: 'Order', field: 'order', sortable: true },
+          { label: 'Order', field: 'order', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
           { label: 'Actions', field: 'id', type: 'action' },
         ]}
         keyField={'id'}
+        editHandler={editHandler}
+        deleteHandler={deleteHandler}
+        useCheckbox
+        useRowNumber
       />
     </div>
   );
