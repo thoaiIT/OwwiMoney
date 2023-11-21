@@ -39,8 +39,7 @@ const LoginForm = () => {
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
     setIsLoading(true);
     await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
-      setIsLoading(false);
-      if (callback?.ok) {
+      if (callback?.status === 200) {
         router.push('/dashboard');
         router.refresh();
         toast.success('Login Successfully !');
@@ -50,6 +49,7 @@ const LoginForm = () => {
         toast.error('Invalid email or password !');
       }
     });
+    setIsLoading(false);
   });
 
   useEffect(() => {
