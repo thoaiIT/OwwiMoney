@@ -1,41 +1,19 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { RegisterModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
 import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
 
-interface RegisterModel {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const getCharacterValidationError = (str: string) => {
-  return `Your password must have at least 1 ${str} character`;
-};
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string()
-    .required('No password provided.')
-    .min(7, 'Password is too short - should be 7 chars minimum.')
-    .matches(/[0-9]/, getCharacterValidationError('digit'))
-    .matches(/[a-z]/, getCharacterValidationError('lowercase'))
-    .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
-  confirmPassword: Yup.string()
-    .required('Please retype your password.')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
-});
+const resolver = classValidatorResolver(RegisterModel);
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,23 +29,25 @@ const RegisterForm = () => {
       password: '',
       confirmPassword: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: RegisterModel) => {
     setIsLoading(true);
     const { email, password } = values;
+
     const result = await registerUser({
-      email,
-      password,
-      name: email.split('@')[0] || 'user',
+      email: email || '',
+      password: password || '',
+      name: email?.split('@')[0] || 'user',
     });
+
     if (result?.body?.userId) {
       await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
         setIsLoading(false);
         if (callback?.ok) {
           toast.success('Register successfully');
-          router.push('/dashboard');
+          router.replace('/dashboard');
           router.refresh();
         }
         if (callback?.error) {
@@ -96,12 +76,13 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
+            name="email"
             label="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
             className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors.email?.message}
+            errors={errors}
           />
         )}
       />
@@ -110,13 +91,14 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
+            name="password"
             label="Password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Password"
             className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.password?.message}
+            errors={errors}
           />
         )}
       />
@@ -125,13 +107,14 @@ const RegisterForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            label="Confirm Password"
+            name="confirmPassword"
+            label="Confirm password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Confirm Password"
             className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.confirmPassword?.message}
+            errors={errors}
           />
         )}
       />

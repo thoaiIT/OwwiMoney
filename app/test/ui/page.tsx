@@ -104,6 +104,7 @@ export default function Home() {
           onChange={(e: EventFor<'input', 'onChange'>) => {
             console.log(e.target.value);
           }}
+          name="demoText"
           placeholder="hello world!!"
           intent="primary"
         />

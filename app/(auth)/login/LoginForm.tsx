@@ -1,6 +1,13 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { CommonButton } from '@/components/button';
+import CommonInput from '@/components/input';
+import Heading from '@/components/login/Heading';
+import { LoginModel } from '@/model/authModel';
+import FaceBookIcon from '@/public/icons/facebook.svg';
+import GitHubIcon from '@/public/icons/github.svg';
+import GoogleIcon from '@/public/icons/google.svg';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,24 +15,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { CommonButton } from '../../../components/button';
-import CommonInput from '../../../components/input';
-import Heading from '../../../components/login/Heading';
-import FaceBookIcon from '../../../public/icons/facebook.svg';
-import GitHubIcon from '../../../public/icons/github.svg';
-import GoogleIcon from '../../../public/icons/google.svg';
 
-interface LoginModel {
-  email: string;
-  password: string;
-}
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
-});
+const resolver = classValidatorResolver(LoginModel);
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,24 +32,24 @@ const LoginForm = () => {
       email: '',
       password: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
     setIsLoading(true);
-    await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+    await signIn('credentials', { ...values, redirect: false }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
-        console.log(callback);
         router.push('/dashboard');
+        router.refresh();
         toast.success('Login Successfully !');
       }
       if (callback?.error) {
         console.log(callback);
         toast.error('Invalid email or password !');
-        // error({ message: 'Toast message ---- :' + (Math.trunc(Math.random() * 900000000) + 100000000).toString() });
       }
     });
+    setIsLoading(false);
   });
 
   useEffect(() => {
@@ -68,27 +59,29 @@ const LoginForm = () => {
       toast.error('whoops, there may already be an account with that email');
     }
   }, [searchParams]);
+
   return (
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
+        custom="md:text-7xl text-6xl text-center xl:text-start text-dark-blue"
       />
       <Heading
         title="Login"
-        custom="mt-2 text-3xl text-center xl:text-start"
+        custom="mt-2 text-4xl text-center xl:text-start"
       />
       <Controller
         name="email"
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
+            name="email"
             label="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors.email?.message}
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors}
           />
         )}
       />
@@ -97,36 +90,36 @@ const LoginForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
+            name="password"
             label="Password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.password?.message}
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
           />
         )}
       />
       <p className="text-sm">
         <Link
           className="text-dark-blue font-medium hover:text-blue-500"
-          href="/forgetpassword"
+          href="/forgotpassword"
         >
           Forget Password?
         </Link>
       </p>
       <CommonButton
         intent={'secondary'}
-        className="xl:w-[80%]"
         onClick={handleSubmitForm}
         disabled={isLoading}
       >
         {isLoading ? 'Loading...' : 'Sign In'}
       </CommonButton>
-      <div className="xl:w-[80%] mt-1">
+      <div className="mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
-      <div className="xl:w-[80%] grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}
           onClick={async () => {
@@ -159,7 +152,7 @@ const LoginForm = () => {
           />
         </CommonButton>
       </div>
-      <div className="xl:w-[80%]">
+      <div>
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
           <Link

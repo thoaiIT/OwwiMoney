@@ -1,17 +1,18 @@
 'use client';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 const Dashboard = () => {
   const { data: session } = useSession({
     required: true,
   });
+  const router = useRouter();
   useEffect(() => {
-    if (!session?.user?.emailConfirmed) redirect('/verification');
+    if (!session?.user?.emailConfirmed) router.replace('/verification'); // todo: show modal alert
     console.log(session);
-  });
+  }, [session]);
   return (
     <div>
       Dashboard
