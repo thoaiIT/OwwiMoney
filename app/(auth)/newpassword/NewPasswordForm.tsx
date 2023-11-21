@@ -3,28 +3,13 @@
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { NewPasswordModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
 
-const getCharacterValidationError = (str: string) => {
-  return `Your password must have at least 1 ${str} character`;
-};
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  password: Yup.string()
-    .required('No password provided.')
-    .min(7, 'Password is too short - should be 7 chars minimum.')
-    .matches(/[0-9]/, getCharacterValidationError('digit'))
-    .matches(/[a-z]/, getCharacterValidationError('lowercase'))
-    .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
-  confirmPassword: Yup.string()
-    .required('Please retype your password.')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
-});
+const resolver = classValidatorResolver(NewPasswordModel);
 
 const NewPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +23,7 @@ const NewPasswordForm = () => {
       password: '',
       confirmPassword: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
@@ -69,11 +54,12 @@ const NewPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            name="Enter new password"
+            name="password"
+            label="Enter new password"
             value={value}
             onChange={onChange}
             type="password"
-            placeholder="7 symbols at least"
+            placeholder="9 symbols at least"
             className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
             errors={errors}
           />
@@ -84,11 +70,12 @@ const NewPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            name="Confirm password"
+            name="confirmPassword"
+            label="Confirm password"
             value={value}
             onChange={onChange}
             type="password"
-            placeholder="7 symbols at least"
+            placeholder="9 symbols at least"
             className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
             errors={errors}
           />

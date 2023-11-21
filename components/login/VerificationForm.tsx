@@ -1,7 +1,8 @@
 'use client';
 
 import { forgetPassword } from '@/actions/user/forgetPassword';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { VerificationModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +11,6 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CiLogout } from 'react-icons/ci';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
 import { confirmOTP } from '../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../actions/OTP/sendOTP';
 import OwwiFigure from '../../public/img/Owwi_figure.png';
@@ -23,12 +23,7 @@ interface VerificationFormProps {
   email?: string;
 }
 
-const schema = Yup.object().shape({
-  verification: Yup.string()
-    .required('Require verification code!')
-    .max(6, '6 digits code required')
-    .min(6, '6 digits code required'),
-});
+const resolver = classValidatorResolver(VerificationModel);
 
 const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
   const router = useRouter();
@@ -44,7 +39,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
     values: {
       verification: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   useEffect(() => {

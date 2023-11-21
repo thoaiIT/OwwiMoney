@@ -8,7 +8,6 @@ import FaceBookIcon from '@/public/icons/facebook.svg';
 import GitHubIcon from '@/public/icons/github.svg';
 import GoogleIcon from '@/public/icons/google.svg';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { Text } from '@radix-ui/themes';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,12 +32,12 @@ const LoginForm = () => {
       email: '',
       password: '',
     },
-    resolver: resolver,
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
     setIsLoading(true);
-    await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+    await signIn('credentials', { ...values, redirect: false }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
         router.push('/dashboard');
@@ -70,18 +69,13 @@ const LoginForm = () => {
         title="Login"
         custom="mt-2 text-4xl text-center xl:text-start"
       />
-      <Text
-        as="label"
-        size="1"
-      >
-        Email
-      </Text>
       <Controller
         name="email"
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="email"
+            label="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
@@ -90,18 +84,13 @@ const LoginForm = () => {
           />
         )}
       />
-      <Text
-        as="label"
-        size="1"
-      >
-        Password
-      </Text>
       <Controller
         name="password"
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="password"
+            label="Password"
             type="password"
             value={value}
             onChange={onChange}
