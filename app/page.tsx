@@ -1,16 +1,14 @@
 'use server';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  const { data: session } = useSession({
-    required: true,
-  });
-  const router = useRouter();
+export default async function Home() {
+  const session = await getServerSession(options);
 
-  if (session?.expires) {
-    router.replace('/dashboard');
+  if (session?.user) {
+    redirect('/dashboard');
   } else {
     console.log('Session has expired');
   }
