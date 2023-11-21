@@ -1,6 +1,6 @@
 'use client';
 import * as NProgress from 'nprogress';
-import * as React from 'react';
+import { useEffect } from 'react';
 
 export type ProcessBarProps = {
   color?: string;
@@ -32,7 +32,7 @@ export type ProcessBarProps = {
  * @param showAtBottom To show the TopLoader at bottom.
  */
 
-const NextTopLoader = ({
+const ProcessBar = ({
   color = '#29d',
   height = 3,
   showSpinner,
@@ -64,7 +64,7 @@ const NextTopLoader = ({
     </style>
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     NProgress.configure({
       showSpinner: showSpinner ?? true,
       trickle: crawl ?? true,
@@ -111,7 +111,6 @@ const NextTopLoader = ({
         const newUrl = anchor?.href;
         if (newUrl) {
           const currentUrl = window.location.href;
-          // const newUrl = (anchor as HTMLAnchorElement).href;
           const isExternalLink = (anchor as HTMLAnchorElement).target === '_blank';
           const isBlob = newUrl.startsWith('blob:');
           const isAnchor = isAnchorOfCurrentUrl(currentUrl, newUrl);
@@ -123,10 +122,9 @@ const NextTopLoader = ({
             });
           } else {
             NProgress.start();
-
             (function (history) {
               const pushState = history.pushState;
-              history.pushState = function () {
+              history.pushState = () => {
                 NProgress.done();
                 [].forEach.call(npgclass, (el: Element) => {
                   el.classList.remove('nprogress-busy');
@@ -156,4 +154,4 @@ const NextTopLoader = ({
 
   return styles;
 };
-export default NextTopLoader;
+export default ProcessBar;
