@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { FaPaperPlane, FaWallet } from 'react-icons/fa';
-import { GoHomeFill } from 'react-icons/go';
 import { IoMdAnalytics } from 'react-icons/io';
 import { IoSettings } from 'react-icons/io5';
+import { MdDashboard } from 'react-icons/md';
 import { PiTicketFill } from 'react-icons/pi';
 import { tailwindMerge } from '../../utils/helper';
 
@@ -43,7 +43,7 @@ const SideBarRouter = () => {
   return (
     <ul className="mt-10 gap-2 ">
       <ListItem
-        icon={GoHomeFill}
+        icon={MdDashboard}
         title="Dashboard"
         href="/dashboard"
       />
@@ -59,8 +59,8 @@ const SideBarRouter = () => {
       />
       <ListItem
         icon={IoMdAnalytics}
-        title="Analitycs"
-        href="/analitycs"
+        title="Analytics"
+        href="/analytics"
       />
       <ListItem
         icon={PiTicketFill}
