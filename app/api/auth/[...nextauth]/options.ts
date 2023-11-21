@@ -18,6 +18,8 @@ export interface CustomUser {
   username?: string | null;
   email?: string | null;
   image?: string | null;
+  emailConfirmed?: boolean | unknown;
+  userId?: string | unknown;
 }
 
 export const options: AuthOptions = {
@@ -89,15 +91,13 @@ export const options: AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
-      }
-      return token;
+    async jwt({ token, user, trigger, session }) {
+      if (trigger === 'update') return { ...token, ...session.user };
+      return { ...token, ...user };
     },
 
     async session({ session, token, user }: { session: CustomSession; token: JWT; user: User }) {
-      session.user = token.user as CustomUser;
+      session.user = { ...token, emailConfirmed: token.emailConfirmed, userId: token.userId };
       return session;
     },
   },
