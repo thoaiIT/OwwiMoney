@@ -1,6 +1,14 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { CommonButton } from '@/components/button';
+import CommonInput from '@/components/input';
+import Heading from '@/components/login/Heading';
+import { LoginModel } from '@/model/authModel';
+import FaceBookIcon from '@/public/icons/facebook.svg';
+import GitHubIcon from '@/public/icons/github.svg';
+import GoogleIcon from '@/public/icons/google.svg';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { Text } from '@radix-ui/themes';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,24 +16,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { CommonButton } from '../../../components/button';
-import CommonInput from '../../../components/input';
-import Heading from '../../../components/login/Heading';
-import FaceBookIcon from '../../../public/icons/facebook.svg';
-import GitHubIcon from '../../../public/icons/github.svg';
-import GoogleIcon from '../../../public/icons/google.svg';
 
-interface LoginModel {
-  email: string;
-  password: string;
-}
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
-});
+const resolver = classValidatorResolver(LoginModel);
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +33,7 @@ const LoginForm = () => {
       email: '',
       password: '',
     },
-    resolver: yupResolver(schema),
+    resolver: resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
@@ -49,7 +41,6 @@ const LoginForm = () => {
     await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
       setIsLoading(false);
       if (callback?.ok) {
-        console.log(callback);
         router.push('/dashboard');
         router.refresh();
         toast.success('Login Successfully !');
@@ -79,13 +70,18 @@ const LoginForm = () => {
         title="Login"
         custom="mt-2 text-4xl text-center xl:text-start"
       />
+      <Text
+        as="label"
+        size="1"
+      >
+        Email
+      </Text>
       <Controller
         name="email"
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="email"
-            label="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
@@ -94,13 +90,18 @@ const LoginForm = () => {
           />
         )}
       />
+      <Text
+        as="label"
+        size="1"
+      >
+        Password
+      </Text>
       <Controller
         name="password"
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="password"
-            label="Password"
             type="password"
             value={value}
             onChange={onChange}
