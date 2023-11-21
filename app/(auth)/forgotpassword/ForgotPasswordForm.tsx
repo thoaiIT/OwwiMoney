@@ -58,7 +58,8 @@ const ForgotPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            name="Email"
+            name="email"
+            label="Email"
             value={value}
             onChange={onChange}
             type="text"
