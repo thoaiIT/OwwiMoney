@@ -97,10 +97,11 @@ const RegisterForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="email"
+            label="Email"
             value={value}
             onChange={onChange}
             placeholder="Username@gmail.com"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
             errors={errors}
           />
         )}
@@ -111,11 +112,12 @@ const RegisterForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="password"
+            label="Password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
             errors={errors}
           />
         )}
@@ -126,11 +128,12 @@ const RegisterForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="confirmPassword"
+            label="Confirm password"
             type="password"
             value={value}
             onChange={onChange}
             placeholder="Confirm Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
             errors={errors}
           />
         )}
