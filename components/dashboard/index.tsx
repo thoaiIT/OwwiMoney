@@ -16,7 +16,9 @@ const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
   });
   const router = useRouter();
   useEffect(() => {
-    if (!session?.user?.emailConfirmed) router.replace('/verification'); // todo: show modal alert
+    if (!session?.user?.emailConfirmed && session) {
+      router.push('/verification');
+    }
     console.log(session);
   }, [session]);
 
