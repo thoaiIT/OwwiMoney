@@ -1,32 +1,19 @@
-'use client';
-import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { deleteCookies, setCookies } from '../../../actions/cookies';
+import Link from 'next/link';
 
-const Dashboard: React.FC<any> = ({ currentUser }) => {
-  const router = useRouter();
-  console.log({ currentUser, check: currentUser && !currentUser.emailConfirmed });
-  if (currentUser && !currentUser.emailConfirmed) {
-    (async () => {
-      await setCookies('emailConfirmed', currentUser.emailConfirmed);
-      // router.push('/verification');
-    })();
-  }
+const Dashboard = () => {
   return (
     <div>
       Dashboard
       <hr />
-      <button
-        onClick={() => {
-          signOut({ redirect: false }).then(async () => {
-            await deleteCookies('isAuthenticated');
-            await deleteCookies('emailConfirmed');
-            router.push('/login');
-          });
-        }}
+      <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
+      {/* <FormSheet
+        titleSheet="Are you sure absolutely sure?"
+        side={'right'}
+        allowCloseOutside
       >
-        logout
-      </button>
+        This action cannot be undone. This will permanently delete your account and remove your data from our servers.
+      </FormSheet> */}
+      {/* <p>{session?.user?.email}</p> */}
     </div>
   );
 };

@@ -26,6 +26,15 @@ const buttonVariants = cva('w-full flex items-center justify-center', {
         'hover:ring-rose-700',
         'hover:bg-rose-700',
       ],
+      danger: [
+        'bg-danger',
+        'from-danger-300',
+        'to-danger-200',
+        'text-white',
+        'rounded-full',
+        'hover:ring-danger-500',
+        'hover:bg-danger-300',
+      ],
       outline: ['bg-white', 'border-white-400', ' text-black', 'border', 'rounded-full', 'hover:ring-1 ring-white-300'],
       disable: [
         'bg-white-400',

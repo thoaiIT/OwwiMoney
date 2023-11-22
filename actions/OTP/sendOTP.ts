@@ -1,20 +1,22 @@
 'use server';
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
+import { sendEmail } from '../../helper/lib/email';
 import prisma from '../../helper/lib/prismadb';
-import { cookies } from 'next/headers';
+import { HttpStatusCodes } from '../../helper/type';
 import { GenerateOTP } from '../../utils';
 import { sendOTPTemplate } from '../mail/sendOTPTemplate';
 import { registerOTP } from './registerOTP';
-import { sendEmail } from '../../helper/lib/email';
-import { HttpStatusCodes } from '../../helper/type';
 
 export const sendOTP = async () => {
-  const cookieStore = cookies();
-  const userIdCookies = cookieStore.get('userId')?.value;
+  const session = await getServerSession(options);
+  const userIdCookies = session?.user?.userId;
 
   let userId;
   if (userIdCookies) {
     userId = userIdCookies;
   } else {
+    userId = '';
   }
 
   const user = await prisma.user.findFirst({ where: { id: userId } });

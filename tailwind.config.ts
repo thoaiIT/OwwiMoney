@@ -33,6 +33,7 @@ module.exports = {
         'color-resend': '#F2451C',
         'color-error': '#F03E3E',
         'color-success': '#51cf66',
+        'color-mute': '#71717A',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',
@@ -40,6 +41,14 @@ module.exports = {
           300: '#235e86',
           400: '#2e7db2',
           500: '#4698d0',
+        },
+        danger: {
+          DEFAULT: '#fa5252',
+          100: '#c92a2a',
+          200: '#e03131',
+          300: '#f03e3e',
+          400: '#fa5252',
+          500: '#ff6b6b',
         },
         seasalt: {
           DEFAULT: '#F8F7F7',
@@ -105,10 +114,13 @@ module.exports = {
           400: '#DFE7D5',
           500: '#E8EBD9',
         },
-        card: {
-          DEFAULT: 'var(--card)',
-          foreground: 'var(--card-foreground)',
-          hover: 'var(--card-hover)',
+        theme: {
+          DEFAULT: 'var(--theme)',
+          foreground: 'var(--theme-foreground)',
+          hover: 'var(--theme-hover)',
+          text: 'var(--theme-text)',
+          component: 'var(--theme-component)',
+          logo: 'var(--theme-logo)',
         },
       },
       fontSize: {
@@ -150,10 +162,6 @@ module.exports = {
           to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
         },
         // End Toast
-      },
-      animation: {
-        overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
-        contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         progressSmall: {
           '0%': {
             transform: 'translateX(0%)',
@@ -170,6 +178,11 @@ module.exports = {
             width: '100%',
           },
         },
+      },
+      animation: {
+        overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+
         'progress-small': 'progressSmall .2s',
         'progress-big': 'progressBig .3s',
         // Toast

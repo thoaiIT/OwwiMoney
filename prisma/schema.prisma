@@ -7,20 +7,47 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Account {
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.String
+    access_token      String? @db.String
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.String
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
 model User {
     id             String        @id @default(auto()) @map("_id") @db.ObjectId
     name           String
     email          String        @unique
-    password       String
-    emailConfirmed Boolean
+    password       String?
+    emailConfirmed Boolean       @default(true)
+    emailVerified  DateTime?
     avatarUrl      String?
     bio            String?
     totalBalance   Float?
     createdAt      DateTime      @default(now())
     updatedAt      DateTime      @updatedAt
+    image          String?
+    role           String?
     Room           Room[]
     Otp            Otp[]
     Transaction    Transaction[]
+    Category       Category[]
+    Partner        Partner[]
+    UserBudget     UserBudget[]
+    Wallet         Wallet[]
+    Account        Account[]
 }
 
 model Type {
@@ -33,36 +60,48 @@ model Type {
 }
 
 model Category {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-
-    typeId String @db.ObjectId
-    type   Type   @relation(fields: [typeId], references: [id])
-
-    name        String
-    description String?
-    UserBudget  UserBudget[]
-    Transaction Transaction[]
-}
-
-model Partner {
     id   String @id @default(auto()) @map("_id") @db.ObjectId
     name String
 
     typeId String @db.ObjectId
     type   Type   @relation(fields: [typeId], references: [id])
 
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
+    deleted     Boolean
     description String?
+    UserBudget  UserBudget[]
+    Transaction Transaction[]
+}
+
+model Partner {
+    id      String  @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    deleted Boolean
+
+    typeId String @db.ObjectId
+    type   Type   @relation(fields: [typeId], references: [id])
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
     contact     String?
     address     String?
+    description String?
     email       String?
     Room        Room[]
     Transaction Transaction[]
 }
 
 model UserBudget {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
     categoryId String   @db.ObjectId
     category   Category @relation(fields: [categoryId], references: [id])
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
 
     expected String?
     actual   String?
@@ -70,9 +109,15 @@ model UserBudget {
 }
 
 model Wallet {
-    id          String        @id @default(auto()) @map("_id") @db.ObjectId
-    name        String
-    description String?
+    id            String  @id @default(auto()) @map("_id") @db.ObjectId
+    name          String
+    description   String?
+    accountNumber String?
+    color         String?
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
     Transaction Transaction[]
 }
 

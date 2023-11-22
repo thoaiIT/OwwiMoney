@@ -1,119 +1,130 @@
 'use client';
 
-import { useFormik } from 'formik';
+import { CommonButton } from '@/components/button';
+import CommonInput from '@/components/input';
+import Heading from '@/components/login/Heading';
+import { LoginModel } from '@/model/authModel';
+import FaceBookIcon from '@/public/icons/facebook.svg';
+import GitHubIcon from '@/public/icons/github.svg';
+import GoogleIcon from '@/public/icons/google.svg';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import * as Yup from 'yup';
-import { setCookies } from '../../../actions/cookies';
-import { CommonButton } from '../../../components/button';
-import Heading from '../../../components/login/Heading';
-import Input from '../../../components/login/input/Input';
-import FaceBookIcon from '../../../public/icons/facebook.svg';
-import GitHubIcon from '../../../public/icons/github.svg';
-import GoogleIcon from '../../../public/icons/google.svg';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
-});
+const resolver = classValidatorResolver(LoginModel);
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const { data } = useSession();
+  const searchParams = useSearchParams();
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    values: {
       email: '',
       password: '',
     },
-
-    // Pass the Yup schema to validate the form
-    validationSchema: schema,
-
-    // Handle form submission
-    onSubmit: async ({ email, password }) => {
-      setIsLoading(true);
-      // Make a request to your backend to store the data
-
-      signIn('credentials', { email, password, redirect: false }).then(async (callback) => {
-        setIsLoading(false);
-
-        if (callback?.ok) {
-          // console.log(callback);
-          await setCookies('isAuthenticated', 'true');
-          // router.push('/dashboard');
-          router.refresh();
-        }
-        if (callback?.error) {
-          console.log(callback);
-          console.log('error');
-        }
-      });
-    },
+    resolver,
   });
 
-  // Destructure the formik object
-  const { errors, touched, values, handleChange, handleSubmit } = formik;
+  const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
+    setIsLoading(true);
+    await signIn('credentials', { ...values, redirect: false }).then((callback) => {
+      setIsLoading(false);
+      if (callback?.ok) {
+        router.push('/dashboard');
+        router.refresh();
+        toast.success('Login Successfully !');
+      }
+      if (callback?.error) {
+        console.log(callback);
+        toast.error('Invalid email or password !');
+      }
+    });
+    setIsLoading(false);
+  });
+
+  useEffect(() => {
+    const callbackError = searchParams?.get('error');
+
+    if (callbackError === 'OAuthAccountNotLinked') {
+      toast.error('whoops, there may already be an account with that email');
+    }
+  }, [searchParams]);
 
   return (
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
+        custom="md:text-7xl text-6xl text-center xl:text-start text-dark-blue"
       />
       <Heading
         title="Login"
-        custom="mt-2 text-3xl text-center xl:text-start"
+        custom="mt-2 text-4xl text-center xl:text-start"
       />
-      <Input
-        id={'email'}
-        label="Email"
-        type="email"
-        placeholder="username@gmail.com"
-        onChange={handleChange}
-        value={values.email}
-        errors={errors.email}
-        touched={touched.email}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="email"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            name="email"
+            label="Email"
+            value={value}
+            onChange={onChange}
+            placeholder="Username@gmail.com"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
+            errors={errors}
+          />
+        )}
       />
-      <Input
-        id={'password'}
-        label="Password"
-        type="password"
-        placeholder="Password"
-        value={values.password}
-        errors={errors.password}
-        touched={touched.password}
-        onChange={handleChange}
-        custom="xl:w-[70%] rounded-full"
+      <Controller
+        name="password"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <CommonInput
+            name="password"
+            label="Password"
+            type="password"
+            value={value}
+            onChange={onChange}
+            placeholder="Password"
+            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
+            errors={errors}
+          />
+        )}
       />
       <p className="text-sm">
         <Link
           className="text-dark-blue font-medium hover:text-blue-500"
-          href="/forgetpassword"
+          href="/forgotpassword"
         >
           Forget Password?
         </Link>
       </p>
       <CommonButton
         intent={'secondary'}
-        className="xl:w-[70%]"
-        onClick={() => handleSubmit()}
+        onClick={handleSubmitForm}
+        disabled={isLoading}
       >
-        {isLoading ? 'Loading' : 'Sign In'}
+        {isLoading ? 'Loading...' : 'Sign In'}
       </CommonButton>
-      <div className="xl:w-[70%] mt-1">
+      <div className="mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
-      <div className="xl:w-[70%] grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('google', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GoogleIcon}
@@ -122,7 +133,9 @@ const LoginForm = () => {
         </CommonButton>
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('github', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GitHubIcon}
@@ -139,7 +152,7 @@ const LoginForm = () => {
           />
         </CommonButton>
       </div>
-      <div className="xl:w-[70%]">
+      <div>
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
           <Link
