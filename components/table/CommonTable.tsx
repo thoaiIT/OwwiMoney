@@ -1,3 +1,4 @@
+'use client';
 import { CommonCard } from '@/components/card';
 import TableBody from '@/components/table/TableBody';
 import type { TableActionProps } from '@/components/table/TableBodyCell';
@@ -82,7 +83,7 @@ const CommonTable = <TData,>({
   }, [selectedKeys]);
 
   return (
-    <CommonCard className="w-1/2 p-4">
+    <CommonCard className="w-full p-4">
       <Table.Root>
         <TableHeader
           columns={updatedColumns}
