@@ -50,12 +50,14 @@ const TableBodyCell = <TData,>({
   };
 
   if (column.type === 'rowNumber') {
-    return <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>;
+    return (
+      <Table.Cell className={clsx(['align-middle py-4', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>
+    );
   }
 
   if (column.type === 'action') {
     return (
-      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center'])}>
+      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-4'])}>
         <CommonButton
           className="p-0 rounded-full border-0 w-10 h-10 mb-1 mt-1 font-bold text-celestial_blue-500"
           intent={'outline'}

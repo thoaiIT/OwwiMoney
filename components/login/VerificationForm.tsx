@@ -29,6 +29,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
   const router = useRouter();
   const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { data: session, update } = useSession();
 
   const {
@@ -75,8 +76,10 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
 
   const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
     const { verification } = values;
+    setLoading(true);
     const result = await confirmOTP(verification, email);
     if (result.status && result.status.code === 201) {
+      setLoading(false);
       if (type !== 'EmailVerification') {
         await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
         router.replace('/dashboard');
@@ -86,6 +89,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
       toast.success('Verification updated successfully');
     } else {
       // Show error
+      setLoading(false);
       toast.error(result.message as string);
     }
     console.log({ result });
@@ -142,8 +146,9 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
       <CommonButton
         className="rounded-[5px] bg-dark-blue text-white hover:bg-blue-950"
         onClick={handleSubmitForm}
+        disabled={loading}
       >
-        VERIFY
+        {loading ? 'Loading...' : 'VERIFY'}
       </CommonButton>
       {time === 0 && (
         <p className="text-gray-400 mt-1 text-center">
