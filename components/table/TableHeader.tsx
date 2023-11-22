@@ -60,7 +60,7 @@ const TableHeader = <TData,>({ columns, sortHandler, selectAllRowHandler }: Prop
               >
                 <div
                   className={clsx([
-                    'flex gap-1 items-start align-text-top font-semibold align-middle text-color-mute',
+                    'flex gap-1 items-start font-semibold align-middle text-color-mute py-4',
                     column.headerTextAlign === 'center' || column.type === 'action' ? 'justify-center' : '',
                   ])}
                 >
@@ -82,7 +82,7 @@ const TableHeader = <TData,>({ columns, sortHandler, selectAllRowHandler }: Prop
                   )}
                   {column.type !== 'checkbox' && (
                     <>
-                      <div>{column.label}</div>
+                      <div className="text-black font-bold">{column.label}</div>
                       <span>{icons[column.currentSort || 0]}</span>
                     </>
                   )}
