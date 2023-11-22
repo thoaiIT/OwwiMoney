@@ -63,7 +63,7 @@ const FormSheet = ({
 }: FormSheetProps) => {
   return (
     <Sheet>
-      <SheetTrigger>
+      <SheetTrigger asChild>
         {useCustomTrigger ? (
           <Fragment>{useCustomTrigger}</Fragment>
         ) : (
@@ -91,7 +91,7 @@ const FormSheet = ({
             ) : (
               <Fragment>
                 {!isNotUseDefaultFooter && (
-                  <SheetClose>
+                  <SheetClose asChild>
                     <button onClick={handleSubmit}>{customTextFooterButton ?? 'Submit'}</button>
                   </SheetClose>
                 )}
