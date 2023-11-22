@@ -2,21 +2,10 @@
 
 import SideBarRouter from '@/components/dashboard/SideBarRouter';
 import Logo from '@/components/layout/Logo';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { CiLogout } from 'react-icons/ci';
 
 const SideBar = () => {
-  const { data: session } = useSession({
-    required: true,
-  });
-  const router = useRouter();
-  useEffect(() => {
-    if (!session?.user?.emailConfirmed) router.replace('/verification'); // todo: show modal alert
-    console.log(session);
-  }, [session]);
   return (
     <div className="h-[100% - 8px] m-2 hidden border-r-2 lg:w-1/6 lg:min-w-[316px] md:w-2/5 md:max-w-[316px] md:p-6 bg-theme text-theme-foreground shadow-lg rounded-3xl md:flex md:flex-col justify-between">
       <div>

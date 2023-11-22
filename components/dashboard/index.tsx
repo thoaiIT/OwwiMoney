@@ -6,9 +6,23 @@ import Loading from '@/components/loading';
 import { ScrollCustom } from '@/components/scroll';
 import ThemeSwitch from '@/components/theme-switch';
 import { Box } from '@radix-ui/themes';
-import React, { Suspense } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { Suspense, useEffect } from 'react';
 
 const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
+  const { data: session } = useSession({
+    required: true,
+  });
+  const router = useRouter();
+  useEffect(() => {
+    if (!session?.user?.emailConfirmed && session) {
+      router.push('/verification');
+    }
+    console.log(session);
+  }, [session]);
+
+  if (!session?.user?.emailConfirmed) return <div>Loading</div>;
   return (
     <div className="w-full">
       <div className="flex h-screen">
