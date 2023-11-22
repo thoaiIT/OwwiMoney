@@ -15,7 +15,7 @@ export type TableBodyCellProps<T> = {
   keyField: keyof T;
   column: ColumnType<T>;
   row: T;
-  order: number;
+  order?: number;
   checkedRow?: boolean;
 };
 
@@ -48,6 +48,11 @@ const TableBodyCell = <TData,>({
   const selectRowHandler = (checked: Checkbox.CheckedState) => {
     selectHandler?.(!!checked, row[keyField] as string);
   };
+
+  if (column.type === 'rowNumber') {
+    return <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>;
+  }
+
   if (column.type === 'action') {
     return (
       <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center'])}>
@@ -68,9 +73,7 @@ const TableBodyCell = <TData,>({
       </Table.Cell>
     );
   }
-  if (column.type === 'rowNumber') {
-    return <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>{order + 1}</Table.Cell>;
-  }
+
   if (column.type === 'checkbox') {
     return (
       <Table.Cell className="align-middle">
