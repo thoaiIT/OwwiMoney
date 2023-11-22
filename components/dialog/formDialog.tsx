@@ -1,6 +1,8 @@
 'use client';
 
-import React, { Fragment, type ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
+import { tailwindMerge } from '../../utils/helper';
+import { CommonButton } from '../button';
 import {
   Dialog,
   DialogClose,
@@ -13,8 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './dialog';
-import { CommonButton } from '../button';
-import { tailwindMerge } from '../../utils/helper';
 
 interface DialogFormProps {
   titleDialog: ReactNode;
@@ -45,7 +45,7 @@ const DialogForm = ({
 }: DialogFormProps) => {
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         {useCustomTrigger ? (
           <Fragment>{useCustomTrigger}</Fragment>
         ) : (
@@ -70,7 +70,7 @@ const DialogForm = ({
             ) : (
               <Fragment>
                 {!isNotUseDefaultFooter && (
-                  <DialogClose>
+                  <DialogClose asChild>
                     <button onClick={handleSubmit}>{customTextFooterButton ?? 'Submit'}</button>
                   </DialogClose>
                 )}
