@@ -41,7 +41,7 @@ const TableBody = <TData,>({
                     deleteHandler={deleteHandler}
                     customHandler={customHandler}
                     selectHandler={selectHandler}
-                    order={idx}
+                    order={i}
                     checkedRow={selectedKeys.includes(row[keyField] as string)}
                   />
                 );
