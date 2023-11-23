@@ -12,13 +12,7 @@ const Page = async () => {
           <FormWrap custom="px-6 md:px-12">
             <LoginForm />
           </FormWrap>
-          <Image
-            src={OwwiFigure}
-            alt="owwi"
-            width={70}
-            height={70}
-            className="absolute right-0 xl:hidden"
-          />
+
           <div className="xl:grid grid-cols-3 relative hidden">
             <div className="">
               <Image

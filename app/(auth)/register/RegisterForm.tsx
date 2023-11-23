@@ -3,6 +3,7 @@
 import { RegisterModel } from '@/model/authModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
 const resolver = classValidatorResolver(RegisterModel);
 
@@ -63,10 +65,19 @@ const RegisterForm = () => {
 
   return (
     <>
-      <Heading
-        title="Hello!"
-        custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
-      />
+      <div className="flex items-center justify-center xl:justify-start">
+        <Image
+          src={OwwiFigure}
+          alt="owwi"
+          width={70}
+          height={70}
+          className="xl:hidden"
+        />
+        <Heading
+          title="Hello!"
+          custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
+        />
+      </div>
       <Heading
         title="Sign Up to Get Started"
         custom="text-4xl text-center xl:text-start font-light"
