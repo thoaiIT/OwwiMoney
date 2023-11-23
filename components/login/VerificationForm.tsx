@@ -84,7 +84,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
         await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
         router.replace('/dashboard');
       } else {
-        router.replace('/newpassword');
+        router.replace(`/newpassword?email=${email}`);
       }
       toast.success('Verification updated successfully');
     } else {
