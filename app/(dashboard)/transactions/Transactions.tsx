@@ -23,15 +23,16 @@ const Transactions: React.FC<TransactionsProps> = ({ dataTable }) => {
   ];
   return (
     <TabClient
-      defaultValue="account"
+      defaultValue="all"
       tabNames={[
-        { value: 'account', label: 'Account' },
-        { value: 'password', label: 'Password' },
-        { value: 'email', label: 'Email' },
+        { value: 'all', label: 'All' },
+        { value: 'revenue', label: 'Revenue' },
+        { value: 'expenses', label: 'Expenses' },
+        { value: 'loan', label: 'Loan' },
       ]}
       tabContents={[
         {
-          value: 'account',
+          value: 'all',
           children: (
             <CommonTable
               data={dataTable}
@@ -44,8 +45,9 @@ const Transactions: React.FC<TransactionsProps> = ({ dataTable }) => {
             />
           ),
         },
-        { value: 'password', children: 'Password page' },
-        { value: 'email', children: 'Email page' },
+        { value: 'revenue', children: 'Revenue page' },
+        { value: 'expenses', children: 'Expenses page' },
+        { value: 'loan', children: 'Loan page' },
       ]}
     />
   );

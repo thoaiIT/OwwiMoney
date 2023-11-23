@@ -17,6 +17,8 @@ export interface InputProps {
   maxLength?: number;
   label?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  customLabel?: string;
+  isDisabled?: boolean;
 }
 
 function capitalizeFirstLetter(text: string): string {
@@ -55,21 +57,27 @@ const CommonInput = ({
   label,
   onChange,
   maxLength,
+  customLabel,
+  isDisabled,
   ...props
 }: InputProps) => {
   return (
     <div className="w-full relative">
       {icon && icon}
-      {label && <p className={`mb-2 ${errors && errors[name]?.message ? 'text-red-500' : ''}`}>{label}</p>}
+      {label && (
+        <p className={`mb-2 ${errors && errors[name]?.message ? 'text-red-500' : ''} ${customLabel}`}>{label}</p>
+      )}
       <input
         maxLength={maxLength}
         value={value}
         onChange={onChange}
         type={type}
+        readOnly={isDisabled}
         placeholder={placeholder ? placeholder : ' '}
         className={tailwindMerge([
           textFieldVariants({ intent: intent, className: className }),
           errors && errors[name]?.message && 'border-red-500',
+          isDisabled && 'cursor-pointer',
         ])}
         disabled={intent === 'disabled'}
         {...props}

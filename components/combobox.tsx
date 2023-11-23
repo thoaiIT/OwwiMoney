@@ -1,7 +1,7 @@
 'use client';
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BsCheck, BsSearch } from 'react-icons/bs';
 import { SlArrowDown } from 'react-icons/sl';
 import { tailwindMerge } from '../utils/helper';
@@ -20,10 +20,13 @@ type OptionItemProps = dataType & {
 type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root> &
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
     optionsProp: dataType[];
-    widthSelection: number;
+    widthSelection: number | string;
     maxVisibleItems?: number;
     placeholder: string;
     isDisabled?: boolean;
+    label?: string;
+    customLabel?: string;
+    customInput?: string;
   };
 
 const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, CommonComboboxProps>(
@@ -35,6 +38,9 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       maxVisibleItems,
       placeholder,
       isDisabled,
+      label,
+      customLabel,
+      customInput,
       align = 'center',
       sideOffset = 4,
       ...props
@@ -44,17 +50,31 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
     const [options, setOptions] = useState<dataType[]>(optionsProp);
     const [open, setOpen] = useState<boolean>(false);
     const [value, setValue] = useState<string>('');
+    const [size, setSize] = useState<number>(0);
+    const divRef = useRef<HTMLDivElement>(null);
+    const [width, setWidth] = useState<string>(`${divRef.current?.offsetWidth}px`);
+
     const height = (maxVisibleItems as number) * 38;
 
     const handleSearch = (searchString: string) => {
       setOptions(optionsProp.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
     };
 
+    useLayoutEffect(() => {
+      function updateSize() {
+        setSize(window.innerWidth);
+      }
+      window.addEventListener('resize', updateSize);
+      updateSize();
+      return () => window.removeEventListener('resize', updateSize);
+    }, []);
+
     useEffect(() => {
       if (!open) {
         setOptions(optionsProp);
       }
-    }, [open, optionsProp]);
+      setWidth(`${divRef.current?.offsetWidth}px`);
+    }, [open, optionsProp, size]);
 
     return (
       <PopoverPrimitive.Root
@@ -63,21 +83,32 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
           if (!isDisabled) setOpen(!open);
         }}
       >
+        {label && <p className={`mb-2 ${customLabel}`}>{label}</p>}
         <PopoverPrimitive.Trigger asChild>
           <div
             style={{ width: widthSelection }}
+            ref={divRef}
             className={tailwindMerge(
-              'justify-between h-10 px-4 py-2 font-semibold border inline-flex items-center rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              'justify-between h-10 px-4 py-2 font-semibold border inline-flex items-center rounded-md text-sm transition-colors',
               `${isDisabled && 'opacity-50 pointer-events-none'}`,
+              customInput,
+              open && 'border-dark-mode',
             )}
           >
-            {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
+            <CommonInput
+              name="selectItem"
+              intent="simple"
+              placeholder={placeholder}
+              isDisabled
+              value={optionsProp.find((option) => option.value === value)?.label || ''}
+              className="shadow-none px-0 text-base"
+            />
             <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
           </div>
         </PopoverPrimitive.Trigger>
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content
-            style={{ width: widthSelection }}
+            style={{ width: width }}
             ref={ref}
             align={align}
             sideOffset={sideOffset}
@@ -93,6 +124,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                 name="search"
                 intent="simple"
                 placeholder="Search here... "
+                className="text-base"
                 onChange={(e) => {
                   handleSearch(e.target.value);
                 }}
@@ -140,7 +172,7 @@ const OptionItem: React.FC<OptionItemProps> = ({ label, value, onSelect, isActiv
       onKeyDown={handleKeyPress}
       role="button"
       className={tailwindMerge(
-        'py-2 px-4 hover:duration-300 flex items-center text-sm',
+        'py-2 px-4 hover:duration-300 flex items-center text-base',
         'hover:duration-300 hover:bg-theme-hover hover:rounded hover:cursor-pointer',
       )}
     >
