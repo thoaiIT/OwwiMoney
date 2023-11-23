@@ -43,8 +43,7 @@ const LoginForm = () => {
         router.push('/dashboard');
         router.refresh();
         toast.success('Login Successfully !');
-      }
-      if (callback?.error) {
+      } else {
         console.log(callback);
         toast.error('Invalid email or password !');
       }
@@ -64,7 +63,7 @@ const LoginForm = () => {
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-6xl text-center xl:text-start text-dark-blue"
+        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
       />
       <Heading
         title="Login"
