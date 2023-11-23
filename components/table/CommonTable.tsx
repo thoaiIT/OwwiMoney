@@ -2,50 +2,58 @@
 import { CommonCard } from '@/components/card';
 import TableBody from '@/components/table/TableBody';
 import type { TableActionProps } from '@/components/table/TableBodyCell';
+import TableFooter from '@/components/table/TableFooter';
 import TableHeader, { type ColumnType } from '@/components/table/TableHeader';
+import TablePagination from '@/components/table/TablePagination';
+import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import { Table } from '@radix-ui/themes';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type TableProps<T> = {
   data: T[];
+  tableData?: UseTableDataResult;
   columns: ColumnType<T>[];
   keyField: keyof T;
   useCheckbox?: boolean;
   useRowNumber?: boolean;
+  showFooterTotal?: boolean;
+  showFooterAvg?: boolean;
 };
 
 const CommonTable = <TData,>({
   data,
+  tableData,
   columns,
   keyField,
   useCheckbox,
   useRowNumber,
+  showFooterTotal,
+  showFooterAvg,
   editHandler,
   deleteHandler,
   customHandler,
 }: TableProps<TData> & TableActionProps): JSX.Element => {
   const [dataRender, setDataRender] = useState<TData[]>(data);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   const selectAllRowHandler = (checked: boolean) => {
     if (checked) {
-      setSelectedKeys((prev) => {
+      tableData?.setSelectedKeys((prev) => {
         return data.map((item) => item[keyField] as string);
       });
     } else {
-      setSelectedKeys((prev) => []);
+      tableData?.setSelectedKeys((prev) => []);
     }
   };
 
-  const selectHandler = (checked: boolean, key: string) => {
+  const selectItemHandler = (checked: boolean, key: string) => {
     if (checked) {
-      setSelectedKeys((prev) => {
+      tableData?.setSelectedKeys((prev) => {
         const updated = [...prev];
         updated.push(key);
         return updated;
       });
     } else {
-      setSelectedKeys((prev) => {
+      tableData?.setSelectedKeys((prev) => {
         return prev.filter((item) => item !== key);
       });
     }
@@ -66,7 +74,7 @@ const CommonTable = <TData,>({
       updated.unshift({ label: ' ', field: keyField, type: 'checkbox' });
     }
 
-    if (useRowNumber) {
+    if (useRowNumber || showFooterAvg || showFooterTotal) {
       updated.unshift({
         label: 'No',
         field: keyField,
@@ -78,9 +86,17 @@ const CommonTable = <TData,>({
     return updated;
   }, [columns, useCheckbox, useRowNumber]);
 
+  const insertNewRow = useCallback(() => {
+    setDataRender((prev) => {
+      const updated = [...prev.map((item) => ({ ...item }))];
+      console.log({ dataKeys: Object.keys(data) });
+      return updated;
+    });
+  }, []);
+
   useEffect(() => {
-    console.log({ selectedKeys });
-  }, [selectedKeys]);
+    tableData?.addCustomAction('insertNewRow', insertNewRow);
+  }, [insertNewRow]);
 
   return (
     <CommonCard className="w-full p-4">
@@ -95,13 +111,21 @@ const CommonTable = <TData,>({
           columns={updatedColumns}
           data={dataRender}
           keyField={keyField}
-          selectedKeys={selectedKeys}
-          selectHandler={selectHandler}
+          selectedKeys={tableData?.selectedKeys || ['']}
+          selectHandler={selectItemHandler}
           editHandler={editHandler}
           deleteHandler={deleteHandler}
           customHandler={customHandler}
-        />
+        >
+          <TableFooter
+            columns={updatedColumns}
+            data={dataRender}
+            showTotal={showFooterTotal}
+            showAvg={showFooterAvg}
+          />
+        </TableBody>
       </Table.Root>
+      <TablePagination />
     </CommonCard>
   );
 };
