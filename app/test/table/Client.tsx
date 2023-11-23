@@ -1,8 +1,11 @@
 'use client';
 import CommonTable from '@/components/table/CommonTable';
 import useTableData, { type UseTableDataResult } from '@/components/table/hooks/useTableData';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Client() {
+  const router = useRouter();
   const data = [
     { id: '1111', email: 'mail1@gmail.com', fullName: 'User0001 0001', order: '2' },
     { id: '1112', email: 'mail2 @gmail.com', fullName: 'User0003 0003', order: '5' },
@@ -19,9 +22,15 @@ export default function Client() {
   };
 
   const tableData: UseTableDataResult = useTableData();
+
   const insertNewRowHandler = () => {
-    tableData?.customAction?.insertNewRow?.();
+    // tableData?.customAction?.insertNewRow?.();
+    router.push('/test/table?page=2&pageSize=10&totalPage=15');
   };
+
+  useEffect(() => {
+    tableData.changeTotalPage(10);
+  }, []);
 
   return (
     <div className="flex justify-center mt-1">

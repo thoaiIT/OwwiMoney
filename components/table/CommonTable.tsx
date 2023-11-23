@@ -125,7 +125,7 @@ const CommonTable = <TData,>({
           />
         </TableBody>
       </Table.Root>
-      <TablePagination />
+      <TablePagination tableData={tableData} />
     </CommonCard>
   );
 };
