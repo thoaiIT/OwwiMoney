@@ -1,0 +1,81 @@
+.loading {
+  margin-top: 20px;
+}
+
+.water-fill {
+  animation:
+    wave 0.7s infinite linear,
+    fill-up 10s infinite ease-out alternate;
+}
+@-moz-keyframes wave {
+  0% {
+    x: -400px;
+  }
+  100% {
+    x: 0;
+  }
+}
+@-webkit-keyframes wave {
+  0% {
+    x: -400px;
+  }
+  100% {
+    x: 0;
+  }
+}
+@-o-keyframes wave {
+  0% {
+    x: -400px;
+  }
+  100% {
+    x: 0;
+  }
+}
+@keyframes wave {
+  0% {
+    x: -400px;
+  }
+  100% {
+    x: 0;
+  }
+}
+@-moz-keyframes fill-up {
+  0% {
+    height: 0;
+    y: 130px;
+  }
+  100% {
+    height: 160px;
+    y: -30px;
+  }
+}
+@-webkit-keyframes fill-up {
+  0% {
+    height: 0;
+    y: 130px;
+  }
+  100% {
+    height: 160px;
+    y: -30px;
+  }
+}
+@-o-keyframes fill-up {
+  0% {
+    height: 0;
+    y: 130px;
+  }
+  100% {
+    height: 160px;
+    y: -30px;
+  }
+}
+@keyframes fill-up {
+  0% {
+    height: 0;
+    y: 130px;
+  }
+  100% {
+    height: 160px;
+    y: -30px;
+  }
+}
