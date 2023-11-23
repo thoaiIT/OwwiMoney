@@ -1,5 +1,6 @@
 'use client';
 
+import { changePassword } from '@/actions/user/changePassword';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
@@ -8,10 +9,11 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 const resolver = classValidatorResolver(NewPasswordModel);
 
-const NewPasswordForm = () => {
+const NewPasswordForm = ({ email }: { email: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const {
@@ -27,14 +29,14 @@ const NewPasswordForm = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
-    console.log(values);
-    // await forgetPassword({ email: values.email }).then((result) => {
-    //   if (result.status?.code === 200) {
-    //     router.push(`/emailverification?email=${values.email}`);
-    //   } else {
-    //     toast.error(result.status?.message);
-    //   }
-    // });
+    await changePassword({ email, password: values.password }).then((result) => {
+      if (result.status?.code === 200) {
+        toast.success(result.message);
+        router.replace('/login');
+      } else {
+        toast.error(result.message);
+      }
+    });
   });
   return (
     <>
