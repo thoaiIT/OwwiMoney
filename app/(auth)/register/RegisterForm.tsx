@@ -82,53 +82,59 @@ const RegisterForm = () => {
         title="Sign Up to Get Started"
         custom="text-4xl text-center xl:text-start font-light"
       />
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="email"
-            label="Email"
-            value={value}
-            onChange={onChange}
-            placeholder="Username@gmail.com"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors}
-          />
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="password"
-            label="Password"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors}
-          />
-        )}
-      />
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="confirmPassword"
-            label="Confirm password"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Confirm Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors}
-          />
-        )}
-      />
+      <div>
+        <label htmlFor="email">Email</label>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="email"
+              value={value}
+              onChange={onChange}
+              placeholder="Username@gmail.com"
+              className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="password"
+              type="password"
+              value={value}
+              onChange={onChange}
+              placeholder="Password"
+              className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="confirmPassword"
+              type="password"
+              value={value}
+              onChange={onChange}
+              placeholder="Confirm Password"
+              className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
 
       <p className="text-sm flex items-center">
         Have an account yet?
