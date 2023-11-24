@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE_SIZE } from '@/constants';
 import type { ObjectWithDynamicKeys } from '@/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import queryString from 'query-string';
@@ -27,7 +28,7 @@ const useTableData = () => {
   const [customAction, setCustomAction] = useState<ActionUseTableType>({});
 
   const [pageInfo, setPageInfo] = useState({
-    pageSize: 10,
+    pageSize: DEFAULT_PAGE_SIZE,
     currentPage: 1,
     totalPage: 0,
   });
@@ -41,15 +42,7 @@ const useTableData = () => {
     });
   };
 
-  const goNextPage = () => {
-    const nextPage = Math.min(pageInfo.currentPage + 1, pageInfo.totalPage);
-    setPageInfo((prev) => ({ ...prev, currentPage: nextPage }));
-
-    const updatedQuery: any = {
-      ...currentQuery,
-      page: nextPage,
-      pageSize: pageInfo.pageSize,
-    };
+  const updateURL = (updatedQuery: any) => {
     const url = queryString.stringifyUrl(
       {
         url: pathname,
@@ -60,22 +53,25 @@ const useTableData = () => {
     router.push(url);
   };
 
+  const goNextPage = () => {
+    const nextPage = Math.min(pageInfo.currentPage + 1, pageInfo.totalPage);
+    setPageInfo((prev) => ({ ...prev, currentPage: nextPage }));
+
+    const updatedQuery = {
+      ...currentQuery,
+      page: nextPage,
+    };
+    updateURL(updatedQuery);
+  };
+
   const goPreviousPage = () => {
     const prevPage = Math.max(pageInfo.currentPage - 1, 1);
     setPageInfo((prev) => ({ ...prev, currentPage: prevPage }));
-    const updatedQuery: any = {
+    const updatedQuery = {
       ...currentQuery,
       page: prevPage,
-      pageSize: pageInfo.pageSize,
     };
-    const url = queryString.stringifyUrl(
-      {
-        url: pathname,
-        query: updatedQuery,
-      },
-      { skipNull: true },
-    );
-    router.push(url);
+    updateURL(updatedQuery);
   };
 
   const changeTotalPage = (number: number) => {
@@ -85,8 +81,8 @@ const useTableData = () => {
   useEffect(() => {
     setPageInfo((prev) => ({
       ...prev,
-      currentPage: Number(currentQuery?.currentPage) || 1,
-      pageSize: Number(currentQuery?.pageSize) || 10,
+      currentPage: Number(currentQuery?.page) || 1,
+      pageSize: Number(currentQuery?.pageSize) || DEFAULT_PAGE_SIZE,
     }));
   }, [searchParams]);
 

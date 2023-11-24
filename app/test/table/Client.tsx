@@ -24,8 +24,7 @@ export default function Client() {
   const tableData: UseTableDataResult = useTableData();
 
   const insertNewRowHandler = () => {
-    // tableData?.customAction?.insertNewRow?.();
-    router.push('/test/table?page=2&pageSize=10&totalPage=15');
+    tableData?.customAction?.insertNewRow?.();
   };
 
   useEffect(() => {
@@ -34,7 +33,7 @@ export default function Client() {
 
   return (
     <div className="flex justify-center mt-1">
-      <button onClick={insertNewRowHandler}>Add new Data</button>
+      <button onClick={insertNewRowHandler}>Custom Actions</button>
       <CommonTable
         data={data}
         tableData={tableData}
@@ -57,6 +56,7 @@ export default function Client() {
         useCheckbox
         useRowNumber
         showFooterTotal
+        usePagination
         // showFooterAvg
       />
     </div>

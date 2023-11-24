@@ -18,7 +18,33 @@ type TableProps<T> = {
   useRowNumber?: boolean;
   showFooterTotal?: boolean;
   showFooterAvg?: boolean;
+  usePagination?: boolean;
 };
+
+/**
+ * MyComponent is a simple React component.
+ * @component
+ *
+ * @param {T[]} data - the data use to display on the table.
+ *
+ * @param {UseTableDataResult} tableData - the react hook use to handle select row, pagination.
+ *
+ * @param {ColumnType<T>[]} columns - define columns attribute.
+ *
+ * @param {keyof T} keyField - the unique key to identity the row in data.
+ *
+ * @param {boolean} useCheckbox - use to show table checkbox column.
+ *
+ * @param {boolean} useRowNumber - use to show table order column.
+ *
+ * @param {boolean} showFooterTotal - use to show table footer total. If true, useRowNumber is auto true.
+ *
+ * @param {boolean} showFooterAvg - use to show table footer average. If true, useRowNumber is auto true.
+ *
+ * @param {boolean} usePagination - use to show table pagination, must have tableData if usePagination is true.
+ *
+ * @return {JSX.Element}
+ */
 
 const CommonTable = <TData,>({
   data,
@@ -29,6 +55,7 @@ const CommonTable = <TData,>({
   useRowNumber,
   showFooterTotal,
   showFooterAvg,
+  usePagination,
   editHandler,
   deleteHandler,
   customHandler,
@@ -125,7 +152,7 @@ const CommonTable = <TData,>({
           />
         </TableBody>
       </Table.Root>
-      <TablePagination tableData={tableData} />
+      {usePagination && <TablePagination tableData={tableData} />}
     </CommonCard>
   );
 };

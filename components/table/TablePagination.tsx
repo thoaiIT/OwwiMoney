@@ -25,6 +25,7 @@ const TablePagination = ({ tableData }: Props) => {
           <Button
             className="rounded-full hover:bg-white-400"
             onClick={goPreviousPage}
+            disabled={currentPage === 1}
           >
             <CaretLeftIcon
               width={'23px'}
@@ -34,6 +35,7 @@ const TablePagination = ({ tableData }: Props) => {
           <Button
             className="rounded-full hover:bg-white-400"
             onClick={goNextPage}
+            disabled={currentPage === totalPage}
           >
             <CaretRightIcon
               width={'23px'}
