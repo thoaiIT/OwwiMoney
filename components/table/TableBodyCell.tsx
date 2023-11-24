@@ -41,7 +41,7 @@ const TableBodyCell = <TData,>({
   };
 
   const customRowHandler = () => {
-    if (editHandler) editHandler(row[keyField] as string);
+    if (customHandler) customHandler(row[keyField] as string);
     else console.log(`Custom record ${row[keyField]}`);
   };
 
@@ -92,6 +92,14 @@ const TableBodyCell = <TData,>({
             <CheckIcon />
           </Checkbox.Indicator>
         </Checkbox.Root>
+      </Table.Cell>
+    );
+  }
+
+  if (column.customRender) {
+    return (
+      <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
+        {column.customRender(row[column.field] as string)}
       </Table.Cell>
     );
   }
