@@ -1,5 +1,6 @@
 'use client';
 
+import { registerUser } from '@/actions/controller/userController';
 import { RegisterModel } from '@/model/authModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
@@ -9,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
