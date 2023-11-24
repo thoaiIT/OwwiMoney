@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 
-import DatepickerContext from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/type';
 import { dateIsValid, parseFormattedDate } from '@/components/datepicker/utils';
 
 type Props = {
@@ -53,7 +53,6 @@ const Input: React.FC<Props> = (e: Props) => {
         if (dates[1]) changeDayHover(dayjs(dates[1]).add(-1, 'day').format('YYYY-MM-DD'));
         else changeDayHover(dates[0]);
       }
-
       changeInputText(e.target.value);
     },
     [asSingle, changeDatepickerValue, changeDayHover, changeInputText],

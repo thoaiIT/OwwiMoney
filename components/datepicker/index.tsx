@@ -3,8 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Calendar from '@/components/datepicker/components';
 import Input from '@/components/datepicker/components/Input';
-import type { DatepickerType, Period } from '@/components/datepicker/type';
-import DatepickerContext from '@/components/datepicker/type';
+import { DatepickerContext, type DatepickerType, type Period } from '@/components/datepicker/type';
 import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
 
 const CommonDatePicker: React.FC<DatepickerType> = ({

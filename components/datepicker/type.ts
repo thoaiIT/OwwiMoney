@@ -61,7 +61,7 @@ interface DatepickerStore {
   popoverDirection?: PopoverDirectionType;
 }
 
-const DatepickerContext = createContext<DatepickerStore>({
+export const DatepickerContext = createContext<DatepickerStore>({
   input: undefined,
   calendarContainer: null,
   arrowContainer: null,
@@ -84,10 +84,6 @@ const DatepickerContext = createContext<DatepickerStore>({
   popoverDirection: undefined,
 });
 
-export interface IconProps {
-  className: string;
-}
-
 export interface Button {
   children: JSX.Element | JSX.Element[];
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -96,5 +92,3 @@ export interface Button {
   padding?: string;
   active?: boolean;
 }
-
-export default DatepickerContext;

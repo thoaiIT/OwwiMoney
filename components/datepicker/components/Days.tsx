@@ -2,8 +2,7 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import React, { useCallback, useContext } from 'react';
 
-import type { Period } from '@/components/datepicker/type';
-import DatepickerContext from '@/components/datepicker/type';
+import { DatepickerContext, type Period } from '@/components/datepicker/type';
 import { classNames, formatDate, nextMonth, previousMonth } from '@/components/datepicker/utils';
 
 dayjs.extend(isBetween);
