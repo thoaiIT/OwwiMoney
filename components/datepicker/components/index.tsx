@@ -3,7 +3,7 @@ import Months from '@/components/datepicker/components/Months';
 import Week from '@/components/datepicker/components/Week';
 import Years from '@/components/datepicker/components/Year';
 import { CALENDAR_SIZE } from '@/components/datepicker/const';
-import DatepickerContext from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/type';
 import {
   RoundedButton,
   formatDate,
