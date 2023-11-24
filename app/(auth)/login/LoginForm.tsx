@@ -15,6 +15,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
 const resolver = classValidatorResolver(LoginModel);
 
@@ -43,8 +44,7 @@ const LoginForm = () => {
         router.push('/dashboard');
         router.refresh();
         toast.success('Login Successfully !');
-      }
-      if (callback?.error) {
+      } else {
         console.log(callback);
         toast.error('Invalid email or password !');
       }
@@ -64,12 +64,21 @@ const LoginForm = () => {
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-6xl text-center xl:text-start text-dark-blue"
+        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
       />
-      <Heading
-        title="Login"
-        custom="mt-2 text-4xl text-center xl:text-start"
-      />
+      <div className="flex items-center justify-center xl:justify-start">
+        <Image
+          src={OwwiFigure}
+          alt="owwi"
+          width={60}
+          height={60}
+          className="xl:hidden"
+        />
+        <Heading
+          title="Login"
+          custom="mt-2 text-4xl text-center xl:text-start"
+        />
+      </div>
       <Controller
         name="email"
         control={control}

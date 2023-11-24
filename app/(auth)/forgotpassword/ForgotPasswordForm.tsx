@@ -30,7 +30,9 @@ const ForgotPasswordForm = () => {
 
   const handleSubmitForm = handleSubmit(async (values) => {
     console.log(values);
+    setIsLoading(true);
     await forgetPassword({ email: values.email }).then((result) => {
+      setIsLoading(false);
       if (result.status?.code === 200) {
         router.push(`/emailverification?email=${values.email}`);
       } else {
