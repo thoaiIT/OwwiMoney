@@ -16,6 +16,17 @@ class UserRepository {
       },
     });
   }
+
+  async updateUserPassword(email: string, hashedPassword: string): Promise<void> {
+    await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+  }
 }
 
 export default UserRepository;
