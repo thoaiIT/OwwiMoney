@@ -44,7 +44,7 @@ const RegisterForm = () => {
       name: email?.split('@')[0] || 'user',
     });
 
-    if (result?.body?.userId) {
+    if (result?.data?.userId) {
       await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
         setIsLoading(false);
         if (callback?.ok) {
