@@ -2,10 +2,11 @@
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { FieldErrors } from 'react-hook-form';
 import { BsCheck, BsSearch } from 'react-icons/bs';
 import { SlArrowDown } from 'react-icons/sl';
 import { tailwindMerge } from '../utils/helper';
-import CommonInput from './input';
+import CommonInput, { capitalizeFirstLetter } from './input';
 
 type dataType = {
   value: string;
@@ -27,6 +28,10 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     label?: string;
     customLabel?: string;
     customInput?: string;
+    name: string;
+    valueProp?: string;
+    onChange: (value: string) => void;
+    errors?: FieldErrors;
   };
 
 const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive.Content>, CommonComboboxProps>(
@@ -41,6 +46,10 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       label,
       customLabel,
       customInput,
+      name,
+      valueProp,
+      onChange,
+      errors,
       align = 'center',
       sideOffset = 4,
       ...props
@@ -49,7 +58,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
   ) => {
     const [options, setOptions] = useState<dataType[]>(optionsProp);
     const [open, setOpen] = useState<boolean>(false);
-    const [value, setValue] = useState<string>('');
+    const [value, setValue] = useState<string>(valueProp || '');
     const [size, setSize] = useState<number>(0);
     const divRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState<string>(`${divRef.current?.offsetWidth}px`);
@@ -83,26 +92,23 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
           if (!isDisabled) setOpen(!open);
         }}
       >
-        {label && <p className={`mb-2 ${customLabel}`}>{label}</p>}
-        <PopoverPrimitive.Trigger asChild>
+        {label && <p className={`mb-2 ${customLabel} ${errors && errors[name]?.message}`}>{label}</p>}
+        <PopoverPrimitive.Trigger
+          asChild
+          name={name as string}
+        >
           <div
             style={{ width: widthSelection }}
             ref={divRef}
             className={tailwindMerge(
-              'justify-between h-10 px-4 py-2 font-semibold border inline-flex items-center rounded-md text-sm transition-colors',
+              'justify-between h-10 px-4 py-2 border inline-flex items-center rounded-md text-sm transition-colors',
               `${isDisabled && 'opacity-50 pointer-events-none'}`,
               customInput,
               open && 'border-dark-mode',
+              !!errors?.[name]?.message && 'border-red-500',
             )}
           >
-            <CommonInput
-              name="selectItem"
-              intent="simple"
-              placeholder={placeholder}
-              isDisabled
-              value={optionsProp.find((option) => option.value === value)?.label || ''}
-              className="shadow-none px-0 text-base"
-            />
+            {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
             <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
           </div>
         </PopoverPrimitive.Trigger>
@@ -140,6 +146,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                   label={option.label}
                   value={option.value}
                   onSelect={(value) => {
+                    onChange(value);
                     setValue(value);
                     setOpen(false);
                   }}
@@ -149,6 +156,27 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             </div>
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
+        {!!errors && (
+          <label
+            htmlFor={name}
+            className={`
+          text-sm
+          mt-2
+          duration-100
+          transform
+          -translate-y-3
+          z-100
+          origin-[0]
+          peer-placeholder-shown:scale-100
+          peer-placeholder-shown:translate-y-0
+          peer-focus:scale-75
+          peer-focus:-translate-y-4
+          ${errors[name] ? 'text-red-500' : 'text-gray-400'}
+        `}
+          >
+            {capitalizeFirstLetter(errors[name]?.message?.toString() || '')}
+          </label>
+        )}
       </PopoverPrimitive.Root>
     );
   },

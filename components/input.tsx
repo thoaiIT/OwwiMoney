@@ -21,7 +21,7 @@ export interface InputProps {
   isDisabled?: boolean;
 }
 
-function capitalizeFirstLetter(text: string): string {
+export function capitalizeFirstLetter(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
@@ -65,7 +65,7 @@ const CommonInput = ({
     <div className="w-full relative">
       {icon && icon}
       {label && (
-        <p className={`mb-2 ${errors && errors[name]?.message ? 'text-red-500' : ''} ${customLabel}`}>{label}</p>
+        <p className={`mb-2 ${customLabel} ${errors && errors[name]?.message ? 'text-red-500' : ''} `}>{label}</p>
       )}
       <input
         maxLength={maxLength}

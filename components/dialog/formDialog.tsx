@@ -25,6 +25,7 @@ interface DialogFormProps {
   customStyleFooter?: string;
   useCustomFooter?: ReactNode;
   handleSubmit?: () => void;
+  handleClose?: () => void;
   allowCloseOutside?: boolean;
   isNotUseDefaultFooter?: boolean;
   customTextFooterButton?: string;
@@ -42,9 +43,14 @@ const DialogForm = ({
   customTextFooterButton,
   isNotUseDefaultFooter = false,
   handleSubmit,
+  handleClose,
 }: DialogFormProps) => {
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        !open && !!handleClose && handleClose();
+      }}
+    >
       <DialogTrigger asChild>
         {useCustomTrigger ? useCustomTrigger : <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>}
       </DialogTrigger>

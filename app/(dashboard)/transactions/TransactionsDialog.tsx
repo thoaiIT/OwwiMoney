@@ -3,7 +3,10 @@ import { CommonButton } from '@/components/button';
 import CommonCombobox from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
+import { IsNotEmpty } from 'class-validator';
+import { Controller, useForm } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
 
 const frameworks = [
@@ -41,7 +44,38 @@ const frameworks = [
   },
 ];
 
+export class newTransactionsModel {
+  @IsNotEmpty({ message: 'Type is required' })
+  type: string | undefined;
+
+  @IsNotEmpty({ message: 'Wallet is required' })
+  wallet: string | undefined;
+
+  @IsNotEmpty({ message: 'Amounts is required' })
+  amounts: number | undefined;
+}
+
+const resolver = classValidatorResolver(newTransactionsModel);
+
 const TransactionsDialog = () => {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    values: {
+      type: '',
+      wallet: '',
+      amounts: 0,
+    },
+    resolver,
+  });
+
+  const handleSubmitForm = handleSubmit(async (values: newTransactionsModel) => {
+    console.log({ values });
+    reset();
+  });
   return (
     <Box>
       <DialogForm
@@ -53,30 +87,63 @@ const TransactionsDialog = () => {
         }
         titleDialog="New Transactions"
         customStyleHeader="text-2xl"
-        handleSubmit={() => console.log('check')}
+        handleSubmit={handleSubmitForm}
+        handleClose={() => {
+          reset();
+        }}
       >
-        <CommonCombobox
-          optionsProp={frameworks}
-          widthSelection={'100%'}
-          label="Type"
-          customLabel="text-base font-semibold leading-6"
-          placeholder={'Select framework...'}
-          customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
+        <Controller
+          name="type"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonCombobox
+              name="type"
+              valueProp={value}
+              onChange={onChange}
+              optionsProp={frameworks}
+              widthSelection={'100%'}
+              label="Type"
+              customLabel="text-base font-semibold leading-6"
+              placeholder={'Select framework...'}
+              customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
+              errors={errors}
+            />
+          )}
         />
-        <CommonInput
-          name={'wallet'}
-          label="Wallet"
-          customLabel="text-base font-semibold leading-6"
-          className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-          placeholder="Shopping"
+
+        <Controller
+          name="wallet"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name={'wallet'}
+              label="Wallet"
+              customLabel="text-base font-semibold leading-6"
+              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+              placeholder="Shopping"
+              value={value}
+              onChange={onChange}
+              errors={errors}
+            />
+          )}
         />
-        <CommonInput
-          name={'amounts'}
-          label="Amounts"
-          type="number"
-          customLabel="text-base font-semibold leading-6"
-          className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-          placeholder="0"
+
+        <Controller
+          name="amounts"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name={'wallet'}
+              label="Amounts"
+              type="number"
+              customLabel="text-base font-semibold leading-6"
+              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+              placeholder="Shopping"
+              value={String(value)}
+              onChange={onChange}
+              errors={errors}
+            />
+          )}
         />
       </DialogForm>
     </Box>
