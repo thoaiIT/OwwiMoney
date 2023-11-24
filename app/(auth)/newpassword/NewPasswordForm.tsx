@@ -1,6 +1,6 @@
 'use client';
 
-import { changePassword } from '@/actions/user/changePassword';
+import { changePassword } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
