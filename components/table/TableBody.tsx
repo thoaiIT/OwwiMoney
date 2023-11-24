@@ -20,7 +20,7 @@ const TableBody = <TData,>({
   selectHandler,
   editHandler,
   deleteHandler,
-  customHandler,
+  customCellHandler,
   children,
 }: Props<TData> & TableActionProps) => {
   return (
@@ -41,7 +41,7 @@ const TableBody = <TData,>({
                     keyField={keyField}
                     editHandler={editHandler}
                     deleteHandler={deleteHandler}
-                    customHandler={customHandler}
+                    customCellHandler={customCellHandler}
                     selectHandler={selectHandler}
                     order={i}
                     checkedRow={selectedKeys.includes(row[keyField] as string)}
