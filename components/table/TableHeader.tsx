@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 export type ColumnType<T> = {
   label: string | React.ReactNode;
   field: keyof T;
-  customRender?: (row: T) => React.ReactNode;
+  customRender?: (row: string) => React.ReactNode;
   type?: 'checkbox' | 'rowNumber' | 'action';
   textAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
   headerTextAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';

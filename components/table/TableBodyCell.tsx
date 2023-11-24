@@ -95,6 +95,14 @@ const TableBodyCell = <TData,>({
       </Table.Cell>
     );
   }
+
+  if (column.customRender) {
+    return (
+      <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
+        {column.customRender(row[column.field] as string)}
+      </Table.Cell>
+    );
+  }
   return (
     <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
       {row[column.field] as React.ReactNode}
