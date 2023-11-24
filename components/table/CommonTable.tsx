@@ -67,7 +67,7 @@ const CommonTable = <TData,>({
   usePagination,
   editHandler,
   deleteHandler,
-  customCellHandler,
+  customHandler,
 }: TableProps<TData> & TableActionProps): JSX.Element => {
   const [dataRender, setDataRender] = useState<TData[]>(data);
 
@@ -151,7 +151,7 @@ const CommonTable = <TData,>({
           selectHandler={selectItemHandler}
           editHandler={editHandler}
           deleteHandler={deleteHandler}
-          customCellHandler={customCellHandler}
+          customHandler={customHandler}
         >
           <TableFooter
             columns={updatedColumns}

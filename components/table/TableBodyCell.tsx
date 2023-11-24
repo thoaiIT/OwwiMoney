@@ -8,7 +8,7 @@ import clsx from 'clsx';
 export type TableActionProps = {
   editHandler?: (id: string) => void;
   deleteHandler?: (id: string) => void;
-  customCellHandler?: (id: string) => void;
+  customHandler?: (id: string) => void;
   selectHandler?: (checked: boolean, key: string) => void;
 };
 export type TableBodyCellProps<T> = {
@@ -28,7 +28,7 @@ const TableBodyCell = <TData,>({
   selectHandler,
   editHandler,
   deleteHandler,
-  customCellHandler,
+  customHandler,
 }: TableActionProps & TableBodyCellProps<TData>) => {
   const editRowHandler = () => {
     if (editHandler) editHandler(row[keyField] as string);
@@ -41,7 +41,7 @@ const TableBodyCell = <TData,>({
   };
 
   const customRowHandler = () => {
-    if (editHandler) editHandler(row[keyField] as string);
+    if (customHandler) customHandler(row[keyField] as string);
     else console.log(`Custom record ${row[keyField]}`);
   };
 
