@@ -51,13 +51,13 @@ const TableBodyCell = <TData,>({
 
   if (column.type === 'rowNumber') {
     return (
-      <Table.Cell className={clsx(['align-middle py-4', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>
+      <Table.Cell className={clsx(['align-middle py-1', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>
     );
   }
 
   if (column.type === 'action') {
     return (
-      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-4'])}>
+      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-1'])}>
         <CommonButton
           className="p-0 rounded-full border-0 w-10 h-10 mb-1 mt-1 font-bold text-celestial_blue-500"
           intent={'outline'}
@@ -78,7 +78,7 @@ const TableBodyCell = <TData,>({
 
   if (column.type === 'checkbox') {
     return (
-      <Table.Cell className="align-middle">
+      <Table.Cell className="align-middle sm:px-1">
         <Checkbox.Root
           className={clsx([
             'shadow-blackA4 hover:bg-violet3 flex h-[20px] w-[20px] appearance-none items-center justify-center rounded-[3px] bg-white outline-none border-2',
