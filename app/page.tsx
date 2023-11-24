@@ -9,6 +9,7 @@ import CommonInput from '@/components/input';
 import ThemeSwitch from '@/components/theme-switch';
 import type { EventFor } from '@/helper/type';
 import { Box, Flex } from '@radix-ui/themes';
+import { useState } from 'react';
 const frameworks = [
   {
     value: 'next.js',
@@ -44,6 +45,14 @@ const frameworks = [
   },
 ];
 export default function Home() {
+  const [value, setValue] = useState({
+    startDate: null,
+    endDate: null,
+  });
+  const handleChange = (value: any) => {
+    setValue(value);
+    console.log('value', value);
+  };
   return (
     <div className="ml-6">
       Home
@@ -127,7 +136,10 @@ export default function Home() {
             </fieldset>
           </DialogForm>
         </Box>
-        <CommonDatePicker />
+        <CommonDatePicker
+          value={value}
+          onChange={handleChange}
+        />
       </Flex>
     </div>
   );

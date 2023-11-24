@@ -1,146 +1,236 @@
-'use client';
+import dayjs from 'dayjs';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import dateFormat from 'dateformat';
-import { forwardRef, useEffect, useState, type ForwardedRef, type MouseEvent } from 'react';
-import DatePicker from 'react-datepicker';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
+import Calendar from '@/components/datepicker/components';
+import Input from '@/components/datepicker/components/Input';
+import type { DatepickerType, Period } from '@/components/datepicker/type';
+import DatepickerContext from '@/components/datepicker/type';
+import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
 
-import 'react-datepicker/dist/react-datepicker.css';
-interface ButtonInputProps {
-  value?: Date;
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-}
+const CommonDatePicker: React.FC<DatepickerType> = ({
+  value = null,
+  onChange,
+  disabled = false,
+  inputId,
+  classNames = undefined,
+}) => {
+  // Ref
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const calendarContainerRef = useRef<HTMLDivElement | null>(null);
+  const arrowRef = useRef<HTMLDivElement | null>(null);
 
-const CommonDatePicker = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const initialEndDate = new Date();
-  initialEndDate.setMonth(startDate.getMonth() + 1);
-  const [endDate, setEndDate] = useState(initialEndDate);
+  // State
+  const [firstDate, setFirstDate] = useState<dayjs.Dayjs>(dayjs());
+  const [secondDate, setSecondDate] = useState<dayjs.Dayjs>(nextMonth(firstDate));
+  const [period, setPeriod] = useState<Period>({
+    start: null,
+    end: null,
+  });
+  const [dayHover, setDayHover] = useState<string | null>(null);
+  const [inputText, setInputText] = useState<string>('');
+  const [inputRef, setInputRef] = useState(React.createRef<HTMLInputElement>());
+
+  // Custom Hooks use
+  useOnClickOutside(containerRef, () => {
+    const container = containerRef.current;
+    if (container) {
+      hideDatepicker();
+    }
+  });
+
+  // Functions
+  const hideDatepicker = useCallback(() => {
+    const div = calendarContainerRef.current;
+    const arrow = arrowRef.current;
+    const handleTransitionEnd = () => {
+      div?.removeEventListener('transitionend', handleTransitionEnd);
+      div?.classList.remove('bottom-full');
+      div?.classList.add('hidden');
+      div?.classList.add('mb-2.5');
+      div?.classList.add('mt-2.5');
+      arrow?.classList.remove('-bottom-2');
+      arrow?.classList.remove('border-r');
+      arrow?.classList.remove('border-b');
+      arrow?.classList.add('border-l');
+      arrow?.classList.add('border-t');
+    };
+    if (arrow && div && div.classList.contains('block')) {
+      div.addEventListener('transitionend', handleTransitionEnd);
+      div.classList.remove('block');
+      div.classList.remove('translate-y-0');
+      div.classList.remove('opacity-1');
+      div.classList.add('translate-y-4');
+      div.classList.add('opacity-0');
+    }
+  }, []);
+
+  /* Start First */
+  const firstGotoDate = useCallback(
+    (date: dayjs.Dayjs) => {
+      const newDate = dayjs(formatDate(date));
+      const reformatDate = dayjs(formatDate(secondDate));
+      if (newDate.isSame(reformatDate) || newDate.isAfter(reformatDate)) {
+        setSecondDate(nextMonth(date));
+      }
+      setFirstDate(date);
+    },
+    [secondDate],
+  );
+
+  const previousMonthFirst = useCallback(() => {
+    setFirstDate(previousMonth(firstDate));
+  }, [firstDate]);
+
+  const nextMonthFirst = useCallback(() => {
+    firstGotoDate(nextMonth(firstDate));
+  }, [firstDate, firstGotoDate]);
+
+  const changeFirstMonth = useCallback(
+    (month: number) => {
+      firstGotoDate(dayjs(`${firstDate.year()}-${month < 10 ? '0' : ''}${month}-01`));
+    },
+    [firstDate, firstGotoDate],
+  );
+
+  const changeFirstYear = useCallback(
+    (year: number) => {
+      firstGotoDate(dayjs(`${year}-${firstDate.month() + 1}-01`));
+    },
+    [firstDate, firstGotoDate],
+  );
+  /* End First */
+
+  /* Start Second */
+  const secondGotoDate = useCallback(
+    (date: dayjs.Dayjs) => {
+      const newDate = dayjs(formatDate(date, 'YYYY-MM-DD'));
+      const reformatDate = dayjs(formatDate(firstDate, 'YYYY-MM-DD'));
+      if (newDate.isSame(reformatDate) || newDate.isBefore(reformatDate)) {
+        setFirstDate(previousMonth(date));
+      }
+      setSecondDate(date);
+    },
+    [firstDate],
+  );
+
+  const previousMonthSecond = useCallback(() => {
+    secondGotoDate(previousMonth(secondDate));
+  }, [secondDate, secondGotoDate]);
+
+  const nextMonthSecond = useCallback(() => {
+    setSecondDate(nextMonth(secondDate));
+  }, [secondDate]);
+
+  const changeSecondMonth = useCallback(
+    (month: number) => {
+      secondGotoDate(dayjs(`${secondDate.year()}-${month < 10 ? '0' : ''}${month}-01`));
+    },
+    [secondDate, secondGotoDate],
+  );
+
+  const changeSecondYear = useCallback(
+    (year: number) => {
+      secondGotoDate(dayjs(`${year}-${secondDate.month() + 1}-01`));
+    },
+    [secondDate, secondGotoDate],
+  );
 
   useEffect(() => {
-    if (startDate > endDate) setStartDate(endDate);
-  }, [endDate]);
+    if (value && value.startDate && value.endDate) {
+      const startDate = dayjs(value.startDate);
+      const endDate = dayjs(value.endDate);
+      const validDate = startDate.isValid() && endDate.isValid();
+      const condition = validDate && (startDate.isSame(endDate) || startDate.isBefore(endDate));
+      if (condition) {
+        setPeriod({
+          start: formatDate(startDate),
+          end: formatDate(endDate),
+        });
+        setInputText(`${formatDate(startDate, 'DD-MM-YYYY')}${` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`}`);
+      }
+    }
 
-  useEffect(() => {
-    if (startDate > endDate) setEndDate(startDate);
-  }, [startDate]);
+    if (value && value.startDate === null && value.endDate === null) {
+      setPeriod({
+        start: null,
+        end: null,
+      });
+      setInputText('');
+    }
+  }, [value]);
+
+  const contextValues = useMemo(() => {
+    return {
+      primaryColor: 'blue',
+      calendarContainer: calendarContainerRef,
+      arrowContainer: arrowRef,
+      hideDatepicker,
+      period,
+      changePeriod: (newPeriod: Period) => setPeriod(newPeriod),
+      dayHover,
+      changeDayHover: (newDay: string | null) => setDayHover(newDay),
+      inputText,
+      changeInputText: (newText: string) => setInputText(newText),
+      updateFirstDate: (newDate: dayjs.Dayjs) => firstGotoDate(newDate),
+      changeDatepickerValue: onChange,
+      value,
+      disabled,
+      inputId,
+      classNames,
+      onChange,
+      input: inputRef,
+    };
+  }, [
+    hideDatepicker,
+    period,
+    dayHover,
+    inputText,
+    onChange,
+    value,
+    disabled,
+    inputId,
+    classNames,
+    inputRef,
+    firstGotoDate,
+  ]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="flex items-center justify-center max-w-2xl py-20 mx-auto space-x-4">
-        <span className="font-medium text-gray-900">DatePicker:</span>
-        <div className="relative w-44">
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date ?? new Date())}
-            selectsStart
-            startDate={startDate}
-            endDate={endDate}
-            nextMonthButtonLabel=">"
-            previousMonthButtonLabel="<"
-            popperClassName="react-datepicker-left"
-            customInput={<ButtonInput />}
-            renderCustomHeader={({
-              date,
-              decreaseMonth,
-              increaseMonth,
-              prevMonthButtonDisabled,
-              nextMonthButtonDisabled,
-            }) => (
-              <div className="flex items-center justify-between px-2 py-2 w-[270px]">
-                <span className="text-lg text-gray-700">{dateFormat(date, 'mmmm dS, yyyy')}</span>
+    <DatepickerContext.Provider value={contextValues}>
+      <div ref={containerRef}>
+        <Input setContextRef={setInputRef} />
+        <div
+          className="transition-all ease-out duration-300 absolute z-10 mt-[1px] text-sm lg:text-xs 2xl:text-sm translate-y-4 opacity-0 hidden"
+          ref={calendarContainerRef}
+        >
+          <Arrow ref={arrowRef} />
 
-                <div className="space-x-2">
-                  <button
-                    onClick={decreaseMonth}
-                    disabled={prevMonthButtonDisabled}
-                    type="button"
-                    className={`${
-                      prevMonthButtonDisabled && 'cursor-not-allowed opacity-50'
-                    } inline-flex p-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500`}
-                  >
-                    <FaArrowLeft className="w-5 h-5 text-gray-600" />
-                  </button>
-
-                  <button
-                    onClick={increaseMonth}
-                    disabled={nextMonthButtonDisabled}
-                    type="button"
-                    className={`${
-                      nextMonthButtonDisabled && 'cursor-not-allowed opacity-50'
-                    }inline-flex p-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500`}
-                  >
-                    <FaArrowRight className="w-5 h-5 text-gray-600" />
-                  </button>
-                </div>
+          <div className="mt-2.5 shadow-sm border border-gray-300 px-1 py-0.5 bg-white dark:bg-slate-800 dark:text-white dark:border-slate-600 rounded-lg">
+            <div className="flex flex-col lg:flex-row py-2">
+              <div
+                className={`flex items-stretch flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-1.5 "md:pl-1"
+                                } pr-2 lg:pr-1`}
+              >
+                <Calendar
+                  date={firstDate}
+                  onClickPrevious={previousMonthFirst}
+                  onClickNext={nextMonthFirst}
+                  changeMonth={changeFirstMonth}
+                  changeYear={changeFirstYear}
+                />
+                <Calendar
+                  date={secondDate}
+                  onClickPrevious={previousMonthSecond}
+                  onClickNext={nextMonthSecond}
+                  changeMonth={changeSecondMonth}
+                  changeYear={changeSecondYear}
+                />
               </div>
-            )}
-          />
-        </div>
-        <div className="relative w-44">
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date ?? new Date())}
-            selectsEnd
-            startDate={startDate}
-            endDate={endDate}
-            nextMonthButtonLabel=">"
-            previousMonthButtonLabel="<"
-            popperClassName="react-datepicker-right"
-            customInput={<ButtonInput />}
-            renderCustomHeader={({
-              date,
-              decreaseMonth,
-              increaseMonth,
-              prevMonthButtonDisabled,
-              nextMonthButtonDisabled,
-            }) => (
-              <div className="flex items-center justify-between px-2 py-2 w-[270px]">
-                <span className="text-lg text-gray-700">{dateFormat(date, 'mmmm dS, yyyy')}</span>
-
-                <div className="space-x-2">
-                  <button
-                    onClick={decreaseMonth}
-                    disabled={prevMonthButtonDisabled}
-                    type="button"
-                    className={`
-            ${prevMonthButtonDisabled && 'cursor-not-allowed opacity-50'}
-            inline-flex p-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500
-          `}
-                  >
-                    <FaArrowLeft className="w-5 h-5 text-gray-600" />
-                  </button>
-
-                  <button
-                    onClick={increaseMonth}
-                    disabled={nextMonthButtonDisabled}
-                    type="button"
-                    className={`
-            ${nextMonthButtonDisabled && 'cursor-not-allowed opacity-50'}
-            inline-flex p-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500
-          `}
-                  >
-                    <FaArrowRight className="w-5 h-5 text-gray-600" />
-                  </button>
-                </div>
-              </div>
-            )}
-          />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </DatepickerContext.Provider>
   );
 };
-
-const ButtonInput = forwardRef(({ value, onClick }: ButtonInputProps, ref: ForwardedRef<HTMLButtonElement>) => (
-  <button
-    onClick={onClick}
-    ref={ref}
-    type="button"
-    className="inline-flex justify-start w-full px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-blue-500"
-  >
-    {dateFormat(value, 'mmmm dS, yyyy')}
-  </button>
-));
 
 export default CommonDatePicker;
