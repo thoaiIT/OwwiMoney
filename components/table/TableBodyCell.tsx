@@ -1,3 +1,4 @@
+import CommonTooltip from '@/components/CommonTooltip';
 import { CommonButton } from '@/components/button';
 import type { ColumnType } from '@/components/table/TableHeader';
 import * as Checkbox from '@radix-ui/react-checkbox';
@@ -105,7 +106,20 @@ const TableBodyCell = <TData,>({
   }
   return (
     <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
-      {row[column.field] as React.ReactNode}
+      <CommonTooltip
+        content={row[column.field] as string}
+        align={
+          column.headerTextAlign === 'left'
+            ? 'start'
+            : column.headerTextAlign === 'right'
+              ? 'end'
+              : !column.headerTextAlign
+                ? 'start'
+                : 'center'
+        }
+      >
+        <div>{row[column.field] as React.ReactNode}</div>
+      </CommonTooltip>
     </Table.Cell>
   );
 };
