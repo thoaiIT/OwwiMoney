@@ -19,7 +19,8 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      return await this.partnerRepository.createPartner({ ...data, userId });
+      const partner = await this.partnerRepository.createPartner({ ...data, userId });
+      return { message: 'Partner Created', data: { partner }, status: HttpStatusCodes[201] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
@@ -33,7 +34,8 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      return await this.partnerRepository.getAllPartnerByUser(userId);
+      const partners = await this.partnerRepository.getAllPartnerByUser(userId);
+      return { message: 'Success', data: { partners }, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
@@ -48,7 +50,8 @@ class PartnerService {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
 
-      return await this.partnerRepository.getPartnerByName(userId, name);
+      const partner = await this.partnerRepository.getPartnerByName(userId, name);
+      return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
@@ -62,7 +65,8 @@ class PartnerService {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
     }
 
-    return await this.partnerRepository.getPartnerById(partnerId, userId);
+    const partner = await this.partnerRepository.getPartnerById(partnerId, userId);
+    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 
   async updatePartner(data: PartnerUpdateType) {
@@ -73,7 +77,8 @@ class PartnerService {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
     }
 
-    return await this.partnerRepository.updatePartner({ ...data, userId });
+    const partner = await this.partnerRepository.updatePartner({ ...data, userId });
+    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 
   async deletePartner(partnerId: string) {
@@ -83,7 +88,8 @@ class PartnerService {
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
     }
-    return await this.partnerRepository.deletePartner(partnerId, userId);
+    const partner = await this.partnerRepository.deletePartner(partnerId, userId);
+    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 }
 

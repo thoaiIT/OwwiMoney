@@ -39,7 +39,7 @@ class UserService {
         return { message: 'Cannot create user!', status: HttpStatusCodes[500] };
       }
 
-      return { message: 'User Created', body: { userId: user.id }, status: HttpStatusCodes[201] };
+      return { message: 'User Created', data: { userId: user.id }, status: HttpStatusCodes[201] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
