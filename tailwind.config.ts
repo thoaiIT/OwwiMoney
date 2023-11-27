@@ -13,6 +13,9 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'owwi-pattern': "url('/img/Owwi_background.png')",
+        'owwi-logo': "url('/images/Owwi_logo.png')",
+        'money-pattern': "url('/images/moneypattern.png')",
+        'owl-pattern': "url('/images/owlpattern.png')",
       },
       fontWeight: {
         display: {
@@ -182,6 +185,24 @@ module.exports = {
             width: '100%',
           },
         },
+        wave: {
+          '0%': {
+            x: '-400px',
+          },
+          '100%': {
+            x: '0',
+          },
+        },
+        fillUp: {
+          '0%': {
+            height: 0,
+            y: '130px',
+          },
+          '100%': {
+            height: '160px',
+            y: '-30px',
+          },
+        },
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -194,6 +215,10 @@ module.exports = {
         slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         swipeOut: 'swipeOut 100ms ease-out',
         // End Toast
+
+        //Loading effect
+        waveFillUp: 'wave 0.7s infinite linear, fillUp 10s infinite ease-out alternate',
+        transitionTiming: 'cubic-bezier(0.36,0.55,0.63,0.48)',
       },
     },
   },
