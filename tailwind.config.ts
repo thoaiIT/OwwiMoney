@@ -14,6 +14,8 @@ module.exports = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'owwi-pattern': "url('/img/Owwi_background.png')",
         'owwi-logo': "url('/images/Owwi_logo.png')",
+        'money-pattern': "url('/images/moneypattern.png')",
+        'owl-pattern': "url('/images/owlpattern.png')",
       },
       fontWeight: {
         display: {
@@ -216,6 +218,7 @@ module.exports = {
 
         //Loading effect
         waveFillUp: 'wave 0.7s infinite linear, fillUp 10s infinite ease-out alternate',
+        transitionTiming: 'cubic-bezier(0.36,0.55,0.63,0.48)',
       },
     },
   },

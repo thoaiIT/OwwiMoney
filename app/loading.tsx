@@ -2,7 +2,7 @@ import WaterFill from '@/components/WaterFill';
 
 const Loading = () => {
   return (
-    <div className="bg-[141414] text-center">
+    <div className="flex flex-col bg-celestial_blue items-center justify-center h-screen marker:text-center">
       <WaterFill />
     </div>
   );
