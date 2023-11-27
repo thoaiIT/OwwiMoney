@@ -1,8 +1,8 @@
 'use client';
 
+import { CommonButton } from '@/components/button';
 import { Fragment, type ReactNode } from 'react';
 import { tailwindMerge } from '../../utils/helper';
-import { CommonButton } from '../button';
 import {
   Dialog,
   DialogClose,
@@ -25,6 +25,7 @@ interface DialogFormProps {
   customStyleFooter?: string;
   useCustomFooter?: ReactNode;
   handleSubmit?: () => void;
+  handleClose?: () => void;
   allowCloseOutside?: boolean;
   isNotUseDefaultFooter?: boolean;
   customTextFooterButton?: string;
@@ -42,23 +43,26 @@ const DialogForm = ({
   customTextFooterButton,
   isNotUseDefaultFooter = false,
   handleSubmit,
+  handleClose,
 }: DialogFormProps) => {
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(open) => {
+        !open && !!handleClose && handleClose();
+      }}
+    >
       <DialogTrigger asChild>
-        {useCustomTrigger ? (
-          <Fragment>{useCustomTrigger}</Fragment>
-        ) : (
-          <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>
-        )}
+        {useCustomTrigger ? useCustomTrigger : <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>}
       </DialogTrigger>
 
       <DialogPortal>
         <DialogOverlay />
-
-        <DialogContent onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}>
+        <DialogContent
+          onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}
+          className="bg-theme"
+        >
           <DialogHeader className={tailwindMerge(customStyleHeader)}>
-            <DialogTitle>{titleDialog}</DialogTitle>
+            <DialogTitle className="text-xl font-bold">{titleDialog}</DialogTitle>
             <DialogClose onClick={() => console.log('check')} />
           </DialogHeader>
 

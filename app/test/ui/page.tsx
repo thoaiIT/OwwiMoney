@@ -1,6 +1,7 @@
 'use client';
 
 import DialogTest from '@/app/test/ui/dialog';
+import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
 import { CommonTabs, TabsContent, TabsList } from '@/components/Tab';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import ClientOnly from '@/components/clientOnly';
@@ -23,7 +24,7 @@ import {
   CmContextMenuTrigger,
 } from '@/components/toast/contextMenu';
 import type { EventFor } from '@/helper/type';
-import { Flex } from '@radix-ui/themes';
+import { Button, Flex } from '@radix-ui/themes';
 
 const frameworks = [
   {
@@ -72,11 +73,12 @@ export default function Home() {
         <CardContent>
           <p>Card Content</p>
           <CommonCombobox
+            name="test"
+            onChange={() => {}}
             optionsProp={frameworks}
             widthSelection={400}
             maxVisibleItems={5}
             placeholder={'Select framework...'}
-            isDisabled
           />
         </CardContent>
         <CardFooter>
@@ -162,6 +164,53 @@ export default function Home() {
               </CmContextMenuRadioGroup>
             </CmContextMenuContent>
           </CmContextMenu>
+          <CommonPopover>
+            <CommonPopoverTrigger asChild>
+              <Button variant="outline">Open Commonpopover</Button>
+            </CommonPopoverTrigger>
+            <CommonPopoverContent className="w-80">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Dimensions</h4>
+                  <p className="text-sm text-muted-foreground">Set the dimensions for the layer.</p>
+                </div>
+                <div className="grid gap-2">
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="width">Width</label>
+                    <input
+                      id="width"
+                      defaultValue="100%"
+                      className="col-span-2 h-8"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="maxWidth">Max. width</label>
+                    <input
+                      id="maxWidth"
+                      defaultValue="300px"
+                      className="col-span-2 h-8"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="height">Height</label>
+                    <input
+                      id="height"
+                      defaultValue="25px"
+                      className="col-span-2 h-8"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 items-center gap-4">
+                    <label htmlFor="maxHeight">Max. height</label>
+                    <input
+                      id="maxHeight"
+                      defaultValue="none"
+                      className="col-span-2 h-8"
+                    />
+                  </div>
+                </div>
+              </div>
+            </CommonPopoverContent>
+          </CommonPopover>
         </CardContent>
       </CommonCard>
     </div>
