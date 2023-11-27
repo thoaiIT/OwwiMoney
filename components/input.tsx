@@ -10,16 +10,17 @@ export interface InputProps {
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  minValue?: string;
   icon?: ReactNode;
   name: string;
   value?: string;
   errors?: FieldErrors;
   maxLength?: number;
-
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  isDisabled?: boolean;
 }
 
-function capitalizeFirstLetter(text: string): string {
+export function capitalizeFirstLetter(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
@@ -54,6 +55,8 @@ const CommonInput = ({
   errors,
   onChange,
   maxLength,
+  isDisabled,
+  minValue,
   ...props
 }: InputProps) => {
   return (
@@ -64,10 +67,13 @@ const CommonInput = ({
         value={value}
         onChange={onChange}
         type={type}
+        min={minValue}
+        readOnly={isDisabled}
         placeholder={placeholder ? placeholder : ' '}
         className={tailwindMerge([
           textFieldVariants({ intent: intent, className: className }),
           errors && errors[name]?.message && 'border-red-500',
+          isDisabled && 'cursor-pointer',
         ])}
         disabled={intent === 'disabled'}
         {...props}
