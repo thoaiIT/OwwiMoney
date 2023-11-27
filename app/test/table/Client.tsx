@@ -27,6 +27,11 @@ export default function Client() {
     tableData?.customAction?.insertNewRow?.();
   };
 
+  const customRenderFullName = (name: string) => {
+    return <span className="rounded-lg bg-white-400 px-2 hover:bg-white-500 transition-all duration-500">{name}</span>;
+  };
+
+  // Change pagination total page
   useEffect(() => {
     tableData.changeTotalPage(10);
   }, []);
@@ -39,7 +44,13 @@ export default function Client() {
         tableData={tableData}
         columns={[
           { label: 'Email', field: 'email', sortable: true, showFooterTotal: false },
-          { label: 'Full Name', field: 'fullName', sortable: false, showFooterTotal: false },
+          {
+            label: 'Full Name',
+            field: 'fullName',
+            sortable: false,
+            showFooterTotal: false,
+            customRender: customRenderFullName,
+          },
           {
             label: 'Order',
             field: 'order',

@@ -1,6 +1,6 @@
 'use client';
 
-import { changePassword } from '@/actions/user/changePassword';
+import { changePassword } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
@@ -29,7 +29,9 @@ const NewPasswordForm = ({ email }: { email: string }) => {
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
+    setIsLoading(true);
     await changePassword({ email, password: values.password }).then((result) => {
+      setIsLoading(false);
       if (result.status?.code === 200) {
         toast.success(result.message);
         router.replace('/login');
@@ -51,39 +53,42 @@ const NewPasswordForm = ({ email }: { email: string }) => {
       <p className="text-gray-400">
         Set the new password for your account so you can login and access all <br /> featuress.
       </p>
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="password"
-            label="Enter new password"
-            value={value}
-            onChange={onChange}
-            type="password"
-            placeholder="9 symbols at least"
-            className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors}
-          />
-        )}
-      />
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="confirmPassword"
-            label="Confirm password"
-            value={value}
-            onChange={onChange}
-            type="password"
-            placeholder="9 symbols at least"
-            className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors}
-          />
-        )}
-      />
-
+      <div>
+        <label htmlFor="password"> Enter new password</label>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="password"
+              value={value}
+              onChange={onChange}
+              type="password"
+              placeholder="9 symbols at least"
+              className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="confirmPassword"
+              value={value}
+              onChange={onChange}
+              type="password"
+              placeholder="9 symbols at least"
+              className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
       <CommonButton
         intent={'secondary'}
         className="py-6"

@@ -1,6 +1,6 @@
 'use client';
 
-import { forgetPassword } from '@/actions/user/forgetPassword';
+import { forgetPassword } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
@@ -59,7 +59,6 @@ const ForgotPasswordForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="email"
-            label="Email"
             value={value}
             onChange={onChange}
             type="text"

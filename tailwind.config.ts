@@ -34,6 +34,10 @@ module.exports = {
         'color-error': '#F03E3E',
         'color-success': '#51cf66',
         'color-mute': '#71717A',
+        'gray-03': '#9F9F9F',
+        'gray-02': '#878787',
+        'gray-01': '#666',
+        'light-gray': 'rgba(210, 210, 210, 0.25)',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',

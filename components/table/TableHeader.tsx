@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 export type ColumnType<T> = {
   label: string | React.ReactNode;
   field: keyof T;
-  customRender?: (row: T) => React.ReactNode;
+  customRender?: (row: string) => React.ReactNode;
   type?: 'checkbox' | 'rowNumber' | 'action';
   textAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
   headerTextAlign?: 'center' | 'left' | 'right' | 'justify' | 'inherit';
@@ -61,8 +61,9 @@ const TableHeader = <TData,>({ columns, sortHandler, selectAllRowHandler }: Prop
               >
                 <div
                   className={clsx([
-                    'flex gap-1 items-start font-semibold align-middle text-color-mute py-2 sm:px-1',
+                    'flex gap-0 items-start font-semibold align-middle text-color-mute py-2 sm:px-1',
                     column.headerTextAlign === 'center' || column.type === 'action' ? 'justify-center' : '',
+                    'relative',
                   ])}
                 >
                   {column.type === 'checkbox' && (

@@ -16,11 +16,11 @@
 
 'use client';
 
-import React, { forwardRef, type ElementRef, type ComponentPropsWithoutRef, type HTMLAttributes } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { tailwindMerge } from '../../utils/helper';
+import { forwardRef, type ComponentPropsWithoutRef, type ElementRef, type HTMLAttributes } from 'react';
 import { IoIosClose } from 'react-icons/io';
 import type { DialogPortalProps } from '../../types/component';
+import { tailwindMerge } from '../../utils/helper';
 
 const Dialog = DialogPrimitive.Root;
 
@@ -40,7 +40,7 @@ const DialogOverlay = forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={tailwindMerge(
-      'fixed inset-0 z-50 backdrop-opacity-70 backdrop-blur data-[state=open]:animate-overlayShow ',
+      'fixed inset-0 z-50 bg-black opacity-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className,
     )}
     {...props}
@@ -114,13 +114,13 @@ DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
 export {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
-  DialogTrigger,
   DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
 };

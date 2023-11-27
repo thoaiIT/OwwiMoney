@@ -22,28 +22,37 @@ type TableProps<T> = {
 };
 
 /**
- * MyComponent is a simple React component.
+ * Common Table Component.
+ *
  * @component
  *
- * @param {T[]} data - the data use to display on the table.
+ * @template T - The type of data items in the table.
  *
- * @param {UseTableDataResult} tableData - the react hook use to handle select row, pagination.
+ * @param {T[]} data - The data used to display on the table.
  *
- * @param {ColumnType<T>[]} columns - define columns attribute.
+ * @param {UseTableDataResult} tableData - The React hook used to handle select rows and pagination.
  *
- * @param {keyof T} keyField - the unique key to identity the row in data.
+ * @param {ColumnType<T>[]} columns - An array defining the columns and their attributes.
  *
- * @param {boolean} useCheckbox - use to show table checkbox column.
+ * @param {keyof T} keyField - The unique key used to identify each row in the data.
  *
- * @param {boolean} useRowNumber - use to show table order column.
+ * @param {boolean} useCheckbox - Determines whether to show a checkbox column in the table.
  *
- * @param {boolean} showFooterTotal - use to show table footer total. If true, useRowNumber is auto true.
+ * @param {boolean} useRowNumber - Determines whether to show an order column in the table.
  *
- * @param {boolean} showFooterAvg - use to show table footer average. If true, useRowNumber is auto true.
+ * @param {boolean} showFooterTotal - Determines whether to show a total in the table footer. If true, useRowNumber is automatically set to true.
  *
- * @param {boolean} usePagination - use to show table pagination, must have tableData if usePagination is true.
+ * @param {boolean} showFooterAvg - Determines whether to show an average in the table footer. If true, useRowNumber is automatically set to true.
  *
- * @return {JSX.Element}
+ * @param {boolean} usePagination - Determines whether to show table pagination. Must have tableData if usePagination is true.
+ *
+ * @param {Function} editHandler - Function called when the edit button is clicked. Takes the keyField as a parameter.
+ *
+ * @param {Function} deleteHandler - Function called when the delete button is clicked. Takes the keyField as a parameter.
+ *
+ * @param {Function} customCellHandler - Function for custom cell rendering.
+ *
+ * @returns {JSX.Element} The rendered table component.
  */
 
 const CommonTable = <TData,>({
