@@ -28,25 +28,16 @@ class PartnerRepository {
     return client.partner.findFirst({ where: { id: partnerId, userId, deleted: false } });
   }
 
-  async updatePartner({
-    partnerId,
-    typeId,
-    name,
-    contact,
-    address,
-    description,
-    email,
-    userId,
-  }: PartnerUpdateType & { userId: string }) {
+  async updatePartner({ partnerId, typeId, name, contact, address, description, email }: PartnerUpdateType) {
     return await client.partner.update({
-      where: { id: partnerId, userId },
+      where: { id: partnerId },
       data: { typeId, name, deleted: false, contact, address, description, email },
     });
   }
 
-  async deletePartner(partnerId: string, userId: string) {
+  async deletePartner(partnerId: string) {
     return await client.partner.update({
-      where: { id: partnerId, userId },
+      where: { id: partnerId },
       data: { deleted: true },
     });
   }
