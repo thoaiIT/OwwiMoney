@@ -1,4 +1,4 @@
-import emptyUser from '@/public/img/avatar.png';
+import emptyUser from '@/public/img/Avatar.png';
 import { tailwindMerge } from '@/utils/helper';
 import * as Avatar from '@radix-ui/react-avatar';
 import type React from 'react';
@@ -10,12 +10,25 @@ type CommonAvatarProps = {
   fallback?: ReactNode;
   label?: string;
   customLabel?: string;
+  handleClick?: () => void;
 };
 
-const CommonAvatar: React.FC<CommonAvatarProps> = ({ src, alt, className, fallback, label, customLabel }) => {
+const CommonAvatar: React.FC<CommonAvatarProps> = ({
+  src,
+  alt,
+  className,
+  fallback,
+  label,
+  customLabel,
+  handleClick,
+}) => {
   return (
     <div className="flex flex-col items-center justify-center">
       <Avatar.Root
+        onClick={() => {
+          console.log('click');
+          !!handleClick && handleClick();
+        }}
         className={tailwindMerge(
           'inline-flex h-[60px] w-[60px] select-none items-center justify-center overflow-hidden rounded-full align-middle border ',
           className,

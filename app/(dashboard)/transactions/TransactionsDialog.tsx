@@ -1,14 +1,19 @@
 'use Client';
 import CommonAvatar from '@/components/CommonAvatar';
+import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
 import { CommonButton } from '@/components/button';
-import CommonCombobox from '@/components/combobox';
+import CommonCombobox, { OptionItem, type dataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
+import { tailwindMerge } from '@/utils/helper';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty } from 'class-validator';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
+import { GoPlus } from 'react-icons/go';
 
 const frameworks = [
   {
@@ -59,6 +64,10 @@ export class newTransactionsModel {
 const resolver = classValidatorResolver(newTransactionsModel);
 
 const TransactionsDialog = () => {
+  const [options, setOptions] = useState<dataType[]>(frameworks);
+  const [open, setOpen] = useState<boolean>(false);
+  const [partner, setPartner] = useState<dataType | null>(null);
+
   const {
     control,
     handleSubmit,
@@ -73,10 +82,17 @@ const TransactionsDialog = () => {
     resolver,
   });
 
+  const appearPartner = frameworks.splice(4, 1);
+
+  console.log({ appearPartner, frameworks });
   const handleSubmitForm = handleSubmit(async (values: newTransactionsModel) => {
     console.log({ values });
     reset();
   });
+
+  const handleSearch = (searchString: string) => {
+    setOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
+  };
   return (
     <Box>
       <DialogForm
@@ -95,13 +111,79 @@ const TransactionsDialog = () => {
       >
         <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
         <div className="flex gap-5">
-          <CommonAvatar
-            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
-            alt="avatar"
-            label="Tý đĩn"
-          />
-          <CommonAvatar label="Nghiaml cmn" />
-          <CommonAvatar label="Chu Thai" />
+          {!!partner && (
+            <CommonAvatar
+              key={partner.value}
+              label={partner.label}
+              className={'border-2 border-black'}
+              customLabel={'font-bold'}
+            />
+          )}
+          {frameworks.map((item, index) => {
+            if (index < 4 && item.value !== partner?.value)
+              return (
+                <CommonAvatar
+                  handleClick={() => {
+                    setPartner(item);
+                  }}
+                  key={item.value}
+                  label={item.label}
+                  className={tailwindMerge(partner?.value === item.value && 'border-2 border-black')}
+                  customLabel={tailwindMerge(partner?.value === item.value && 'font-bold')}
+                />
+              );
+          })}
+          <CommonPopover
+            open={open}
+            onOpenChange={() => {
+              setOpen(!open);
+            }}
+          >
+            <CommonPopoverTrigger asChild>
+              <div className="flex flex-col justify-center items-center">
+                <CommonButton
+                  intent={'outline'}
+                  className="h-[60px] w-[60px] rounded-full"
+                >
+                  <GoPlus size={24} />
+                </CommonButton>
+                <p
+                  className={
+                    'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
+                  }
+                >
+                  More...
+                </p>
+              </div>
+            </CommonPopoverTrigger>
+            <CommonPopoverContent>
+              <div className="flex items-center">
+                <BsSearch className="w-4 ml-3" />
+                <CommonInput
+                  name="search"
+                  intent="simple"
+                  placeholder="Search here... "
+                  className="text-base"
+                  onChange={(e) => {
+                    handleSearch(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="overflow-y-scroll border-t-2">
+                {options.map((option) => (
+                  <OptionItem
+                    key={option.value}
+                    item={option}
+                    onSelect={(item) => {
+                      setPartner(item);
+                      setOpen(false);
+                    }}
+                    isActive={partner?.value === option.value}
+                  />
+                ))}
+              </div>
+            </CommonPopoverContent>
+          </CommonPopover>
         </div>
         <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
         <Controller
@@ -143,6 +225,7 @@ const TransactionsDialog = () => {
             <CommonInput
               name={'wallet'}
               type="number"
+              minValue="0"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
               placeholder="Shopping"
               value={String(value)}

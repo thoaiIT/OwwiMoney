@@ -10,6 +10,7 @@ export interface InputProps {
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  minValue?: string;
   icon?: ReactNode;
   name: string;
   value?: string;
@@ -55,6 +56,7 @@ const CommonInput = ({
   onChange,
   maxLength,
   isDisabled,
+  minValue,
   ...props
 }: InputProps) => {
   return (
@@ -65,6 +67,7 @@ const CommonInput = ({
         value={value}
         onChange={onChange}
         type={type}
+        min={minValue}
         readOnly={isDisabled}
         placeholder={placeholder ? placeholder : ' '}
         className={tailwindMerge([

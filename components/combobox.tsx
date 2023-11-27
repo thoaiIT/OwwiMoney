@@ -8,13 +8,14 @@ import { SlArrowDown } from 'react-icons/sl';
 import { tailwindMerge } from '../utils/helper';
 import CommonInput, { capitalizeFirstLetter } from './input';
 
-type dataType = {
+export type dataType = {
   value: string;
   label: string;
 };
 
-type OptionItemProps = dataType & {
-  onSelect: (value: string) => void;
+type OptionItemProps = {
+  item: dataType;
+  onSelect: (item: dataType) => void;
   isActive?: boolean;
 };
 
@@ -30,7 +31,7 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     customInput?: string;
     name: string;
     valueProp?: string;
-    onChange: (value: string) => void;
+    onChange: (value: dataType) => void;
     errors?: FieldErrors;
   };
 
@@ -143,11 +144,10 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
               {options.map((option) => (
                 <OptionItem
                   key={option.value}
-                  label={option.label}
-                  value={option.value}
-                  onSelect={(value) => {
-                    onChange(value);
-                    setValue(value);
+                  item={option}
+                  onSelect={(item) => {
+                    onChange(item);
+                    setValue(item.value);
                     setOpen(false);
                   }}
                   isActive={value === option.value}
@@ -185,17 +185,17 @@ CommonCombobox.displayName = 'Combobox';
 
 export default CommonCombobox;
 
-const OptionItem: React.FC<OptionItemProps> = ({ label, value, onSelect, isActive }) => {
+export const OptionItem: React.FC<OptionItemProps> = ({ item, onSelect, isActive }) => {
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
-      onSelect(value);
+      onSelect(item);
     }
   };
   return (
     <div
       tabIndex={0}
       onClick={() => {
-        onSelect(value);
+        onSelect(item);
       }}
       onKeyDown={handleKeyPress}
       role="button"
@@ -204,7 +204,7 @@ const OptionItem: React.FC<OptionItemProps> = ({ label, value, onSelect, isActiv
         'hover:duration-300 hover:bg-theme-hover hover:rounded hover:cursor-pointer',
       )}
     >
-      {label}
+      {item.label}
       <BsCheck className={tailwindMerge('ml-auto h-4 w-4', isActive ? 'opacity-100' : 'opacity-0')} />
     </div>
   );
