@@ -9,6 +9,7 @@ type Props<T> = {
   data: T[];
   keyField: keyof T;
   selectedKeys: string[];
+  children: React.ReactNode;
 };
 
 const TableBody = <TData,>({
@@ -20,6 +21,7 @@ const TableBody = <TData,>({
   editHandler,
   deleteHandler,
   customHandler,
+  children,
 }: Props<TData> & TableActionProps) => {
   return (
     <Table.Body>
@@ -49,6 +51,7 @@ const TableBody = <TData,>({
             </Table.Row>
           );
         })}
+      {children}
     </Table.Body>
   );
 };

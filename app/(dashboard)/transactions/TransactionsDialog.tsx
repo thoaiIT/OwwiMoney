@@ -1,4 +1,5 @@
 'use Client';
+import CommonAvatar from '@/components/CommonAvatar';
 import { CommonButton } from '@/components/button';
 import CommonCombobox from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
@@ -92,6 +93,17 @@ const TransactionsDialog = () => {
           reset();
         }}
       >
+        <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
+        <div className="flex gap-5">
+          <CommonAvatar
+            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+            alt="avatar"
+            label="Tý đĩn"
+          />
+          <CommonAvatar label="Nghiaml cmn" />
+          <CommonAvatar label="Chu Thai" />
+        </div>
+        <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
         <Controller
           name="type"
           control={control}
@@ -102,23 +114,19 @@ const TransactionsDialog = () => {
               onChange={onChange}
               optionsProp={frameworks}
               widthSelection={'100%'}
-              label="Type"
-              customLabel="text-base font-semibold leading-6"
               placeholder={'Select framework...'}
               customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
               errors={errors}
             />
           )}
         />
-
+        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet</p>
         <Controller
           name="wallet"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name={'wallet'}
-              label="Wallet"
-              customLabel="text-base font-semibold leading-6"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
               placeholder="Shopping"
               value={value}
@@ -127,16 +135,14 @@ const TransactionsDialog = () => {
             />
           )}
         />
-
+        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Amounts</p>
         <Controller
           name="amounts"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name={'wallet'}
-              label="Amounts"
               type="number"
-              customLabel="text-base font-semibold leading-6"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
               placeholder="Shopping"
               value={String(value)}

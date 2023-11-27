@@ -15,9 +15,7 @@ export interface InputProps {
   value?: string;
   errors?: FieldErrors;
   maxLength?: number;
-  label?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  customLabel?: string;
   isDisabled?: boolean;
 }
 
@@ -54,19 +52,14 @@ const CommonInput = ({
   icon,
   name,
   errors,
-  label,
   onChange,
   maxLength,
-  customLabel,
   isDisabled,
   ...props
 }: InputProps) => {
   return (
     <div className="w-full relative">
       {icon && icon}
-      {label && (
-        <p className={`mb-2 ${customLabel} ${errors && errors[name]?.message ? 'text-red-500' : ''} `}>{label}</p>
-      )}
       <input
         maxLength={maxLength}
         value={value}
