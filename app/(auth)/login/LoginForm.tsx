@@ -79,52 +79,62 @@ const LoginForm = () => {
           custom="mt-2 text-4xl text-center xl:text-start"
         />
       </div>
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
+      <form>
+        <div>
+          <label htmlFor="email">Email</label>
+          <Controller
             name="email"
-            label="Email"
-            value={value}
-            onChange={onChange}
-            placeholder="Username@gmail.com"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="email"
+                value={value}
+                onChange={onChange}
+                placeholder="Username@gmail.com"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base my-2 "
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <Controller
             name="password"
-            label="Password"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Password"
-            className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="password"
+                type="password"
+                value={value}
+                onChange={onChange}
+                placeholder="Password"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base my-2"
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <p className="text-sm">
-        <Link
-          className="text-dark-blue font-medium hover:text-blue-500"
-          href="/forgotpassword"
+        </div>
+
+        <p className="text-sm">
+          <Link
+            className="text-dark-blue font-medium hover:text-blue-500"
+            href="/forgotpassword"
+          >
+            Forget Password?
+          </Link>
+        </p>
+        <CommonButton
+          intent={'secondary'}
+          onClick={handleSubmitForm}
+          disabled={isLoading}
+          className="my-2"
         >
-          Forget Password?
-        </Link>
-      </p>
-      <CommonButton
-        intent={'secondary'}
-        onClick={handleSubmitForm}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Loading...' : 'Sign In'}
-      </CommonButton>
+          {isLoading ? 'Loading...' : 'Sign In'}
+        </CommonButton>
+      </form>
+
       <div className="mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>

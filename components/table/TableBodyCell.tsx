@@ -1,3 +1,4 @@
+import CommonTooltip from '@/components/CommonTooltip';
 import { CommonButton } from '@/components/button';
 import type { ColumnType } from '@/components/table/TableHeader';
 import * as Checkbox from '@radix-ui/react-checkbox';
@@ -41,7 +42,7 @@ const TableBodyCell = <TData,>({
   };
 
   const customRowHandler = () => {
-    if (editHandler) editHandler(row[keyField] as string);
+    if (customHandler) customHandler(row[keyField] as string);
     else console.log(`Custom record ${row[keyField]}`);
   };
 
@@ -51,13 +52,13 @@ const TableBodyCell = <TData,>({
 
   if (column.type === 'rowNumber') {
     return (
-      <Table.Cell className={clsx(['align-middle py-4', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>
+      <Table.Cell className={clsx(['align-middle py-1', `text-${column.textAlign}`])}>{Number(order) + 1}</Table.Cell>
     );
   }
 
   if (column.type === 'action') {
     return (
-      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-4'])}>
+      <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-1'])}>
         <CommonButton
           className="p-0 rounded-full border-0 w-10 h-10 mb-1 mt-1 font-bold text-celestial_blue-500"
           intent={'outline'}
@@ -78,7 +79,7 @@ const TableBodyCell = <TData,>({
 
   if (column.type === 'checkbox') {
     return (
-      <Table.Cell className="align-middle">
+      <Table.Cell className="align-middle sm:px-1">
         <Checkbox.Root
           className={clsx([
             'shadow-blackA4 hover:bg-violet3 flex h-[20px] w-[20px] appearance-none items-center justify-center rounded-[3px] bg-white outline-none border-2',
@@ -95,9 +96,30 @@ const TableBodyCell = <TData,>({
       </Table.Cell>
     );
   }
+
+  if (column.customRender) {
+    return (
+      <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
+        {column.customRender(row[column.field] as string)}
+      </Table.Cell>
+    );
+  }
   return (
     <Table.Cell className={clsx(['align-middle', `text-${column.textAlign}`])}>
-      {row[column.field] as React.ReactNode}
+      <CommonTooltip
+        content={row[column.field] as string}
+        align={
+          column.headerTextAlign === 'left'
+            ? 'start'
+            : column.headerTextAlign === 'right'
+              ? 'end'
+              : !column.headerTextAlign
+                ? 'start'
+                : 'center'
+        }
+      >
+        <div>{row[column.field] as React.ReactNode}</div>
+      </CommonTooltip>
     </Table.Cell>
   );
 };
