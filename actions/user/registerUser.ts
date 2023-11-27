@@ -42,7 +42,7 @@ export const registerUser = async ({ email, password, name }: UserCreateType) =>
     //   html: template,
     // });
 
-    return { message: 'User Created', body: { userId: user.id }, status: HttpStatusCodes[201] };
+    return { message: 'User Created', data: { userId: user.id }, status: HttpStatusCodes[201] };
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
   }
