@@ -13,6 +13,7 @@ export default function Client() {
     { id: '1114', email: 'mail4@gmail.com', fullName: 'User0004 0004', order: '100' },
   ];
 
+  // const data = [];
   const editHandler = (id: string) => {
     console.log('My custom edit ' + id);
   };
