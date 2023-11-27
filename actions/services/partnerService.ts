@@ -77,7 +77,12 @@ class PartnerService {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
     }
 
-    const partner = await this.partnerRepository.updatePartner({ ...data, userId });
+    const partnerExist = await this.partnerRepository.getPartnerById(data.partnerId, userId);
+    if (!partnerExist) {
+      return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
+    }
+
+    const partner = await this.partnerRepository.updatePartner({ ...data });
     return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 
@@ -88,7 +93,13 @@ class PartnerService {
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
     }
-    const partner = await this.partnerRepository.deletePartner(partnerId, userId);
+
+    const partnerExist = await this.partnerRepository.getPartnerById(partnerId, userId);
+    if (!partnerExist) {
+      return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
+    }
+
+    const partner = await this.partnerRepository.deletePartner(partnerId);
     return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 }
