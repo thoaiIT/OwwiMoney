@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { createContext, type RefObject } from 'react';
+import React, { type RefObject } from 'react';
 
 export interface Period {
   start: string | null;
@@ -36,7 +36,7 @@ export interface DatepickerType {
   disabledDates?: DateRangeType[] | null;
 }
 
-interface DatepickerStore {
+export interface DatepickerStore {
   input?: React.RefObject<HTMLInputElement>;
   asSingle?: boolean;
   calendarContainer: React.RefObject<HTMLDivElement> | null;
@@ -54,35 +54,11 @@ interface DatepickerStore {
   placeholder?: string | null;
   value: DateValueType;
   disabled?: boolean;
-  readOnly?: boolean;
   disabledDates?: DateRangeType[] | null;
   inputName?: string;
   classNames?: ClassNamesTypeProp;
   popoverDirection?: PopoverDirectionType;
 }
-
-export const DatepickerContext = createContext<DatepickerStore>({
-  input: undefined,
-  calendarContainer: null,
-  arrowContainer: null,
-  period: { start: null, end: null },
-  changePeriod: (period) => {},
-  hideDatepicker: () => {},
-  dayHover: null,
-  changeDayHover: (day: string | null) => {},
-  inputText: '',
-  changeInputText: (text) => {},
-  updateFirstDate: (date) => {},
-  changeDatepickerValue: (value: DateValueType, e: HTMLInputElement | null | undefined) => {},
-  showFooter: false,
-  value: null,
-  disabled: false,
-  readOnly: false,
-  disabledDates: null,
-  inputName: undefined,
-  classNames: undefined,
-  popoverDirection: undefined,
-});
 
 export interface Button {
   children: JSX.Element | JSX.Element[];

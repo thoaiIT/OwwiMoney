@@ -3,7 +3,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import Calendar from '@/components/datepicker/components';
 import Input from '@/components/datepicker/components/Input';
-import { DatepickerContext, type DatepickerType, type Period } from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/const';
+import { type DatepickerType, type Period } from '@/components/datepicker/type';
 import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
 
 const CommonDatePicker = ({
@@ -13,12 +14,10 @@ const CommonDatePicker = ({
   inputId,
   classNames = undefined,
 }: DatepickerType) => {
-  // Ref
   const containerRef = useRef<HTMLDivElement | null>(null);
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
   const arrowRef = useRef<HTMLDivElement | null>(null);
 
-  // State
   const [firstDate, setFirstDate] = useState<dayjs.Dayjs>(dayjs());
   const [secondDate, setSecondDate] = useState<dayjs.Dayjs>(nextMonth(firstDate));
   const [period, setPeriod] = useState<Period>({
@@ -34,15 +33,7 @@ const CommonDatePicker = ({
     const arrow = arrowRef.current;
     const handleTransitionEnd = () => {
       div?.removeEventListener('transitionend', handleTransitionEnd);
-      div?.classList.remove('bottom-full');
       div?.classList.add('hidden');
-      div?.classList.add('mb-2.5');
-      div?.classList.add('mt-2.5');
-      arrow?.classList.remove('-bottom-2');
-      arrow?.classList.remove('border-r');
-      arrow?.classList.remove('border-b');
-      arrow?.classList.add('border-l');
-      arrow?.classList.add('border-t');
     };
     if (arrow && div && div.classList.contains('block')) {
       div.addEventListener('transitionend', handleTransitionEnd);
@@ -61,7 +52,6 @@ const CommonDatePicker = ({
     }
   });
 
-  /* Start First */
   const firstGotoDate = useCallback(
     (date: dayjs.Dayjs) => {
       const newDate = dayjs(formatDate(date));
@@ -95,9 +85,7 @@ const CommonDatePicker = ({
     },
     [firstDate, firstGotoDate],
   );
-  /* End First */
 
-  /* Start Second */
   const secondGotoDate = useCallback(
     (date: dayjs.Dayjs) => {
       const newDate = dayjs(formatDate(date, 'YYYY-MM-DD'));
@@ -146,7 +134,6 @@ const CommonDatePicker = ({
         setInputText(`${formatDate(startDate, 'DD-MM-YYYY')}${` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`}`);
       }
     }
-
     if (value && value.startDate === null && value.endDate === null) {
       setPeriod({
         start: null,

@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
-import React, { useCallback, useContext, useEffect, useRef, type FC } from 'react';
+import { useCallback, useContext, useEffect, useRef, type ChangeEvent, type FC } from 'react';
 
-import { DatepickerContext, type InputProps } from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/const';
+import { type InputProps } from '@/components/datepicker/type';
 import { dateIsValid, parseFormattedDate } from '@/components/datepicker/utils';
 
 const Input: FC<InputProps> = () => {
@@ -19,14 +20,11 @@ const Input: FC<InputProps> = () => {
     popoverDirection,
   } = useContext(DatepickerContext);
 
-  // UseRefs
   const buttonRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Functions
-
   const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value;
 
       const dates = [];
@@ -97,34 +95,15 @@ const Input: FC<InputProps> = () => {
       if (arrow && div && div.classList.contains('hidden')) {
         div.classList.remove('hidden');
         div.classList.add('block');
-        const popoverOnUp = popoverDirection === 'up';
-        const popoverOnDown = popoverDirection === 'down';
-        if (
-          popoverOnUp ||
-          (window.innerWidth > 767 && window.screen.height - 100 < div.getBoundingClientRect().bottom && !popoverOnDown)
-        ) {
-          div.classList.add('bottom-full');
-          div.classList.add('mb-2.5');
-          div.classList.remove('mt-2.5');
-          arrow.classList.add('-bottom-2');
-          arrow.classList.add('border-r');
-          arrow.classList.add('border-b');
-          arrow.classList.remove('border-l');
-          arrow.classList.remove('border-t');
-        }
-        setTimeout(() => {
-          div.classList.remove('translate-y-4');
-          div.classList.remove('opacity-0');
-          div.classList.add('translate-y-0');
-          div.classList.add('opacity-1');
-        }, 1);
+        requestAnimationFrame(() => {
+          div.classList.remove('translate-y-4', 'opacity-0');
+          div.classList.add('translate-y-0', 'opacity-1');
+        });
       }
     };
-
     if (div && input) {
       input.addEventListener('focus', showCalendarContainer);
     }
-
     return () => {
       if (input) {
         input.removeEventListener('focus', showCalendarContainer);
@@ -135,12 +114,12 @@ const Input: FC<InputProps> = () => {
   return (
     <>
       <input
+        className="w-60 border-2 p-2 rounded-md"
         ref={inputRef}
         type="text"
         disabled={disabled}
-        placeholder='"YYYY-MM-DD" ~ "YYYY-MM-DD"'
+        placeholder="DD-MM-YYYY ~ DD-MM-YYYY"
         value={inputText}
-        autoComplete="off"
         onChange={handleInputChange}
       />
     </>

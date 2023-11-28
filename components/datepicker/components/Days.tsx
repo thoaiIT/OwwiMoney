@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { useCallback, useContext } from 'react';
 
-import { DatepickerContext, type DayProps, type Period } from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/const';
+import { type DayProps, type Period } from '@/components/datepicker/type';
 import { classNames, formatDate, nextMonth, previousMonth } from '@/components/datepicker/utils';
 
 dayjs.extend(isBetween);
@@ -24,13 +25,13 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       let className = '';
 
       if (dayjs(fullDay).isSame(period.start) && dayjs(fullDay).isSame(period.end)) {
-        className = 'bg-celestial_blue-500 text-white font-medium rounded-full';
+        className = 'bg-celestial_blue-400 text-white font-medium rounded-full';
       } else if (dayjs(fullDay).isSame(period.start)) {
-        className = `bg-celestial_blue-500 text-white font-medium ${
+        className = `bg-celestial_blue-400 text-white font-medium ${
           dayjs(fullDay).isSame(dayHover) && !period.end ? 'rounded-full' : 'rounded-l-full'
         }`;
       } else if (dayjs(fullDay).isSame(period.end)) {
-        className = `bg-celestial_blue-500 text-white font-medium ${
+        className = `bg-celestial_blue-400 text-white font-medium ${
           dayjs(fullDay).isSame(dayHover) && !period.start ? 'rounded-full' : 'rounded-r-full'
         }`;
       }
@@ -50,7 +51,7 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
 
       if (period.start && period.end) {
         if (dayjs(fullDay).isBetween(period.start, period.end, 'day', '[)')) {
-          return `bg-celestial_blue-400 ${currentDateClass(day)} dark:bg-white/10`;
+          return `bg-celestial_blue-500 ${currentDateClass(day)} dark:bg-white/10`;
         }
       }
 
@@ -59,11 +60,11 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       }
 
       if (period.start && dayjs(fullDay).isBetween(period.start, dayHover, 'day', '[)')) {
-        className = `bg-celestial_blue-400 ${currentDateClass(day)} dark:bg-white/10`;
+        className = `bg-celestial_blue-500 ${currentDateClass(day)} dark:bg-white/10`;
       }
 
       if (period.end && dayjs(fullDay).isBetween(dayHover, period.end, 'day', '[)')) {
-        className = `bg-celestial_blue-400 ${currentDateClass(day)} dark:bg-white/10`;
+        className = `bg-celestial_blue-500 ${currentDateClass(day)} dark:bg-white/10`;
       }
 
       if (dayHover === fullDay) {
@@ -76,33 +77,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
     },
     [calendarData.date, currentDateClass, dayHover, period.end, period.start],
   );
-  const isDateDisabled = useCallback(
-    (day: number, type: 'current' | 'previous' | 'next') => {
-      const object = {
-        previous: previousMonth(calendarData.date),
-        current: calendarData.date,
-        next: nextMonth(calendarData.date),
-      };
-      const newDate = object[type as keyof typeof object];
-      const formattedDate = `${newDate.year()}-${newDate.month() + 1}-${day >= 10 ? day : '0' + day}`;
-
-      if (!disabledDates || (Array.isArray(disabledDates) && !disabledDates.length)) {
-        return false;
-      }
-
-      let count = 0;
-      disabledDates?.forEach((dateRange) => {
-        if (dayjs(formattedDate).isAfter(dateRange.startDate) && dayjs(formattedDate).isBefore(dateRange.endDate)) {
-          count++;
-        }
-        if (dayjs(formattedDate).isSame(dateRange.startDate) || dayjs(formattedDate).isSame(dateRange.endDate)) {
-          count++;
-        }
-      });
-      return count > 0;
-    },
-    [calendarData.date, disabledDates],
-  );
 
   const buttonClass = useCallback(
     (day: number, type: 'current' | 'next' | 'previous') => {
@@ -111,12 +85,11 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
         return classNames(
           baseClass,
           !activeDateData(day).active ? hoverClassByDay(day) : activeDateData(day).className,
-          isDateDisabled(day, type) && 'line-through',
         );
       }
-      return classNames(baseClass, isDateDisabled(day, type) && 'line-through', 'text-gray-400');
+      return classNames(baseClass, 'text-gray-400');
     },
-    [activeDateData, hoverClassByDay, isDateDisabled],
+    [activeDateData, hoverClassByDay],
   );
 
   const checkIfHoverPeriodContainsDisabledPeriod = useCallback(
@@ -237,7 +210,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
         <button
           type="button"
           key={index}
-          disabled={isDateDisabled(item, 'previous')}
           className={`${buttonClass(item, 'previous')}`}
           onClick={() => handleClickDay(item, 'previous')}
           onMouseOver={() => {
@@ -253,7 +225,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
         <button
           type="button"
           key={index}
-          disabled={isDateDisabled(item, 'current')}
           className={`${buttonClass(item, 'current')}`}
           onClick={() => handleClickDay(item, 'current')}
           onMouseOver={() => {
@@ -269,7 +240,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
         <button
           type="button"
           key={index}
-          disabled={isDateDisabled(item, 'next')}
           className={`${buttonClass(item, 'next')}`}
           onClick={() => handleClickDay(item, 'next')}
           onMouseOver={() => {

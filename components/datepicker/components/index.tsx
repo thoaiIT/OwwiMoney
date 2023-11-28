@@ -2,8 +2,8 @@ import Days from '@/components/datepicker/components/Days';
 import Months from '@/components/datepicker/components/Months';
 import Week from '@/components/datepicker/components/Week';
 import Years from '@/components/datepicker/components/Year';
-import { CALENDAR_SIZE } from '@/components/datepicker/const';
-import { DatepickerContext, type CalendarProps } from '@/components/datepicker/type';
+import { DatepickerContext } from '@/components/datepicker/const';
+import { type CalendarProps } from '@/components/datepicker/type';
 import {
   RoundedButton,
   formatDate,
@@ -40,7 +40,7 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
   }, [date]);
 
   const next = useCallback(() => {
-    return getFirstDaysInMonth(previousMonth(date), CALENDAR_SIZE - (previous().length + current().length));
+    return getFirstDaysInMonth(previousMonth(date), 42 - (previous().length + current().length));
   }, [current, date, previous]);
 
   const hideMonths = useCallback(() => {
@@ -53,20 +53,26 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
 
   const clickMonth = useCallback(
     (month: number) => {
-      setTimeout(() => {
+      const handleMonthClick = () => {
         changeMonth(month);
         setShowMonths(!showMonths);
-      }, 250);
+      };
+      requestAnimationFrame(() => {
+        requestAnimationFrame(handleMonthClick);
+      });
     },
     [changeMonth, showMonths],
   );
 
   const clickYear = useCallback(
     (year: number) => {
-      setTimeout(() => {
+      const handleYearClick = () => {
         changeYear(year);
         setShowYears(!showYears);
-      }, 250);
+      };
+      requestAnimationFrame(() => {
+        requestAnimationFrame(handleYearClick);
+      });
     },
     [changeYear, showYears],
   );
@@ -74,56 +80,34 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
   const clickDay = useCallback(
     (day: number, month = date.month() + 1, year = date.year()) => {
       const fullDay = `${year}-${month}-${day}`;
-      let newStart;
-      let newEnd = null;
+      let newStart = fullDay;
+      let newEnd = asSingle ? fullDay : null;
 
       const chosePeriod = (start: string, end: string) => {
-        const value = input?.current;
         changeDatepickerValue(
           {
             startDate: dayjs(start).format('YYYY-MM-DD'),
             endDate: dayjs(end).format('YYYY-MM-DD'),
           },
-          value,
+          input?.current,
         );
         hideDatepicker();
       };
 
-      if (period.start && period.end) {
-        if (changeDayHover) {
-          changeDayHover(null);
-        }
-        changePeriod({
-          start: null,
-          end: null,
-        });
+      if (period.start && !period.end) {
+        const condition = dayjs(fullDay).isSame(dayjs(period.start)) || dayjs(fullDay).isAfter(dayjs(period.start));
+        newStart = condition ? period.start : fullDay;
+        newEnd = condition ? fullDay : period.start;
+      } else if (period.end && !period.start) {
+        const condition = dayjs(fullDay).isSame(dayjs(period.end)) || dayjs(fullDay).isBefore(dayjs(period.end));
+        newStart = condition ? fullDay : period.start || '';
+        newEnd = condition ? period.end : fullDay;
+      } else if (!period.start && !period.end) {
+        changeDayHover(fullDay);
       }
 
-      if ((!period.start && !period.end) || (period.start && period.end)) {
-        if (!period.start && !period.end) {
-          changeDayHover(fullDay);
-        }
-        newStart = fullDay;
-        if (asSingle) {
-          newEnd = fullDay;
-          chosePeriod(fullDay, fullDay);
-        }
-      } else {
-        if (period.start && !period.end) {
-          const condition = dayjs(fullDay).isSame(dayjs(period.start)) || dayjs(fullDay).isAfter(dayjs(period.start));
-          newStart = condition ? period.start : fullDay;
-          newEnd = condition ? fullDay : period.start;
-        } else {
-          const condition = dayjs(fullDay).isSame(dayjs(period.end)) || dayjs(fullDay).isBefore(dayjs(period.end));
-          newStart = condition ? fullDay : period.start;
-          newEnd = condition ? period.end : fullDay;
-        }
-
-        if (!showFooter) {
-          if (newStart && newEnd) {
-            chosePeriod(newStart, newEnd);
-          }
-        }
+      if (!showFooter && newStart && newEnd) {
+        chosePeriod(newStart, newEnd);
       }
 
       if (!(newEnd && newStart) || showFooter) {
@@ -133,18 +117,7 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
         });
       }
     },
-    [
-      asSingle,
-      changeDatepickerValue,
-      changeDayHover,
-      changePeriod,
-      date,
-      hideDatepicker,
-      period.end,
-      period.start,
-      showFooter,
-      input,
-    ],
+    [asSingle, changeDatepickerValue, changeDayHover, changePeriod, date, hideDatepicker, period, showFooter, input],
   );
 
   const clickPreviousDays = useCallback(
@@ -165,12 +138,10 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
     [clickDay, date, onClickNext],
   );
 
-  // UseEffects & UseLayoutEffect
   useEffect(() => {
     setYear(date.year());
   }, [date]);
 
-  // Variables
   const calendarData = useMemo(() => {
     return {
       date: date,
@@ -183,7 +154,7 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
   }, [current, date, next, previous]);
 
   return (
-    <div className="w-full md:w-[296px] md:min-w-[296px]">
+    <div className="w-full">
       <div className="flex items-center space-x-1.5 border border-gray-300 dark:border-gray-700 rounded-md px-2 py-1.5">
         {!showMonths && !showYears && (
           <div className="flex-none">

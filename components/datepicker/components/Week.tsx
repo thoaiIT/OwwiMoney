@@ -8,7 +8,7 @@ const Week = () => {
       {DAYS.map((item) => (
         <div
           key={item}
-          className=" text-gray-500 text-center"
+          className="text-gray-500 text-center"
         >
           {ucFirst(shortString(dayjs(`2022-11-${6 + item}`).format('ddd')))}
         </div>
