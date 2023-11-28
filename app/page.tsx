@@ -1,4 +1,5 @@
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import HomePage from '@/components/home/Home';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
@@ -11,5 +12,5 @@ export default async function Home() {
     console.log('Session has expired');
   }
 
-  return <div className="ml-6">Home</div>;
+  return <HomePage />;
 }

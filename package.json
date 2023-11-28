@@ -33,6 +33,7 @@
     "class-validator": "^0.14.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "framer-motion": "^10.16.5",
     "moment": "^2.29.4",
     "next": "^14.0.0",
     "next-auth": "^4.24.5",
