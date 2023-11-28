@@ -6,7 +6,9 @@ import TableFooter from '@/components/table/TableFooter';
 import TableHeader, { type ColumnType } from '@/components/table/TableHeader';
 import TablePagination from '@/components/table/TablePagination';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
+import OwwiNoDataImg from '@/public/img/Owwi-NoData.png';
 import { Table } from '@radix-ui/themes';
+import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type TableProps<T> = {
@@ -153,12 +155,29 @@ const CommonTable = <TData,>({
           deleteHandler={deleteHandler}
           customHandler={customHandler}
         >
-          <TableFooter
-            columns={updatedColumns}
-            data={dataRender}
-            showTotal={showFooterTotal}
-            showAvg={showFooterAvg}
-          />
+          {!data.length && (
+            <Table.Row>
+              <Table.Cell colSpan={updatedColumns.length}>
+                <div className="flex w-full justify-center">
+                  <Image
+                    src={OwwiNoDataImg}
+                    width={200}
+                    height={200}
+                    alt="Logo"
+                    // className="absolute -top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4"
+                  />
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          )}
+          {data.length >= 1 && (
+            <TableFooter
+              columns={updatedColumns}
+              data={dataRender}
+              showTotal={showFooterTotal}
+              showAvg={showFooterAvg}
+            />
+          )}
         </TableBody>
       </Table.Root>
       {usePagination && <TablePagination tableData={tableData} />}
