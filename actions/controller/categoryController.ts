@@ -1,9 +1,10 @@
+'use server';
 import CategoryRepository from '@/actions/repositories/categoryRepository';
 import CategoryService from '@/actions/services/categoryService';
 import { HttpStatusCodes } from '@/helper/type';
-import type { Partner } from '@prisma/client';
+import type { Category } from '@prisma/client';
 
-export type CategoryCreateType = Pick<Partner, 'name' | 'description' | 'typeId'>;
+export type CategoryCreateType = Pick<Category, 'name' | 'description' | 'typeId'>;
 export type CategoryUpdateType = CategoryCreateType & { categoryId: string };
 
 const categoryRepository = new CategoryRepository();
