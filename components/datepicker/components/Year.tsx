@@ -1,12 +1,7 @@
+import type { YearProps } from '@/components/datepicker/type';
 import { RoundedButton, generateArrayNumber } from '@/components/datepicker/utils';
 
-interface Props {
-  year: number;
-  currentYear: number;
-  clickYear: (data: number) => void;
-}
-
-const Years: React.FC<Props> = ({ year, currentYear, clickYear }) => {
+const Years = ({ year, currentYear, clickYear }: YearProps) => {
   const startDate = year;
   const endDate = year + 11;
   return (

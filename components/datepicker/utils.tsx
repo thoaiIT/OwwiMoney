@@ -1,3 +1,4 @@
+import type { Button } from '@/components/datepicker/type';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import weekday from 'dayjs/plugin/weekday';
@@ -149,15 +150,6 @@ export function dateIsValid(date: Date | number) {
   return date instanceof Date && !isNaN(date.getTime());
 }
 
-interface Button {
-  children: JSX.Element | JSX.Element[];
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-  disabled?: boolean;
-  roundedFull?: boolean;
-  padding?: string;
-  active?: boolean;
-}
-
 // eslint-disable-next-line react/display-name,@typescript-eslint/ban-types
 export const Arrow = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
@@ -168,15 +160,14 @@ export const Arrow = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
   );
 });
 
-export const RoundedButton: React.FC<Button> = ({
+export const RoundedButton = ({
   children,
   onClick,
   disabled,
   roundedFull = false,
   padding = 'py-[0.55rem]',
   active = false,
-}) => {
-  // Functions
+}: Button) => {
   const getClassName = useCallback(() => {
     const darkClass = 'dark:text-white/70 dark:hover:bg-white/10 dark:focus:bg-white/10';
     const activeClass = active ? 'font-semibold bg-gray-50 dark:bg-white/5' : '';

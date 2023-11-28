@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import React, { createContext } from 'react';
+import React, { createContext, type RefObject } from 'react';
 
 export interface Period {
   start: string | null;
@@ -92,3 +92,40 @@ export interface Button {
   padding?: string;
   active?: boolean;
 }
+
+export interface DayProps {
+  calendarData: {
+    date: dayjs.Dayjs;
+    days: {
+      previous: number[];
+      current: number[];
+      next: number[];
+    };
+  };
+  onClickPreviousDays: (day: number) => void;
+  onClickDay: (day: number) => void;
+  onClickNextDays: (day: number) => void;
+}
+
+export interface CalendarProps {
+  date: dayjs.Dayjs;
+  onClickPrevious: () => void;
+  onClickNext: () => void;
+  changeMonth: (month: number) => void;
+  changeYear: (year: number) => void;
+}
+
+export interface MonthProps {
+  currentMonth: number;
+  clickMonth: (month: number) => void;
+}
+
+export interface YearProps {
+  year: number;
+  currentYear: number;
+  clickYear: (data: number) => void;
+}
+
+export type InputProps = {
+  setContextRef?: (ref: RefObject<HTMLInputElement>) => void;
+};

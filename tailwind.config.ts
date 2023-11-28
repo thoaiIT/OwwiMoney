@@ -33,6 +33,11 @@ module.exports = {
         'color-resend': '#F2451C',
         'color-error': '#F03E3E',
         'color-success': '#51cf66',
+        'color-mute': '#71717A',
+        'gray-03': '#9F9F9F',
+        'gray-02': '#878787',
+        'gray-01': '#666',
+        'light-gray': 'rgba(210, 210, 210, 0.25)',
         celestial_blue: {
           DEFAULT: '#4698D0',
           100: '#0c1f2d',
@@ -40,6 +45,14 @@ module.exports = {
           300: '#235e86',
           400: '#2e7db2',
           500: '#4698d0',
+        },
+        danger: {
+          DEFAULT: '#fa5252',
+          100: '#c92a2a',
+          200: '#e03131',
+          300: '#f03e3e',
+          400: '#fa5252',
+          500: '#ff6b6b',
         },
         seasalt: {
           DEFAULT: '#F8F7F7',
@@ -109,6 +122,9 @@ module.exports = {
           DEFAULT: 'var(--theme)',
           foreground: 'var(--theme-foreground)',
           hover: 'var(--theme-hover)',
+          text: 'var(--theme-text)',
+          component: 'var(--theme-component)',
+          logo: 'var(--theme-logo)',
         },
       },
       fontSize: {

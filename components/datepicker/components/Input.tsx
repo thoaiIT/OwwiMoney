@@ -1,15 +1,10 @@
 import dayjs from 'dayjs';
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, type FC } from 'react';
 
-import { DatepickerContext } from '@/components/datepicker/type';
+import { DatepickerContext, type InputProps } from '@/components/datepicker/type';
 import { dateIsValid, parseFormattedDate } from '@/components/datepicker/utils';
 
-type Props = {
-  setContextRef?: (ref: React.RefObject<HTMLInputElement>) => void;
-};
-
-const Input: React.FC<Props> = (e: Props) => {
-  // Context
+const Input: FC<InputProps> = () => {
   const {
     period,
     dayHover,
@@ -58,17 +53,8 @@ const Input: React.FC<Props> = (e: Props) => {
     [asSingle, changeDatepickerValue, changeDayHover, changeInputText],
   );
 
-  // UseEffects && UseLayoutEffect
   useEffect(() => {
-    if (inputRef && e.setContextRef && typeof e.setContextRef === 'function') {
-      e.setContextRef(inputRef);
-    }
-  }, [e, inputRef]);
-
-  useEffect(() => {
-    const button = buttonRef?.current;
-
-    function focusInput(e: Event) {
+    const focusInput = (e: Event) => {
       e.stopPropagation();
       const input = inputRef.current;
       if (input) {
@@ -89,15 +75,15 @@ const Input: React.FC<Props> = (e: Props) => {
           }
         }
       }
-    }
+    };
 
-    if (button) {
-      button.addEventListener('click', focusInput);
+    if (buttonRef?.current) {
+      buttonRef?.current.addEventListener('click', focusInput);
     }
 
     return () => {
-      if (button) {
-        button.removeEventListener('click', focusInput);
+      if (buttonRef?.current) {
+        buttonRef?.current.removeEventListener('click', focusInput);
       }
     };
   }, [changeDatepickerValue, changeDayHover, changeInputText, dayHover, inputText, period.end, period.start, inputRef]);
@@ -107,7 +93,7 @@ const Input: React.FC<Props> = (e: Props) => {
     const input = inputRef.current;
     const arrow = arrowContainer?.current;
 
-    function showCalendarContainer() {
+    const showCalendarContainer = () => {
       if (arrow && div && div.classList.contains('hidden')) {
         div.classList.remove('hidden');
         div.classList.add('block');
@@ -126,7 +112,6 @@ const Input: React.FC<Props> = (e: Props) => {
           arrow.classList.remove('border-l');
           arrow.classList.remove('border-t');
         }
-
         setTimeout(() => {
           div.classList.remove('translate-y-4');
           div.classList.remove('opacity-0');
@@ -134,7 +119,7 @@ const Input: React.FC<Props> = (e: Props) => {
           div.classList.add('opacity-1');
         }, 1);
       }
-    }
+    };
 
     if (div && input) {
       input.addEventListener('focus', showCalendarContainer);

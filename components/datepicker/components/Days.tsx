@@ -1,31 +1,14 @@
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import React, { useCallback, useContext } from 'react';
+import { useCallback, useContext } from 'react';
 
-import { DatepickerContext, type Period } from '@/components/datepicker/type';
+import { DatepickerContext, type DayProps, type Period } from '@/components/datepicker/type';
 import { classNames, formatDate, nextMonth, previousMonth } from '@/components/datepicker/utils';
 
 dayjs.extend(isBetween);
 
-interface Props {
-  calendarData: {
-    date: dayjs.Dayjs;
-    days: {
-      previous: number[];
-      current: number[];
-      next: number[];
-    };
-  };
-  onClickPreviousDays: (day: number) => void;
-  onClickDay: (day: number) => void;
-  onClickNextDays: (day: number) => void;
-}
-
-const Days: React.FC<Props> = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }) => {
-  // Contexts
+const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }: DayProps) => {
   const { period, changePeriod, dayHover, changeDayHover, disabledDates } = useContext(DatepickerContext);
-
-  // Functions
   const currentDateClass = useCallback(
     (item: number) => {
       const itemDate = `${calendarData.date.year()}-${calendarData.date.month() + 1}-${item >= 10 ? item : '0' + item}`;
@@ -107,16 +90,16 @@ const Days: React.FC<Props> = ({ calendarData, onClickPreviousDays, onClickDay, 
         return false;
       }
 
-      let matchingCount = 0;
+      let count = 0;
       disabledDates?.forEach((dateRange) => {
         if (dayjs(formattedDate).isAfter(dateRange.startDate) && dayjs(formattedDate).isBefore(dateRange.endDate)) {
-          matchingCount++;
+          count++;
         }
         if (dayjs(formattedDate).isSame(dateRange.startDate) || dayjs(formattedDate).isSame(dateRange.endDate)) {
-          matchingCount++;
+          count++;
         }
       });
-      return matchingCount > 0;
+      return count > 0;
     },
     [calendarData.date, disabledDates],
   );
@@ -207,7 +190,7 @@ const Days: React.FC<Props> = ({ calendarData, onClickPreviousDays, onClickDay, 
 
   const handleClickDay = useCallback(
     (day: number, type: 'previous' | 'current' | 'next') => {
-      function continueClick() {
+      const continueClick = () => {
         if (type === 'previous') {
           onClickPreviousDays(day);
         }
@@ -217,7 +200,7 @@ const Days: React.FC<Props> = ({ calendarData, onClickPreviousDays, onClickDay, 
         if (type === 'next') {
           onClickNextDays(day);
         }
-      }
+      };
 
       if (disabledDates?.length) {
         const object = getMetaData();

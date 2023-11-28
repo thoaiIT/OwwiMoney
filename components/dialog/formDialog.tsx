@@ -1,6 +1,8 @@
 'use client';
 
-import React, { Fragment, type ReactNode } from 'react';
+import { CommonButton } from '@/components/button';
+import { Fragment, type ReactNode } from 'react';
+import { tailwindMerge } from '../../utils/helper';
 import {
   Dialog,
   DialogClose,
@@ -13,8 +15,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './dialog';
-import { CommonButton } from '../button';
-import { tailwindMerge } from '../../utils/helper';
 
 interface DialogFormProps {
   titleDialog: ReactNode;
@@ -25,6 +25,7 @@ interface DialogFormProps {
   customStyleFooter?: string;
   useCustomFooter?: ReactNode;
   handleSubmit?: () => void;
+  handleClose?: () => void;
   allowCloseOutside?: boolean;
   isNotUseDefaultFooter?: boolean;
   customTextFooterButton?: string;
@@ -42,23 +43,26 @@ const DialogForm = ({
   customTextFooterButton,
   isNotUseDefaultFooter = false,
   handleSubmit,
+  handleClose,
 }: DialogFormProps) => {
   return (
-    <Dialog>
-      <DialogTrigger>
-        {useCustomTrigger ? (
-          <Fragment>{useCustomTrigger}</Fragment>
-        ) : (
-          <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>
-        )}
+    <Dialog
+      onOpenChange={(open) => {
+        !open && !!handleClose && handleClose();
+      }}
+    >
+      <DialogTrigger asChild>
+        {useCustomTrigger ? useCustomTrigger : <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>}
       </DialogTrigger>
 
       <DialogPortal>
         <DialogOverlay />
-
-        <DialogContent onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}>
+        <DialogContent
+          onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}
+          className="bg-theme"
+        >
           <DialogHeader className={tailwindMerge(customStyleHeader)}>
-            <DialogTitle>{titleDialog}</DialogTitle>
+            <DialogTitle className="text-xl font-bold">{titleDialog}</DialogTitle>
             <DialogClose onClick={() => console.log('check')} />
           </DialogHeader>
 
@@ -70,7 +74,7 @@ const DialogForm = ({
             ) : (
               <Fragment>
                 {!isNotUseDefaultFooter && (
-                  <DialogClose>
+                  <DialogClose asChild>
                     <button onClick={handleSubmit}>{customTextFooterButton ?? 'Submit'}</button>
                   </DialogClose>
                 )}

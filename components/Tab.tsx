@@ -2,7 +2,7 @@ import { tailwindMerge } from '@/utils/helper';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import React from 'react';
 
-type tabsListType = {
+export type tabsListType = {
   value: string;
   label: string;
 };
@@ -18,7 +18,7 @@ const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.List>, T
     <TabsPrimitive.List
       ref={ref}
       className={tailwindMerge(
-        'flex h-9 items-center justify-center rounded-lg bg-theme p-1 text-theme-foreground gap-2',
+        'flex h-9 items-center justify-start rounded-lg p-1 text-theme-foreground gap-2',
         className,
       )}
       {...props}

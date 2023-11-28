@@ -1,10 +1,15 @@
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { options } from '../../../app/api/auth/[...nextauth]/options';
-const Page = async () => {
-  const session = await getServerSession(options);
-  if (!session?.user?.emailConfirmed) redirect('/verification');
-  return <div>Transactions</div>;
+import Transactions, { type TransactionTableType } from '@/app/(dashboard)/transactions/Transactions';
+import Title from '@/components/dashboard/Title';
+
+const data: TransactionTableType[] = [];
+
+const Page = () => {
+  return (
+    <div>
+      <Title title="Recent Transactions" />
+      <Transactions dataTable={data} />
+    </div>
+  );
 };
 
 export default Page;

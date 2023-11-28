@@ -6,13 +6,13 @@ import Input from '@/components/datepicker/components/Input';
 import { DatepickerContext, type DatepickerType, type Period } from '@/components/datepicker/type';
 import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
 
-const CommonDatePicker: React.FC<DatepickerType> = ({
+const CommonDatePicker = ({
   value = null,
   onChange,
   disabled = false,
   inputId,
   classNames = undefined,
-}) => {
+}: DatepickerType) => {
   // Ref
   const containerRef = useRef<HTMLDivElement | null>(null);
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
@@ -29,15 +29,6 @@ const CommonDatePicker: React.FC<DatepickerType> = ({
   const [inputText, setInputText] = useState<string>('');
   const [inputRef, setInputRef] = useState(React.createRef<HTMLInputElement>());
 
-  // Custom Hooks use
-  useOnClickOutside(containerRef, () => {
-    const container = containerRef.current;
-    if (container) {
-      hideDatepicker();
-    }
-  });
-
-  // Functions
   const hideDatepicker = useCallback(() => {
     const div = calendarContainerRef.current;
     const arrow = arrowRef.current;
@@ -62,6 +53,13 @@ const CommonDatePicker: React.FC<DatepickerType> = ({
       div.classList.add('opacity-0');
     }
   }, []);
+
+  useOnClickOutside(containerRef, () => {
+    const container = containerRef.current;
+    if (container) {
+      hideDatepicker();
+    }
+  });
 
   /* Start First */
   const firstGotoDate = useCallback(

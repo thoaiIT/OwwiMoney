@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { options } from '../../../app/api/auth/[...nextauth]/options';
 import Container from '../../../components/login/Container';
 import FormWrap from '../../../components/login/FormWrap';
-import VerificationForm from './VerificationForm';
+import VerificationForm from '../../../components/login/VerificationForm';
 
 const Page = async () => {
   const session = await getServerSession(options);

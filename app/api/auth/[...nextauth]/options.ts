@@ -1,44 +1,51 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcrypt';
-import { type AuthOptions } from 'next-auth';
+import { type AuthOptions, type ISODateString, type User } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import CredentialProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '../../../../helper/lib/prismadb';
 
+export interface CustomSession {
+  expires: ISODateString;
+  user?: CustomUser;
+}
+
+export interface CustomUser {
+  id?: string | null;
+  name?: string | null;
+  username?: string | null;
+  email?: string | null;
+  image?: string | null;
+  emailConfirmed?: boolean | unknown;
+  userId?: string | unknown;
+}
+
 export const options: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GitHubProvider({
-      profile(profile) {
-        console.log('Profile Github: ', profile);
-
-        const userRole = 'Github User';
-
-        return {
-          ...profile,
-          role: userRole,
-          emailConfirmed: true,
-        };
-      },
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
     GoogleProvider({
-      profile(profile) {
-        console.log('Profile Google: ', profile);
-
-        const userRole = 'Google User';
-
-        return {
-          ...profile,
-          id: profile.sub,
-          role: userRole,
-          emailConfirmed: true,
-        };
-      },
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
     }),
     CredentialProvider({
       name: 'Credentials',
@@ -66,7 +73,7 @@ export const options: AuthOptions = {
           if (!user) throw new Error('User not found');
 
           if (user) {
-            const match = await bcrypt.compare(credentials.password, user.password);
+            const match = await bcrypt.compare(credentials.password, user.password as string);
 
             if (match) {
               return {
@@ -88,11 +95,9 @@ export const options: AuthOptions = {
       if (trigger === 'update') return { ...token, ...session.user };
       return { ...token, ...user };
     },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.userId = token.userId;
-        session.user.emailConfirmed = token.emailConfirmed;
-      }
+
+    async session({ session, token, user }: { session: CustomSession; token: JWT; user: User }) {
+      session.user = { ...token, emailConfirmed: token.emailConfirmed, userId: token.userId };
       return session;
     },
   },

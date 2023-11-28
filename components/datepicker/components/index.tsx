@@ -3,7 +3,7 @@ import Months from '@/components/datepicker/components/Months';
 import Week from '@/components/datepicker/components/Week';
 import Years from '@/components/datepicker/components/Year';
 import { CALENDAR_SIZE } from '@/components/datepicker/const';
-import { DatepickerContext } from '@/components/datepicker/type';
+import { DatepickerContext, type CalendarProps } from '@/components/datepicker/type';
 import {
   RoundedButton,
   formatDate,
@@ -16,7 +16,7 @@ import {
   previousMonth,
 } from '@/components/datepicker/utils';
 import dayjs from 'dayjs';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   MdOutlineArrowBackIosNew,
   MdOutlineArrowForwardIos,
@@ -24,24 +24,13 @@ import {
   MdOutlineKeyboardDoubleArrowRight,
 } from 'react-icons/md';
 
-interface Props {
-  date: dayjs.Dayjs;
-  onClickPrevious: () => void;
-  onClickNext: () => void;
-  changeMonth: (month: number) => void;
-  changeYear: (year: number) => void;
-}
-
-const Calendar: React.FC<Props> = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear }) => {
-  // Contexts
+const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear }: CalendarProps) => {
   const { period, changePeriod, changeDayHover, showFooter, changeDatepickerValue, hideDatepicker, asSingle, input } =
     useContext(DatepickerContext);
-
-  // States
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
   const [year, setYear] = useState(date.year());
-  // Functions
+
   const previous = useCallback(() => {
     return getLastDaysInMonth(previousMonth(date), getNumberOfDay(getFirstDayInMonth(date).ddd));
   }, [date]);
@@ -88,17 +77,17 @@ const Calendar: React.FC<Props> = ({ date, onClickPrevious, onClickNext, changeM
       let newStart;
       let newEnd = null;
 
-      function chosePeriod(start: string, end: string) {
-        const ipt = input?.current;
+      const chosePeriod = (start: string, end: string) => {
+        const value = input?.current;
         changeDatepickerValue(
           {
             startDate: dayjs(start).format('YYYY-MM-DD'),
             endDate: dayjs(end).format('YYYY-MM-DD'),
           },
-          ipt,
+          value,
         );
         hideDatepicker();
-      }
+      };
 
       if (period.start && period.end) {
         if (changeDayHover) {
@@ -121,14 +110,10 @@ const Calendar: React.FC<Props> = ({ date, onClickPrevious, onClickNext, changeM
         }
       } else {
         if (period.start && !period.end) {
-          // start not null
-          // end null
           const condition = dayjs(fullDay).isSame(dayjs(period.start)) || dayjs(fullDay).isAfter(dayjs(period.start));
           newStart = condition ? period.start : fullDay;
           newEnd = condition ? fullDay : period.start;
         } else {
-          // Start null
-          // End not null
           const condition = dayjs(fullDay).isSame(dayjs(period.end)) || dayjs(fullDay).isBefore(dayjs(period.end));
           newStart = condition ? fullDay : period.start;
           newEnd = condition ? period.end : fullDay;

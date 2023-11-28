@@ -1,20 +1,32 @@
+'use client';
+
 import { cva } from 'class-variance-authority';
-import { forwardRef, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode } from 'react';
+import type { ChangeEvent, HTMLInputTypeAttribute, ReactNode } from 'react';
+import type { FieldErrors } from 'react-hook-form';
 import { tailwindMerge } from '../utils/helper';
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps {
   intent?: 'primary' | 'secondary' | 'outline' | 'disabled' | 'simple';
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  minValue?: string;
   icon?: ReactNode;
-  label?: string;
-  errors?: string;
+  name: string;
+  value?: string;
+  errors?: FieldErrors;
+  maxLength?: number;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  isDisabled?: boolean;
+}
+
+export function capitalizeFirstLetter(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 const textFieldVariants = cva(
   [
-    'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+    'flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
   ],
   {
     variants: {
@@ -32,29 +44,63 @@ const textFieldVariants = cva(
   },
 );
 
-const CommonInput = forwardRef<HTMLInputElement, InputProps>(
-  ({ intent, placeholder, className, type = 'text', label, errors, ...props }, ref) => {
-    return (
-      <div>
-        <p className={`mb-2 ${errors ? 'text-red-500' : ''}`}>{label}</p>
-        <input
-          type={type}
-          placeholder={placeholder}
-          ref={ref}
-          className={tailwindMerge(
-            textFieldVariants({
-              intent: intent,
-              className: `${className} ${
-                errors ? 'border-red-600 border-[1px] focus-visible:ring-red-500 focus-visible:border-red-500 ' : ''
-              }`,
-            }),
-          )}
-          {...props}
-        />
-        {!!errors && <p className="text-sm text-red-500 mt-2">{errors}</p>}
-      </div>
-    );
-  },
-);
+const CommonInput = ({
+  intent,
+  placeholder,
+  className,
+  value,
+  type = 'text',
+  icon,
+  name,
+  errors,
+  onChange,
+  maxLength,
+  isDisabled,
+  minValue,
+  ...props
+}: InputProps) => {
+  return (
+    <div className="w-full relative">
+      {icon && icon}
+      <input
+        maxLength={maxLength}
+        value={value}
+        onChange={onChange}
+        type={type}
+        min={minValue}
+        readOnly={isDisabled}
+        placeholder={placeholder ? placeholder : ' '}
+        className={tailwindMerge([
+          textFieldVariants({ intent: intent, className: className }),
+          errors && errors[name]?.message && 'border-red-500',
+          isDisabled && 'cursor-pointer',
+        ])}
+        disabled={intent === 'disabled'}
+        {...props}
+      />
+      {!!errors && (
+        <label
+          htmlFor={name}
+          className={`
+          text-sm
+          mt-2
+          duration-100
+          transform
+          -translate-y-3
+          z-100
+          origin-[0]
+          peer-placeholder-shown:scale-100
+          peer-placeholder-shown:translate-y-0
+          peer-focus:scale-75
+          peer-focus:-translate-y-4
+          ${errors[name] ? 'text-red-500' : 'text-gray-400'}
+        `}
+        >
+          {capitalizeFirstLetter(errors[name]?.message?.toString() || '')}
+        </label>
+      )}
+    </div>
+  );
+};
 
 export default CommonInput;

@@ -7,17 +7,39 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Account {
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.String
+    access_token      String? @db.String
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.String
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
 model User {
     id             String        @id @default(auto()) @map("_id") @db.ObjectId
     name           String
     email          String        @unique
-    password       String
-    emailConfirmed Boolean
+    password       String?
+    emailConfirmed Boolean       @default(true)
+    emailVerified  DateTime?
     avatarUrl      String?
     bio            String?
     totalBalance   Float?
     createdAt      DateTime      @default(now())
     updatedAt      DateTime      @updatedAt
+    image          String?
+    role           String?
     Room           Room[]
     Otp            Otp[]
     Transaction    Transaction[]
@@ -25,6 +47,7 @@ model User {
     Partner        Partner[]
     UserBudget     UserBudget[]
     Wallet         Wallet[]
+    Account        Account[]
 }
 
 model Type {
@@ -135,6 +158,8 @@ model Otp {
 
 model Transaction {
     id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    createdDate DateTime
 
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id])

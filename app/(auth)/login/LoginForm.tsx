@@ -1,37 +1,28 @@
 'use client';
 
-import { deleteCookies } from '@/actions/cookies';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { signIn, useSession } from 'next-auth/react';
+import { CommonButton } from '@/components/button';
+import CommonInput from '@/components/input';
+import Heading from '@/components/login/Heading';
+import { LoginModel } from '@/model/authModel';
+import FaceBookIcon from '@/public/icons/facebook.svg';
+import GitHubIcon from '@/public/icons/github.svg';
+import GoogleIcon from '@/public/icons/google.svg';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { CommonButton } from '../../../components/button';
-import CommonInput from '../../../components/input';
-import Heading from '../../../components/login/Heading';
-import FaceBookIcon from '../../../public/icons/facebook.svg';
-import GitHubIcon from '../../../public/icons/github.svg';
-import GoogleIcon from '../../../public/icons/google.svg';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
-interface LoginModel {
-  email: string;
-  password: string;
-}
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string().required('No password provided.').min(7, 'Password is too short - should be 7 chars minimum.'),
-});
+const resolver = classValidatorResolver(LoginModel);
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const {
     control,
@@ -42,97 +33,117 @@ const LoginForm = () => {
       email: '',
       password: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: LoginModel) => {
     setIsLoading(true);
-    await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
+    await signIn('credentials', { ...values, redirect: false }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
-        console.log(callback);
-        toast.success('Login Successfully !');
-        // success({
-        //   message:
-        //     'Toast message ---- fuidsfiusdhfiudsgfyudfuidsgfob sgfdf dfiusfoi:' +
-        //     (Math.trunc(Math.random() * 900000000) + 100000000).toString(),
-        // });
         router.push('/dashboard');
         router.refresh();
-      }
-      if (callback?.error) {
+        toast.success('Login Successfully !');
+      } else {
         console.log(callback);
         toast.error('Invalid email or password !');
-        // error({ message: 'Toast message ---- :' + (Math.trunc(Math.random() * 900000000) + 100000000).toString() });
       }
     });
+    setIsLoading(false);
   });
 
   useEffect(() => {
-    if (session && !session?.user?.emailConfirmed) deleteCookies('next-auth.session-token');
-  }, [session]);
+    const callbackError = searchParams?.get('error');
+
+    if (callbackError === 'OAuthAccountNotLinked') {
+      toast.error('whoops, there may already be an account with that email');
+    }
+  }, [searchParams]);
+
   return (
     <>
       <Heading
         title="OwwiMoney"
         custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
       />
-      <Heading
-        title="Login"
-        custom="mt-2 text-3xl text-center xl:text-start"
-      />
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            label="Email"
-            value={value}
-            onChange={onChange}
-            placeholder="Username@gmail.com"
-            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors.email?.message}
+      <div className="flex items-center justify-center xl:justify-start">
+        <Image
+          src={OwwiFigure}
+          alt="owwi"
+          width={60}
+          height={60}
+          className="xl:hidden"
+        />
+        <Heading
+          title="Login"
+          custom="mt-2 text-4xl text-center xl:text-start"
+        />
+      </div>
+      <form>
+        <div>
+          <label htmlFor="email">Email</label>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="email"
+                value={value}
+                onChange={onChange}
+                placeholder="Username@gmail.com"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base my-2 "
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            label="Password"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Password"
-            className="xl:w-[80%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors.password?.message}
+        </div>
+
+        <div>
+          <label htmlFor="password">Password</label>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="password"
+                type="password"
+                value={value}
+                onChange={onChange}
+                placeholder="Password"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base my-2"
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <p className="text-sm">
-        <Link
-          className="text-dark-blue font-medium hover:text-blue-500"
-          href="/forgetpassword"
+        </div>
+
+        <p className="text-sm">
+          <Link
+            className="text-dark-blue font-medium hover:text-blue-500"
+            href="/forgotpassword"
+          >
+            Forget Password?
+          </Link>
+        </p>
+        <CommonButton
+          intent={'secondary'}
+          onClick={handleSubmitForm}
+          disabled={isLoading}
+          className="my-2"
         >
-          Forget Password?
-        </Link>
-      </p>
-      <CommonButton
-        intent={'secondary'}
-        className="xl:w-[80%]"
-        onClick={handleSubmitForm}
-        disabled={isLoading}
-      >
-        {isLoading ? 'Loading...' : 'Sign In'}
-      </CommonButton>
-      <div className="xl:w-[80%] mt-1">
+          {isLoading ? 'Loading...' : 'Sign In'}
+        </CommonButton>
+      </form>
+
+      <div className="mt-1">
         <p className="text-sm text-gray-400 text-center">or continue with</p>
       </div>
-      <div className="xl:w-[80%] grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('google', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GoogleIcon}
@@ -141,7 +152,9 @@ const LoginForm = () => {
         </CommonButton>
         <CommonButton
           intent={'outline'}
-          onClick={() => ''}
+          onClick={async () => {
+            await signIn('github', { callbackUrl: '/dashboard' });
+          }}
         >
           <Image
             src={GitHubIcon}
@@ -158,7 +171,7 @@ const LoginForm = () => {
           />
         </CommonButton>
       </div>
-      <div className="xl:w-[80%]">
+      <div>
         <p className="text-sm text-gray-400 text-center">
           Don&apos;t have an account yet?
           <Link
