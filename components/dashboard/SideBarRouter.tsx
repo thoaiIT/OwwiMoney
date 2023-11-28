@@ -58,6 +58,11 @@ const SideBarRouter = () => {
         href="/transactions"
       />
       <ListItem
+        icon={FaPaperPlane}
+        title="Partners"
+        href="/partners"
+      />
+      <ListItem
         icon={IoMdAnalytics}
         title="Analytics"
         href="/analytics"
