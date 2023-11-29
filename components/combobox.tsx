@@ -31,7 +31,7 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     customInput?: string;
     name: string;
     valueProp?: string;
-    onChange: (value: dataType) => void;
+    onChange: (value: string) => void;
     errors?: FieldErrors;
   };
 
@@ -86,6 +86,10 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       setWidth(`${divRef.current?.offsetWidth}px`);
     }, [open, optionsProp, size]);
 
+    useEffect(() => {
+      setValue(valueProp as string);
+    }, [valueProp]);
+
     return (
       <PopoverPrimitive.Root
         open={open && !isDisabled}
@@ -109,7 +113,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
               !!errors?.[name]?.message && 'border-red-500',
             )}
           >
-            {value ? optionsProp.find((option) => option.value === value)?.label : placeholder}
+            {!value ? placeholder : optionsProp.find((option) => option.value === value)?.label}
             <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
           </div>
         </PopoverPrimitive.Trigger>
@@ -146,7 +150,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                   key={option.value}
                   item={option}
                   onSelect={(item) => {
-                    onChange(item);
+                    onChange(item.value);
                     setValue(item.value);
                     setOpen(false);
                   }}
@@ -164,7 +168,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
           mt-2
           duration-100
           transform
-          -translate-y-3
+          -translate-y-2
           z-100
           origin-[0]
           peer-placeholder-shown:scale-100
