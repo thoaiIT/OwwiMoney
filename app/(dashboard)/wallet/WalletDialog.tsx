@@ -2,9 +2,10 @@
 
 import { createWallet, getAllWalletType } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
-import CommonCombobox, { type dataType } from '@/components/combobox';
+import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
+
 import { WalletModel } from '@/model/walletModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, TextArea } from '@radix-ui/themes';
@@ -20,7 +21,7 @@ interface WalletDialogProps {
 const resolver = classValidatorResolver(WalletModel);
 
 const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
-  const [walletTypeOption, setWalletTypeOption] = useState<dataType[]>([{ label: '', value: '' }]);
+  const [walletTypeOption, setWalletTypeOption] = useState<DataType[]>([{ label: '', value: '' }]);
 
   const {
     control,
@@ -65,7 +66,7 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
         const result = await getAllWalletType();
         if (result) {
           const walletType = result.data?.walletTypes.map((item) => ({ value: item.id, label: item.typeName }));
-          setWalletTypeOption(walletType as dataType[]);
+          setWalletTypeOption(walletType as DataType[]);
         }
       } catch (error) {
         console.error('Error:', error);

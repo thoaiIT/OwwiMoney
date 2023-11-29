@@ -28,6 +28,14 @@ export const getAllPartnerByUser = async () => {
   }
 };
 
+export const getCategoryByType = async (typeId: string) => {
+  try {
+    return await categoryService.getCategoryByType(typeId);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
 export const getCategoryByName = async (name: string) => {
   try {
     return await categoryService.getCategoryByName(name);
