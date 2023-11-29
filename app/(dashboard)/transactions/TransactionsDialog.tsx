@@ -3,7 +3,7 @@ import { getCategoryByType } from '@/actions/controller/categoryController';
 import { getAllPartnerByUser } from '@/actions/controller/partnerController';
 import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
-import { getAllWallets } from '@/actions/controller/walletController';
+import { getAllWallet } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
@@ -188,8 +188,8 @@ const TransactionsDialog = () => {
       setTypeOptions(typeOptions as DataType[]);
     };
     const fetchAllWallet = async () => {
-      const allWallets = await getAllWallets();
-      const walletOptions: DataType[] | undefined = allWallets.data?.types?.map((wallet) => {
+      const allWallets = await getAllWallet();
+      const walletOptions: DataType[] | undefined = allWallets.data?.wallets?.map((wallet) => {
         return { value: wallet.id, label: wallet.name } as DataType;
       });
 
