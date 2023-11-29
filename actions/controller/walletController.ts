@@ -20,6 +20,31 @@ export const createWallet = async (data: WalletCreateType) => {
   }
 };
 
+export const getAllWallet = async () => {
+  try {
+    return await walletService.getAllWallet();
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const getWalletById = async (walletId: string) => {
+  try {
+    return await walletService.getWalletById(walletId);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const deleteWallet = async (walletId: string) => {
+  try {
+    return await walletService.deleteWallet(walletId);
+  } catch (error) {
+    console.log(error);
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
 export const getAllWalletType = async () => {
   try {
     return await walletService.getAllWalletType();
@@ -33,13 +58,5 @@ export const getWalletTypeName = async (walletTypeId: string) => {
     return await walletService.getWalletTypeName(walletTypeId);
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
-  }
-};
-
-export const getAllWallet = async () => {
-  try {
-    return await walletService.getAllWallet();
-  } catch (error) {
-    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };

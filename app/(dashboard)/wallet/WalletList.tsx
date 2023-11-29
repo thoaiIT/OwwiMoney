@@ -63,6 +63,7 @@ const WalletList = () => {
 
     fetchData();
   }, [triggerRerender]);
+
   return (
     <div className="flex gap-4 flex-wrap">
       {wallets &&
@@ -70,6 +71,7 @@ const WalletList = () => {
           <WalletCard
             key={index}
             wallet={wallet}
+            handleRerender={handleRerender}
           />
         ))}
       <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full h-[292px] rounded-[8px] items-center justify-center flex">

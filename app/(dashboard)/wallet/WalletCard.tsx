@@ -1,6 +1,6 @@
 'use client';
 
-import { getWalletTypeName } from '@/actions/controller/walletController';
+import { deleteWallet, getWalletTypeName } from '@/actions/controller/walletController';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
@@ -11,9 +11,11 @@ import Image, { type StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
+import { toast } from 'react-toastify';
 
 interface WalletCardProps {
   wallet: WalletModel;
+  handleRerender: () => void;
 }
 
 interface WalletTypeIcon {
@@ -36,7 +38,7 @@ const walletTypeIcon = [
   },
 ];
 
-const WalletCard = ({ wallet }: WalletCardProps) => {
+const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
   const [walletTypeName, setWalletTypeName] = useState<string | undefined>('');
   const [displayIcon, setDisplayIcon] = useState<WalletTypeIcon>();
   const router = useRouter();
@@ -49,6 +51,16 @@ const WalletCard = ({ wallet }: WalletCardProps) => {
       setDisplayIcon(iconTarget);
     })();
   }, []);
+
+  const handleDeleteWallet = async () => {
+    const result = await deleteWallet(wallet.id);
+    if (result.status?.code === 200) {
+      toast.success(result.message);
+      handleRerender();
+    } else {
+      toast.error(result.message);
+    }
+  };
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
@@ -59,8 +71,8 @@ const WalletCard = ({ wallet }: WalletCardProps) => {
           <div className="flex items-center gap-2">
             <p className="text-gray-01 text-xs font-semibold">{walletTypeName}</p>
             <Image
-              src={displayIcon?.image as StaticImageData}
-              alt={displayIcon?.name as string}
+              src={(displayIcon?.image as StaticImageData) || CashIcon}
+              alt={(displayIcon?.name as string) || ''}
               width={42}
               height={42}
               unoptimized
@@ -79,7 +91,10 @@ const WalletCard = ({ wallet }: WalletCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between ">
-        <CommonButton className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400">
+        <CommonButton
+          className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400 font-semibold"
+          onClick={handleDeleteWallet}
+        >
           Remove
         </CommonButton>
         <CommonButton
