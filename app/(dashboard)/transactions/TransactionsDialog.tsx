@@ -1,17 +1,21 @@
 'use Client';
+import { getCategoryByType } from '@/actions/controller/categoryController';
+import { getAllPartnerByUser } from '@/actions/controller/partnerController';
 import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
+import { getAllTypes } from '@/actions/controller/typeController';
+import { getAllWallets } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
-import CommonCombobox, { OptionItem, type dataType } from '@/components/combobox';
+import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
 import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
 import CommonTextarea from '@/components/Textarea';
 import { tailwindMerge } from '@/utils/helper';
+import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
-import { Validate, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -56,37 +60,13 @@ const frameworks = [
   },
 ];
 
-function base64StringToFile(base64String: string, filename: string): File {
-  const byteCharacters = atob(base64String);
-
-  const byteNumbers = new Array(byteCharacters.length);
-
-  for (let i = 0; i < byteCharacters.length; i++) {
-    byteNumbers[i] = byteCharacters.charCodeAt(i);
-  }
-
-  const byteArray = new Uint8Array(byteNumbers);
-  const file = new File([byteArray], filename, { type: 'application/octet-stream' });
-  return file;
-}
-
-@ValidatorConstraint({ name: 'customText', async: false })
-export class CustomTextLength implements ValidatorConstraintInterface {
-  validate(text: fileType) {
-    return text.size < 500000;
-  }
-
-  defaultMessage() {
-    return 'Text ($value) is too short or too long!';
-  }
-}
-
-type fileType = {
+export type FileType = {
   base64String: string;
+  type: string;
   size: number;
 };
 
-export class newTransactionModel {
+export class NewTransactionModel {
   // @IsNotEmpty({ message: 'Partner is required' })
   partnerId: string | undefined;
 
@@ -105,18 +85,21 @@ export class newTransactionModel {
   // @IsNotEmpty({ message: 'Amount is required' })
   amount: number | undefined;
 
-  @Validate(CustomTextLength, {
-    message: 'Size too large',
-  })
-  invoiceImage: fileType | undefined;
+  @IsImage()
+  @MaxSize(10000000)
+  invoiceImage: FileType | undefined;
 
   description: string | undefined;
 }
 
-const resolver = classValidatorResolver(newTransactionModel);
+const resolver = classValidatorResolver(NewTransactionModel);
 
 const TransactionsDialog = () => {
-  const [options, setOptions] = useState<dataType[]>(frameworks);
+  const [options, setOptions] = useState<DataType[]>(frameworks);
+  const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
+  const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
+  const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
+  const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [open, setOpen] = useState<boolean>(false);
 
   const {
@@ -134,13 +117,13 @@ const TransactionsDialog = () => {
       wallet: '',
       createdDate: '',
       amount: 0,
-      invoiceImage: { base64String: '', size: 0 },
+      invoiceImage: { base64String: '', size: 0, type: '' },
       description: '',
     },
     resolver,
   });
 
-  const handleSubmitForm = handleSubmit(async (values: newTransactionModel) => {
+  const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
     // const file = new File([''], values.invoiceImage);
     console.log({ values });
     const data: TransactionCreateType = {
@@ -162,7 +145,7 @@ const TransactionsDialog = () => {
     setOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
   };
 
-  const handleSelectItem = (item: dataType) => {
+  const handleSelectItem = (item: DataType) => {
     setOptions((prev) => {
       prev.splice(prev.indexOf(item), 1);
       const items = [item, ...prev];
@@ -172,21 +155,62 @@ const TransactionsDialog = () => {
     setOpen(false);
   };
 
-  const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: fileType) => void) => {
+  const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileType) => void) => {
     const file = e.target.files?.[0];
-
     if (file) {
       const reader = new FileReader();
 
       reader.onload = function (event) {
         const base64String = event.target?.result;
 
-        onChange({ base64String: base64String as string, size: file.size });
+        onChange({ base64String: base64String as string, size: file.size, type: file.type });
       };
 
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    const fetchAllPartners = async () => {
+      const allPartners = await getAllPartnerByUser();
+      const partnerOptions: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
+        return { value: partner.id, label: partner.name } as DataType;
+      });
+
+      setPartnerOptions(partnerOptions as DataType[]);
+    };
+    const fetchAllTypes = async () => {
+      const allTypes = await getAllTypes();
+      const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
+        return { value: type.id, label: type.name } as DataType;
+      });
+
+      setTypeOptions(typeOptions as DataType[]);
+    };
+    const fetchAllWallet = async () => {
+      const allWallets = await getAllWallets();
+      const walletOptions: DataType[] | undefined = allWallets.data?.types?.map((wallet) => {
+        return { value: wallet.id, label: wallet.name } as DataType;
+      });
+
+      setWalletOptions(walletOptions as DataType[]);
+    };
+    fetchAllPartners();
+    fetchAllTypes();
+    fetchAllWallet();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategoryByType = async () => {
+      const category = await getCategoryByType(watch('type'));
+      const categoryOptions: DataType[] | undefined = category.data?.categories?.map((category) => {
+        return { value: category.id, label: category.name } as DataType;
+      });
+      setCategoryOptions(categoryOptions as DataType[]);
+    };
+    watch('type') && fetchCategoryByType();
+  }, [watch('type')]);
+
   return (
     <Box>
       <DialogForm
@@ -284,9 +308,9 @@ const TransactionsDialog = () => {
                   name="type"
                   valueProp={value}
                   onChange={onChange}
-                  optionsProp={frameworks}
+                  optionsProp={typeOptions as DataType[]}
                   widthSelection={'100%'}
-                  placeholder={'Select framework...'}
+                  placeholder={'Select Type...'}
                   customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
                   errors={errors}
                 />
@@ -303,9 +327,9 @@ const TransactionsDialog = () => {
                   name="category"
                   valueProp={value}
                   onChange={onChange}
-                  optionsProp={frameworks}
+                  optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
-                  placeholder={'Select framework...'}
+                  placeholder={'Select Category...'}
                   customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
                   errors={errors}
                 />
@@ -324,9 +348,9 @@ const TransactionsDialog = () => {
                   name="wallet"
                   valueProp={value}
                   onChange={onChange}
-                  optionsProp={frameworks}
+                  optionsProp={walletOptions as DataType[]}
                   widthSelection={'100%'}
-                  placeholder={'Select framework...'}
+                  placeholder={'Select Wallet...'}
                   customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
                   errors={errors}
                 />

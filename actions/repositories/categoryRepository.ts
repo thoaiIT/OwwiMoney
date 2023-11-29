@@ -12,6 +12,10 @@ class CategoryRepository {
     return await client.category.findMany({ where: { userId, deleted: false } });
   }
 
+  async getCategoryByType(typeId: string, userId: string) {
+    return await client.category.findMany({ where: { typeId, userId, deleted: false } });
+  }
+
   async getCategoryByName(userId: string, name: string) {
     return await client.category.findMany({ where: { userId, name, deleted: false } });
   }

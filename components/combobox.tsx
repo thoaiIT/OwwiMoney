@@ -8,20 +8,20 @@ import { SlArrowDown } from 'react-icons/sl';
 import { tailwindMerge } from '../utils/helper';
 import CommonInput, { capitalizeFirstLetter } from './input';
 
-export type dataType = {
+export type DataType = {
   value: string;
   label: string;
 };
 
 type OptionItemProps = {
-  item: dataType;
-  onSelect: (item: dataType) => void;
+  item: DataType;
+  onSelect: (item: DataType) => void;
   isActive?: boolean;
 };
 
 type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root> &
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> & {
-    optionsProp: dataType[];
+    optionsProp: DataType[];
     widthSelection: number | string;
     maxVisibleItems?: number;
     placeholder: string;
@@ -57,7 +57,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
     },
     ref,
   ) => {
-    const [options, setOptions] = useState<dataType[]>(optionsProp);
+    const [options, setOptions] = useState<DataType[]>(optionsProp);
     const [open, setOpen] = useState<boolean>(false);
     const [value, setValue] = useState<string>(valueProp || '');
     const [size, setSize] = useState<number>(0);
@@ -129,34 +129,48 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             )}
             {...props}
           >
-            <div className="flex items-center">
-              <BsSearch className="w-4 ml-3" />
-              <CommonInput
-                name="search"
-                intent="simple"
-                placeholder="Search here... "
-                className="text-base"
-                onChange={(e) => {
-                  handleSearch(e.target.value);
-                }}
-              />
-            </div>
+            {options.length > 0 && (
+              <div className="flex items-center">
+                <BsSearch className="w-4 ml-3" />
+                <CommonInput
+                  name="search"
+                  intent="simple"
+                  placeholder="Search here... "
+                  className="text-base"
+                  onChange={(e) => {
+                    handleSearch(e.target.value);
+                  }}
+                />
+              </div>
+            )}
             <div
               style={{ maxHeight: height }}
               className={`${maxVisibleItems && maxVisibleItems < options.length ? 'overflow-y-scroll' : ''} border-t-2`}
             >
-              {options.map((option) => (
-                <OptionItem
-                  key={option.value}
-                  item={option}
-                  onSelect={(item) => {
-                    onChange(item.value);
-                    setValue(item.value);
-                    setOpen(false);
-                  }}
-                  isActive={value === option.value}
-                />
-              ))}
+              {options.length <= 0 ? (
+                <div
+                  role="button"
+                  className={tailwindMerge(
+                    'py-2 px-4 hover:duration-300 flex items-center text-base',
+                    'hover:duration-300 hover:bg-theme-hover hover:rounded hover:cursor-pointer',
+                  )}
+                >
+                  No data
+                </div>
+              ) : (
+                options.map((option) => (
+                  <OptionItem
+                    key={option.value}
+                    item={option}
+                    onSelect={(item) => {
+                      onChange(item.value);
+                      setValue(item.value);
+                      setOpen(false);
+                    }}
+                    isActive={value === option.value}
+                  />
+                ))
+              )}
             </div>
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>

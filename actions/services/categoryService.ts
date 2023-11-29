@@ -40,6 +40,21 @@ class CategoryService {
     }
   }
 
+  async getCategoryByType(typeId: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = session?.user?.userId as string;
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const categories = await this.categoryRepository.getCategoryByType(typeId, userId);
+      return { message: 'Success', data: { categories }, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
+
   async getCategoryByName(name: string) {
     try {
       const session = await getServerSession(options);
