@@ -1,47 +1,26 @@
-'use Client';
+'use client';
+
+import { createWallet, getAllWalletType } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { type dataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
+import { WalletModel } from '@/model/walletModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, TextArea } from '@radix-ui/themes';
-import { IsNotEmpty } from 'class-validator';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 
-const frameworks = [
-  {
-    value: 'cash',
-    label: 'Cash',
-  },
-  {
-    value: 'credit',
-    label: 'Credit',
-  },
-  {
-    value: 'debit',
-    label: 'Debit',
-  },
-];
-
-export class newTransactionsModel {
-  @IsNotEmpty({ message: 'Type is required' })
-  type: string | undefined;
-
-  @IsNotEmpty({ message: 'Wallet is required' })
-  wallet: string | undefined;
-
-  @IsNotEmpty({ message: 'Amounts is required' })
-  amounts: number | undefined;
+interface WalletDialogProps {
+  handleRerender: () => void;
 }
 
-const resolver = classValidatorResolver(newTransactionsModel);
+const resolver = classValidatorResolver(WalletModel);
 
-const WalletDialog = () => {
-  const [options, setOptions] = useState<dataType[]>(frameworks);
-  const [open, setOpen] = useState<boolean>(false);
-  const [partner, setPartner] = useState<dataType | null>(null);
+const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
+  const [walletTypeOption, setWalletTypeOption] = useState<dataType[]>([{ label: '', value: '' }]);
 
   const {
     control,
@@ -50,24 +29,52 @@ const WalletDialog = () => {
     reset,
   } = useForm({
     values: {
-      type: '',
-      wallet: '',
-      amounts: 0,
+      walletName: '',
+      walletType: '',
+      accountNumber: '',
+      totalAmount: '',
+      description: '',
     },
     resolver,
   });
 
-  const appearPartner = frameworks.splice(4, 1);
+  const handleSubmitForm = handleSubmit(async (values: WalletModel) => {
+    const { accountNumber, walletType, description, totalAmount, walletName } = values;
 
-  console.log({ appearPartner, frameworks });
-  const handleSubmitForm = handleSubmit(async (values: newTransactionsModel) => {
-    console.log({ values });
+    const data = {
+      accountNumber: accountNumber as string,
+      walletTypeId: (walletType as { value: string } | undefined)?.value || '',
+      description: description as string,
+      totalBalance: Number(totalAmount),
+      name: walletName as string,
+    };
+
+    const result = await createWallet(data);
+    if (result.status?.code === 201) {
+      toast.success(result.message as string);
+      handleRerender();
+    } else {
+      toast.error(result.message as string);
+    }
     reset();
   });
 
-  const handleSearch = (searchString: string) => {
-    setOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getAllWalletType();
+        if (result) {
+          const walletType = result.data?.walletTypes.map((item) => ({ value: item.id, label: item.typeName }));
+          setWalletTypeOption(walletType as dataType[]);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Box>
       <DialogForm
@@ -86,13 +93,13 @@ const WalletDialog = () => {
       >
         <p className={'text-base font-semibold mb-2'}>Wallet name</p>
         <Controller
-          name="type"
+          name="walletName"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonInput
-              name={'wallet'}
+              name="walletName"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-              placeholder="Shopping"
+              placeholder="Wallet name"
               value={String(value)}
               onChange={onChange}
               errors={errors}
@@ -100,18 +107,18 @@ const WalletDialog = () => {
           )}
         />
 
-        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Account type</p>
+        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet type</p>
         <Controller
-          name="type"
+          name="walletType"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonCombobox
-              name="type"
+              name="walletType"
               valueProp={value}
               onChange={onChange}
-              optionsProp={frameworks}
+              optionsProp={walletTypeOption}
               widthSelection={'100%'}
-              placeholder={'Select framework...'}
+              placeholder={'Select account type...'}
               customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
               errors={errors}
             />
@@ -119,11 +126,11 @@ const WalletDialog = () => {
         />
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Account number</p>
         <Controller
-          name="amounts"
+          name="accountNumber"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonInput
-              name={'wallet'}
+              name="accountNumber"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
               placeholder="Shopping"
               value={String(value)}
@@ -134,29 +141,34 @@ const WalletDialog = () => {
         />
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Total amount</p>
         <Controller
-          name="amounts"
+          name="totalAmount"
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonInput
-              name={'wallet'}
-              type="number"
-              minValue="0"
+              name="totalAmount"
+              value={value}
+              onChange={(e) => {
+                let numericValue = e.target.value.replace(/\D/g, '');
+                numericValue = numericValue.length > 0 && numericValue[0] !== '0' ? numericValue : '';
+                onChange(numericValue);
+              }}
+              type="text"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-              placeholder="Shopping"
-              value={String(value)}
-              onChange={onChange}
               errors={errors}
             />
           )}
         />
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Description</p>
         <Controller
-          name="amounts"
+          name="description"
           control={control}
           render={({ field: { onChange, value } }) => (
             <TextArea
+              onChange={onChange}
+              placeholder="Description"
               size={'3'}
-              name="wallet"
+              value={value}
+              name="description"
               className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
             />
           )}

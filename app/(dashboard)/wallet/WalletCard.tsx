@@ -1,37 +1,80 @@
 'use client';
 
+import { getWalletTypeName } from '@/actions/controller/walletController';
+import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
-import MasterCard from '@/public/icons/mastercard.png';
-import Image from 'next/image';
+import CreditIcon from '@/public/icons/credit.png';
+import DebitIcon from '@/public/icons/debit-card.png';
+import CashIcon from '@/public/icons/money.png';
+import Image, { type StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 
-const WalletCard = () => {
+interface WalletCardProps {
+  wallet: WalletModel;
+}
+
+interface WalletTypeIcon {
+  name: string;
+  image: StaticImageData;
+}
+
+const walletTypeIcon = [
+  {
+    name: 'Cash',
+    image: CashIcon,
+  },
+  {
+    name: 'Credit',
+    image: CreditIcon,
+  },
+  {
+    name: 'Debit',
+    image: DebitIcon,
+  },
+];
+
+const WalletCard = ({ wallet }: WalletCardProps) => {
+  const [walletTypeName, setWalletTypeName] = useState<string | undefined>('');
+  const [displayIcon, setDisplayIcon] = useState<WalletTypeIcon>();
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      const result = await getWalletTypeName(wallet.walletTypeId);
+      const iconTarget = walletTypeIcon.find((item) => item.name === result.data);
+      setWalletTypeName(result.data);
+      setDisplayIcon(iconTarget);
+    })();
+  }, []);
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
         <CardTitle className="flex justify-between items-center border-b-[1px] pb-3 border-light-gray gap-24">
-          <p className="text-base font-bold text-gray-02">Credit Card</p>
+          <p className="text-base font-bold text-gray-02">
+            {wallet.name.length > 10 ? wallet.name.substring(0, 16) + '...' : wallet.name}
+          </p>
           <div className="flex items-center gap-2">
-            <p className="text-gray-01 text-xs font-semibold">Master Card</p>
+            <p className="text-gray-01 text-xs font-semibold">{walletTypeName}</p>
             <Image
-              src={MasterCard}
-              alt="Master Card"
-              width={46}
-              height={46}
+              src={displayIcon?.image as StaticImageData}
+              alt={displayIcon?.name as string}
+              width={42}
+              height={42}
+              unoptimized
             />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="mb-3">
-          <div className="text-xl font-semibold">3388 4556 8860 8***</div>
+          <div className="text-xl font-semibold">{wallet.accountNumber}</div>
           <CardDescription className="text-gray-03">Account Number</CardDescription>
         </div>
         <div>
-          <div className="text-xl font-semibold">$25000</div>
+          <div className="text-xl font-semibold">${wallet.totalBalance}</div>
           <CardDescription className="text-gray-03">Total amount</CardDescription>
         </div>
       </CardContent>
@@ -41,7 +84,7 @@ const WalletCard = () => {
         </CommonButton>
         <CommonButton
           className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF]"
-          onClick={() => router.push(`/wallet/${1}`)}
+          onClick={() => router.push(`/wallet/${wallet.id}`)}
         >
           <span className="text-sm ">Details</span> <IoIosArrowForward />
         </CommonButton>
