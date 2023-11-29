@@ -4,7 +4,7 @@ import { options } from '@/app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
 
-class categoryService {
+class CategoryService {
   private categoryRepository: CategoryRepository;
 
   constructor(categoryRepository: CategoryRepository) {
@@ -103,4 +103,4 @@ class categoryService {
   }
 }
 
-export default categoryService;
+export default CategoryService;

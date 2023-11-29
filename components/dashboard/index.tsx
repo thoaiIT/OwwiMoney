@@ -22,7 +22,7 @@ const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
     console.log(session);
   }, [session]);
 
-  if (!session?.user?.emailConfirmed) return <div>Loading</div>;
+  if (!session?.user?.emailConfirmed) return <Loading />;
   return (
     <div className="w-full">
       <div className="flex h-screen">
