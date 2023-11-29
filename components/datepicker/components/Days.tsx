@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { useCallback, useContext } from 'react';
@@ -206,7 +207,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
   return (
     <div className="grid grid-cols-7 gap-y-0.5 my-1">
       {calendarData.days.previous.map((item, index) => (
-        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
         <button
           type="button"
           key={index}
@@ -221,7 +221,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       ))}
 
       {calendarData.days.current.map((item, index) => (
-        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
         <button
           type="button"
           key={index}
@@ -236,7 +235,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       ))}
 
       {calendarData.days.next.map((item, index) => (
-        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
         <button
           type="button"
           key={index}

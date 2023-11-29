@@ -1,5 +1,6 @@
 import type { PartnerCreateType, PartnerUpdateType } from '@/actions/controller/partnerController';
 import client from '@/helper/lib/prismadb';
+import type { Partner } from '@prisma/client';
 
 class PartnerRepository {
   async createPartner({
@@ -17,6 +18,9 @@ class PartnerRepository {
   }
 
   async getAllPartnerByUser(userId: string) {
+    console.log({ userId });
+    const a: Partner[] = await client.partner.findMany();
+    console.log(a);
     return await client.partner.findMany({ where: { userId, deleted: false } });
   }
 

@@ -35,6 +35,7 @@ class PartnerService {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
       const partners = await this.partnerRepository.getAllPartnerByUser(userId);
+      console.log({ partners });
       return { message: 'Success', data: { partners }, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };

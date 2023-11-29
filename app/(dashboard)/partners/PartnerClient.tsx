@@ -23,9 +23,12 @@ export default function PartnerClient() {
   useEffect(() => {
     (async () => {
       const respone = await getAllPartnerByUser();
-      // setPartners(respone.data?.partners);
+      console.log({ respone });
+      setPartners(respone.data?.partners || []);
     })();
   }, []);
+
+  console.log({ partners });
 
   return (
     <>
