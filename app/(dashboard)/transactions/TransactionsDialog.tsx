@@ -1,16 +1,17 @@
 'use Client';
 import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
-import CommonAvatar from '@/components/CommonAvatar';
-import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
-import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type dataType } from '@/components/combobox';
+import CommonAvatar from '@/components/CommonAvatar';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
+import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
+import CommonTextarea from '@/components/Textarea';
 import { tailwindMerge } from '@/utils/helper';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
-import { useState } from 'react';
+import { Validate, ValidatorConstraint, type ValidatorConstraintInterface } from 'class-validator';
+import { useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -55,6 +56,36 @@ const frameworks = [
   },
 ];
 
+function base64StringToFile(base64String: string, filename: string): File {
+  const byteCharacters = atob(base64String);
+
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+  const file = new File([byteArray], filename, { type: 'application/octet-stream' });
+  return file;
+}
+
+@ValidatorConstraint({ name: 'customText', async: false })
+export class CustomTextLength implements ValidatorConstraintInterface {
+  validate(text: fileType) {
+    return text.size < 500000;
+  }
+
+  defaultMessage() {
+    return 'Text ($value) is too short or too long!';
+  }
+}
+
+type fileType = {
+  base64String: string;
+  size: number;
+};
+
 export class newTransactionModel {
   // @IsNotEmpty({ message: 'Partner is required' })
   partnerId: string | undefined;
@@ -74,7 +105,10 @@ export class newTransactionModel {
   // @IsNotEmpty({ message: 'Amount is required' })
   amount: number | undefined;
 
-  invoiceImage: string | undefined;
+  @Validate(CustomTextLength, {
+    message: 'Size too large',
+  })
+  invoiceImage: fileType | undefined;
 
   description: string | undefined;
 }
@@ -100,7 +134,7 @@ const TransactionsDialog = () => {
       wallet: '',
       createdDate: '',
       amount: 0,
-      invoiceImage: '',
+      invoiceImage: { base64String: '', size: 0 },
       description: '',
     },
     resolver,
@@ -114,7 +148,7 @@ const TransactionsDialog = () => {
       categoryId: values.category as string,
       createdDate: values.createdDate as string,
       description: values.createdDate as string,
-      invoiceImageUrl: values.invoiceImage as string,
+      invoiceImageUrl: values.invoiceImage?.base64String as string,
       partnerId: values.partnerId as string,
       typeId: values.type as string,
       walletId: values.wallet as string,
@@ -136,6 +170,22 @@ const TransactionsDialog = () => {
     });
     setValue('partnerId', item.value);
     setOpen(false);
+  };
+
+  const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: fileType) => void) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const base64String = event.target?.result;
+
+        onChange({ base64String: base64String as string, size: file.size });
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
   return (
     <Box>
@@ -334,18 +384,7 @@ const TransactionsDialog = () => {
                   className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
                   placeholder="Shopping"
                   onChange={(e) => {
-                    const file = e.target.files?.[0];
-
-                    if (file) {
-                      const reader = new FileReader();
-
-                      reader.onload = function (event) {
-                        const base64String = event.target?.result;
-                        onChange(base64String?.toString());
-                      };
-
-                      reader.readAsDataURL(file);
-                    }
+                    handleChangeInvoiceImage(e, onChange);
                   }}
                   errors={errors}
                 />

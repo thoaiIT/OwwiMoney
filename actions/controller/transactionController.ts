@@ -29,7 +29,7 @@ const base64ToUint8Array = (base64String: string) => {
     return bytes;
   } catch (error) {
     console.error('Error converting Base64 to Uint8Array:', error);
-    return null;
+    return error;
   }
 };
 
@@ -58,16 +58,12 @@ const uploadToCloudinary = async (base64String: string) => {
 };
 
 export const createTransaction = async (data: TransactionCreateType) => {
-  try {
-    uploadToCloudinary(data.invoiceImageUrl || '')
-      .then((url) => {
-        console.log('Uploaded image URL:', url);
-      })
-      .catch((error) => {
-        console.error('Upload failed:', error.message);
-      });
-  } catch (error) {
-    console.error(error);
-    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
-  }
+  uploadToCloudinary(data.invoiceImageUrl || '')
+    .then((url) => {
+      console.log('Uploaded image URL:', url);
+    })
+    .catch((error) => {
+      console.error('Upload failed:', error.message);
+      return { message: error.message, status: HttpStatusCodes[500] };
+    });
 };
