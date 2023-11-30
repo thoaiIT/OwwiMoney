@@ -1,5 +1,5 @@
 'use client';
-import { createWallet, getAllWallet } from '@/actions/controller/walletController';
+import { createWallet, getAllWallet, type WalletCreateType } from '@/actions/controller/walletController';
 import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 import { CommonCard } from '@/components/card';
@@ -26,7 +26,8 @@ const WalletList = () => {
     setTriggerRerender(true);
   };
 
-  const handleCreateWallet = async (data: any) => {
+  const handleCreateWallet = async (data: WalletCreateType) => {
+    console.log(data, wallets);
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
