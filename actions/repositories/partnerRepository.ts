@@ -1,6 +1,6 @@
+'use server';
 import type { PartnerCreateType, PartnerUpdateType } from '@/actions/controller/partnerController';
 import client from '@/helper/lib/prismadb';
-import type { Partner } from '@prisma/client';
 
 class PartnerRepository {
   async createPartner({
@@ -17,11 +17,27 @@ class PartnerRepository {
     });
   }
 
-  async getAllPartnerByUser(userId: string) {
-    console.log({ userId });
-    const a: Partner[] = await client.partner.findMany();
-    console.log(a);
-    return await client.partner.findMany({ where: { userId, deleted: false } });
+  async getAllPartnerByUser(userId: string, pageSize: number, page: number) {
+    const [partners, total] = await Promise.all([
+      client.partner.findMany({
+        where: { userId, deleted: false },
+        include: { type: true },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      client.partner.count({
+        where: { userId, deleted: false },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      partners: partners.map((partner) => {
+        const formatPartner = { ...partner, typeName: partner.type.name };
+        return formatPartner;
+      }),
+      totalPages,
+    };
   }
 
   async getPartnerByName(userId: string, name: string) {
@@ -30,6 +46,10 @@ class PartnerRepository {
 
   async getPartnerById(partnerId: string, userId: string) {
     return client.partner.findFirst({ where: { id: partnerId, userId, deleted: false } });
+  }
+
+  async getPartnerByType(typeId: string, userId: string) {
+    return client.partner.findMany({ where: { typeId, userId, deleted: false } });
   }
 
   async updatePartner({ partnerId, typeId, name, contact, address, description, email }: PartnerUpdateType) {
