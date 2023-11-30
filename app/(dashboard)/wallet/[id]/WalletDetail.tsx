@@ -116,7 +116,7 @@ const WalletDetail = () => {
                 <p
                   className="text-2xl font-semibold"
                   style={{
-                    color: `${wallet.color}`,
+                    color: `${wallet.color !== '#FFFFFF' ? wallet.color : '#000000'}`,
                   }}
                 >
                   {wallet?.color ? wallet.color : '#FFFFFF'}
