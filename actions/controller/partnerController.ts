@@ -1,3 +1,4 @@
+'use server';
 import PartnerRepository from '@/actions/repositories/partnerRepository';
 import PartnerService from '@/actions/services/partnerService';
 import { HttpStatusCodes } from '@/helper/type';
@@ -19,9 +20,9 @@ export const createPartner = async (data: PartnerCreateType) => {
   }
 };
 
-export const getAllPartnerByUser = async () => {
+export const getAllPartnerByUser = async (pageSize: number, page: number) => {
   try {
-    return await partnerService.getAllPartnerByUser();
+    return await partnerService.getAllPartnerByUser(pageSize, page);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
@@ -54,6 +55,14 @@ export const updatePartner = async (data: PartnerUpdateType) => {
 export const deletePartner = async (partnerId: string) => {
   try {
     return await partnerService.deletePartner(partnerId);
+  } catch (error) {
+    return { message: error, status: HttpStatusCodes[500] };
+  }
+};
+
+export const getPartnerByType = async (typeId: string) => {
+  try {
+    return await partnerService.getPartnerByType(typeId);
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
   }

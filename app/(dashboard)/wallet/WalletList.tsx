@@ -1,33 +1,10 @@
 'use client';
-import { getAllWallet } from '@/actions/controller/walletController';
+import { createWallet, getAllWallet, type WalletCreateType } from '@/actions/controller/walletController';
 import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 import { CommonCard } from '@/components/card';
 import { useEffect, useState } from 'react';
-
-const wallets = [
-  {
-    type: 'Credit Card',
-    name: 'ACB',
-    accountNumber: '3388 4556  8860 8***',
-    totalAmount: '25000',
-    walletColor: 'red',
-  },
-  {
-    type: 'Credit Card',
-    name: 'ACB',
-    accountNumber: '3388 4556  8860 8***',
-    totalAmount: '25000',
-    walletColor: 'red',
-  },
-  {
-    type: 'Credit Card',
-    name: 'ACB',
-    accountNumber: '3388 4556  8860 8***',
-    totalAmount: '25000',
-    walletColor: 'red',
-  },
-];
+import { toast } from 'react-toastify';
 
 export interface WalletModel {
   id: string;
@@ -48,6 +25,18 @@ const WalletList = () => {
   const handleRerender = () => {
     setTriggerRerender(true);
   };
+
+  const handleCreateWallet = async (data: WalletCreateType) => {
+    console.log(data, wallets);
+    const result = await createWallet(data);
+    if (result.status?.code === 201) {
+      toast.success(result.message as string);
+      handleRerender();
+    } else {
+      toast.error(result.message as string);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,7 +64,10 @@ const WalletList = () => {
           />
         ))}
       <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full h-[292px] rounded-[8px] items-center justify-center flex">
-        <WalletDialog handleRerender={handleRerender} />
+        <WalletDialog
+          handleCreateWallet={handleCreateWallet}
+          type="create"
+        />
       </CommonCard>
     </div>
   );

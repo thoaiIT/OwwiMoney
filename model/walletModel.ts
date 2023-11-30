@@ -2,17 +2,18 @@ import { IsNotEmpty } from 'class-validator';
 
 export class WalletModel {
   @IsNotEmpty({ message: 'Wallet name is required' })
-  walletName: string | undefined;
+  name: string | undefined;
 
   @IsNotEmpty({ message: 'Account Type is required' })
-  walletType: string | undefined;
+  walletTypeId: string | undefined;
 
   @IsNotEmpty({ message: 'Account number is required' })
   accountNumber: string | undefined;
 
   @IsNotEmpty({ message: 'Total amount is required' })
-  totalAmount: string | undefined;
+  totalBalance: string | number | undefined;
 
-  @IsNotEmpty({ message: 'Total amount is required' })
-  description: string | undefined;
+  description?: string | null;
+
+  color?: string | null;
 }

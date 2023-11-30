@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { FaPaperPlane, FaWallet } from 'react-icons/fa';
+import { FaPeopleGroup } from 'react-icons/fa6';
 import { IoMdAnalytics } from 'react-icons/io';
 import { IoSettings } from 'react-icons/io5';
 import { MdDashboard } from 'react-icons/md';
@@ -56,6 +57,11 @@ const SideBarRouter = () => {
         icon={FaPaperPlane}
         title="Transactions"
         href="/transactions"
+      />
+      <ListItem
+        icon={FaPeopleGroup}
+        title="Partners"
+        href="/partners"
       />
       <ListItem
         icon={IoMdAnalytics}

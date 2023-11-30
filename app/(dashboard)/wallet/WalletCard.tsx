@@ -44,6 +44,7 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
   const router = useRouter();
 
   useEffect(() => {
+    console.log(wallet.color);
     (async () => {
       const result = await getWalletTypeName(wallet.walletTypeId);
       const iconTarget = walletTypeIcon.find((item) => item.name === result.data);
@@ -64,7 +65,12 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center border-b-[1px] pb-3 border-light-gray gap-24">
+        <CardTitle
+          className="flex justify-between items-center pb-3  gap-24"
+          style={{
+            borderBottom: `2px solid ${wallet.color !== '#FFFFFF' ? wallet.color : 'rgba(210, 210, 210, 0.25)'}`,
+          }}
+        >
           <p className="text-base font-bold text-gray-02">
             {wallet.name.length > 10 ? wallet.name.substring(0, 16) + '...' : wallet.name}
           </p>

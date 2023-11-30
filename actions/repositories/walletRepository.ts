@@ -1,4 +1,4 @@
-import type { WalletCreateType } from '@/actions/controller/walletController';
+import type { WalletCreateType, WalletUpdateType } from '@/actions/controller/walletController';
 import prisma from '../../helper/lib/prismadb';
 
 class WalletRepository {
@@ -9,9 +9,10 @@ class WalletRepository {
     walletTypeId,
     totalBalance,
     userId,
+    color,
   }: WalletCreateType & { userId: string }) {
     return await prisma.wallet.create({
-      data: { name, description, accountNumber, walletTypeId, totalBalance, userId, deleted: false },
+      data: { name, description, accountNumber, walletTypeId, totalBalance, userId, deleted: false, color },
     });
   }
   async getAllWalletType() {
@@ -25,6 +26,21 @@ class WalletRepository {
         userId,
         deleted: false,
       },
+    });
+  }
+
+  async updateWallet({
+    accountNumber,
+    color,
+    name,
+    totalBalance,
+    walletId,
+    walletTypeId,
+    description,
+  }: WalletUpdateType) {
+    return await prisma.wallet.update({
+      where: { id: walletId },
+      data: { accountNumber, color, name, totalBalance, walletTypeId, description, deleted: false },
     });
   }
 
