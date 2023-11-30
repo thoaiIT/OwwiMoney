@@ -1,3 +1,4 @@
+'use server';
 import PartnerRepository from '@/actions/repositories/partnerRepository';
 import PartnerService from '@/actions/services/partnerService';
 import { HttpStatusCodes } from '@/helper/type';
