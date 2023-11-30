@@ -22,6 +22,7 @@ interface DialogFormProps {
   customStyleHeader?: string;
   customStyleFooter?: string;
   useCustomFooter?: ReactNode;
+  open?: boolean;
   handleSubmit?: () => void;
   handleClose?: () => void;
   handleOpenChange?: () => void;
@@ -42,6 +43,7 @@ const DialogForm = ({
   allowCloseOutside,
   customTextFooterButton,
   isNotUseDefaultFooter = false,
+  open,
   handleSubmit,
   handleClose,
   handleOpenChange,
@@ -49,6 +51,7 @@ const DialogForm = ({
 }: DialogFormProps) => {
   return (
     <Dialog
+      open={open}
       onOpenChange={(open) => {
         handleOpenChange?.();
         !open && !!handleClose && handleClose();
@@ -75,7 +78,20 @@ const DialogForm = ({
             <Fragment>
               {!isNotUseDefaultFooter && (
                 <DialogClose asChild>
-                  <button onClick={handleSubmit}>{customTextFooterButton ?? 'Submit'}</button>
+                  <div className="flex gap-2">
+                    <CommonButton
+                      intent={'outline'}
+                      className="max-w-max rounded-md"
+                    >
+                      {customTextFooterButton ?? 'Cancel'}
+                    </CommonButton>
+                    <CommonButton
+                      className="max-w-max rounded-md bg-theme-component hover:bg-theme-component hover:opacity-90 hover:ring-0"
+                      onClick={handleSubmit}
+                    >
+                      {customTextFooterButton ?? 'Submit'}
+                    </CommonButton>
+                  </div>
                 </DialogClose>
               )}
             </Fragment>

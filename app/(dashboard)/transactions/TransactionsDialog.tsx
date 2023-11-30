@@ -15,12 +15,13 @@ import { tailwindMerge } from '@/utils/helper';
 import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Min } from 'class-validator';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
 import { GoPlus } from 'react-icons/go';
+import { toast } from 'react-toastify';
 
 const frameworks = [
   {
@@ -84,6 +85,7 @@ export class NewTransactionModel {
   createdDate?: string;
 
   @IsNotEmpty({ message: 'Amount is required' })
+  @Min(1, { message: 'Amount must be larger 0' })
   amount?: number;
 
   @IsImage()
@@ -101,6 +103,7 @@ const TransactionsDialog = () => {
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {
     control,
@@ -125,18 +128,24 @@ const TransactionsDialog = () => {
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
     const data: TransactionCreateType = {
-      amount: values.amount as number,
+      amount: Number(values.amount),
       categoryId: values.category as string,
       createdDate: values.createdDate as string,
-      description: values.createdDate as string,
+      description: values.description as string,
       invoiceImageUrl: values.invoiceImage?.base64String as string,
       partnerId: values.partnerId as string,
       typeId: values.type as string,
       walletId: values.wallet as string,
     };
-
-    await createTransaction(data);
-    reset();
+    const res = await createTransaction(data);
+    if (res.status?.code === 201) {
+      toast.success(res.message as string);
+      setOpenDialog(false);
+      reset();
+      setPartnerOptions([]);
+    } else {
+      toast.error(res.message as string);
+    }
   });
 
   const handleSearch = (searchString: string) => {
@@ -169,15 +178,6 @@ const TransactionsDialog = () => {
   };
 
   useEffect(() => {
-    const fetchAllPartners = async () => {
-      const allPartners = await getPartnerByType('');
-      const partnerOptions: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
-        return { value: partner.id, label: partner.name } as DataType;
-      });
-      console.log({ partnerOptions, value0: partnerOptions?.[0]?.value as string });
-      setValue('partnerId', partnerOptions?.[0]?.value as string);
-      setPartnerOptions(partnerOptions as DataType[]);
-    };
     const fetchAllTypes = async () => {
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
@@ -193,23 +193,30 @@ const TransactionsDialog = () => {
       });
       setWalletOptions(walletOptions as DataType[]);
     };
-    console.log({ open });
-    if (open) {
-      fetchAllPartners();
+    if (openDialog) {
       fetchAllTypes();
       fetchAllWallet();
     }
-  }, [open]);
+  }, [openDialog]);
 
   useEffect(() => {
-    const fetchCategoryByType = async () => {
+    const fetchCategoriesByType = async () => {
       const category = await getCategoryByType(watch('type'));
-      const categoryOptions: DataType[] | undefined = category.data?.categories?.map((category) => {
+      const categoryOpts: DataType[] | undefined = category.data?.categories?.map((category) => {
         return { value: category.id, label: category.name } as DataType;
       });
-      setCategoryOptions(categoryOptions as DataType[]);
+      setCategoryOptions(categoryOpts as DataType[]);
     };
-    watch('type') && fetchCategoryByType();
+    const fetchPartnersByType = async () => {
+      const allPartners = await getPartnerByType(watch('type'));
+      const partnerOpts: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
+        return { value: partner.id, label: partner.name } as DataType;
+      });
+      setValue('partnerId', partnerOpts?.[0]?.value as string);
+      setPartnerOptions(partnerOpts as DataType[]);
+    };
+    watch('type') && fetchPartnersByType();
+    watch('type') && fetchCategoriesByType();
   }, [watch('type')]);
 
   return (
@@ -223,17 +230,61 @@ const TransactionsDialog = () => {
         }
         titleDialog="New Transactions"
         customStyleHeader="text-2xl"
+        open={openDialog}
         handleOpenChange={() => {
-          setOpen(!open);
+          setOpenDialog(!openDialog);
         }}
         handleSubmit={handleSubmitForm}
         handleClose={() => {
           reset();
+          setPartnerOptions([]);
         }}
       >
+        <div className="flex justify-between gap-2 min-w-[500px]">
+          <div className="flex flex-col w-1/2 min-w-max">
+            <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
+            <Controller
+              name="type"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <CommonCombobox
+                  name="type"
+                  valueProp={value}
+                  onChange={onChange}
+                  optionsProp={typeOptions as DataType[]}
+                  widthSelection={'100%'}
+                  placeholder={'Select Type...'}
+                  customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
+                  errors={errors}
+                />
+              )}
+            />
+          </div>
+          <div className="flex flex-col w-1/2 min-w-max">
+            <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Category</p>
+            <Controller
+              name="category"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <CommonCombobox
+                  name="category"
+                  valueProp={value}
+                  onChange={onChange}
+                  optionsProp={categoryOptions as DataType[]}
+                  widthSelection={'100%'}
+                  placeholder={'Select Category...'}
+                  customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
+                  errors={errors}
+                />
+              )}
+            />
+          </div>
+        </div>
         <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
         {partnerOptions.length === 0 ? (
-          <div className="h-[60px] flex justify-center items-center">No Partner</div>
+          <div className="h-[60px] flex justify-center items-center text-base">
+            {watch('type') ? 'No Partner' : 'Please select type!!'}
+          </div>
         ) : (
           <div className="flex gap-5">
             {partnerOptions.map((item, index: number) => {
@@ -308,46 +359,6 @@ const TransactionsDialog = () => {
 
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
-            <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
-            <Controller
-              name="type"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <CommonCombobox
-                  name="type"
-                  valueProp={value}
-                  onChange={onChange}
-                  optionsProp={typeOptions as DataType[]}
-                  widthSelection={'100%'}
-                  placeholder={'Select Type...'}
-                  customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
-                  errors={errors}
-                />
-              )}
-            />
-          </div>
-          <div className="flex flex-col w-1/2 min-w-max">
-            <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Category</p>
-            <Controller
-              name="category"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <CommonCombobox
-                  name="category"
-                  valueProp={value}
-                  onChange={onChange}
-                  optionsProp={categoryOptions as DataType[]}
-                  widthSelection={'100%'}
-                  placeholder={'Select Category...'}
-                  customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
-                  errors={errors}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="flex justify-between gap-2 min-w-[500px]">
-          <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Wallet</p>
             <Controller
               name="wallet"
@@ -395,11 +406,13 @@ const TransactionsDialog = () => {
                 <CommonInput
                   name="amount"
                   type="number"
-                  minValue="0"
+                  minValue={1}
                   className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                  placeholder="Shopping"
-                  value={String(value)}
-                  onChange={onChange}
+                  placeholder="0"
+                  value={value}
+                  onChange={(e) => {
+                    onChange(e.target.value === '' ? '' : Number(e.target.value));
+                  }}
                   errors={errors}
                 />
               )}
@@ -434,7 +447,7 @@ const TransactionsDialog = () => {
               <CommonTextarea
                 name="description"
                 className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                placeholder="Shopping"
+                placeholder="Description"
                 value={value}
                 onChange={onChange}
                 errors={errors}
