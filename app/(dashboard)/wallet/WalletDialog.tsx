@@ -1,6 +1,7 @@
 'use client';
 
 import { createWallet, getAllWalletType } from '@/actions/controller/walletController';
+import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
@@ -8,7 +9,7 @@ import CommonInput from '@/components/input';
 
 import { WalletModel } from '@/model/walletModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { Box, TextArea } from '@radix-ui/themes';
+import { Box } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { FaPlus } from 'react-icons/fa';
@@ -41,10 +42,11 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
 
   const handleSubmitForm = handleSubmit(async (values: WalletModel) => {
     const { accountNumber, walletType, description, totalAmount, walletName } = values;
+    console.log(values);
 
     const data = {
       accountNumber: accountNumber as string,
-      walletTypeId: (walletType as { value: string } | undefined)?.value || '',
+      walletTypeId: walletType as string,
       description: description as string,
       totalBalance: Number(totalAmount),
       name: walletName as string,
@@ -99,7 +101,7 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="walletName"
-              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 w-72"
               placeholder="Wallet name"
               value={String(value)}
               onChange={onChange}
@@ -148,6 +150,7 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
             <CommonInput
               name="totalAmount"
               value={value}
+              placeholder="Total amount"
               onChange={(e) => {
                 let numericValue = e.target.value.replace(/\D/g, '');
                 numericValue = numericValue.length > 0 && numericValue[0] !== '0' ? numericValue : '';
@@ -164,13 +167,13 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
           name="description"
           control={control}
           render={({ field: { onChange, value } }) => (
-            <TextArea
-              onChange={onChange}
-              placeholder="Description"
-              size={'3'}
-              value={value}
+            <CommonTextarea
               name="description"
-              className="flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+              placeholder="Description"
+              value={value}
+              onChange={onChange}
+              errors={errors}
             />
           )}
         />

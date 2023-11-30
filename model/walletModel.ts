@@ -13,6 +13,5 @@ export class WalletModel {
   @IsNotEmpty({ message: 'Total amount is required' })
   totalAmount: string | undefined;
 
-  @IsNotEmpty({ message: 'Total amount is required' })
-  description: string | undefined;
+  description?: string | undefined;
 }
