@@ -1,37 +1,13 @@
-'use client';
 import TabClient from '@/app/(dashboard)/transactions/TabClient';
-import CommonTable from '@/components/table/CommonTable';
-import type { ColumnType } from '@/components/table/TableHeader';
-import type { Transaction } from '@prisma/client';
-
-export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> & {
-  category: string;
-  partner: string;
-  type: string;
-  wallet: string;
-};
+import { TableTransactionAll, type TransactionTableType } from '@/app/(dashboard)/transactions/TableClient';
 
 type TransactionsProps = {
-  dataTable: TransactionTableType[];
+  temp: string;
 };
-const Transactions: React.FC<TransactionsProps> = ({ dataTable }) => {
-  const editHandler = (id: string) => {
-    console.log('My custom edit ' + id);
-  };
 
-  const deleteHandler = (id: string) => {
-    console.log('My custom delete ' + id);
-  };
+const data: TransactionTableType[] = [];
 
-  const columns: ColumnType<TransactionTableType>[] = [
-    { label: 'Category', field: 'category', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Partner', field: 'partner', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Type', field: 'type', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Date', field: 'createdDate', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Wallet', field: 'wallet', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Amount', field: 'amount', sortable: true, headerTextAlign: 'right', textAlign: 'right' },
-    { label: 'Actions', field: 'id', type: 'action' },
-  ];
+const Transactions: React.FC<TransactionsProps> = async () => {
   return (
     <TabClient
       defaultValue="all"
@@ -44,16 +20,7 @@ const Transactions: React.FC<TransactionsProps> = ({ dataTable }) => {
       tabContents={[
         {
           value: 'all',
-          children: (
-            <CommonTable
-              data={dataTable}
-              columns={columns}
-              keyField={'id'}
-              editHandler={editHandler}
-              deleteHandler={deleteHandler}
-              useRowNumber
-            />
-          ),
+          children: <TableTransactionAll dataTable={data} />,
         },
         { value: 'revenue', children: 'Revenue page' },
         { value: 'expenses', children: 'Expenses page' },
