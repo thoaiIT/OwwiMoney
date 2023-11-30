@@ -3,6 +3,11 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
+import WaterWave from '@/components/home/WaterWave';
+import { Lobster } from 'next/font/google';
+import Link from 'next/link';
+
+const lobster = Lobster({ variable: '--display-font', preload: false, subsets: ['latin'], weight: ['400', '400'] });
 const HomePage = () => {
   const bgAnimate = {
     hidden: {
@@ -74,6 +79,22 @@ const HomePage = () => {
     },
   };
 
+  const WaterWaveAnime = {
+    hidden: {
+      y: '0%', // start from left
+      opacity: 0,
+    },
+    show: {
+      y: '0%', // end at right
+      opacity: 1,
+      transition: {
+        ease: 'easeInOut', // change this to 'linear', 'easeIn', 'easeOut', 'easeInOut', etc.
+        duration: 1, // increase this to make the animation slower and smoother
+        delay: 3.9,
+      },
+    },
+  };
+
   const textParagraph = {
     hidden: {
       y: '-100%',
@@ -105,7 +126,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden px-4 bg-[#0e0e0e]">
+    <div className="h-screen overflow-hidden bg-[#0e0e0e]">
       <motion.div
         className="absolute inset-0 h-screen w-screen z-0"
         variants={bgAnimate}
@@ -117,17 +138,17 @@ const HomePage = () => {
           alt="background"
           fill
           priority
-          className="object-cover brightness-50"
+          className="object-cover brightness-80"
         />
       </motion.div>
 
       <motion.div
-        className="flex justify-between items-center"
+        className="flex justify-between items-center px-8"
         variants={logoAnimate}
         initial="hidden"
         animate="show"
       >
-        <div className="text-xl font-semibold text-yellow-200 underline">OwwimoneY</div>
+        <div className={`text-2xl font-semibold text-zinc-50 underline ${lobster.className}`}>Owwimutiverse</div>
       </motion.div>
 
       <div className="relative top-[120px]">
@@ -138,7 +159,7 @@ const HomePage = () => {
           animate="show"
         >
           <motion.h1
-            className="text-9xl text-light-blue tracking-tighter font-bold"
+            className="lg:text-9xl lg:text-left md:text-8xl sm:text-6xl text-4xl text-center text-light-blue tracking-tighter font-bold"
             variants={textAnimate2}
             custom={-150}
           >
@@ -147,13 +168,14 @@ const HomePage = () => {
         </motion.div>
 
         <motion.p
-          className="absolute w-[600px] text-sm text-justify right-32 top-12 leading-2 font-semibold text-light-blue"
+          className=" 2xl:absolute 2xl:block hidden 2xl:w-[30vw] w-[20vw] text-sm text-justify right-32 top-12 leading-2 font-semibold text-light-blue"
           variants={textParagraph}
           initial="hidden"
           animate="show"
         >
-          <span className="text-blue-300">OwwiMoney</span> is a solution that helps users manage their finances
-          effectively. It is built on a foundation of modern technology and techniques, creativity and high security.
+          Are you ready to take control of your finances and embark on a journey towards financial well-being? Look no
+          further! <span className="text-blue-300">OwwiMoney</span> is your ultimate financial companion, designed to
+          empower you in managing your money effectively and achieving your financial goals.
         </motion.p>
         <motion.div
           className="relative left-[25%]"
@@ -162,7 +184,7 @@ const HomePage = () => {
           animate="show"
         >
           <motion.h1
-            className="text-9xl text-blue-300 tracking-tighter font-bold"
+            className="lg:text-9xl md:text-8xl sm:text-6xl text-4xl text-blue-300 tracking-tighter font-bold"
             variants={textAnimate2}
             custom={100}
           >
@@ -172,35 +194,30 @@ const HomePage = () => {
       </div>
 
       <motion.div
-        className="flex gap-4 absolute bottom-4"
+        className="lg:flex gap-8 bottom-[30%] left-[40%] px-8 hidden lg:absolute "
         variants={imageAnimate}
         initial="hidden"
         animate="show"
       >
         <motion.div
-          className="relative w-[25vw] h-[30vh]"
+          className="flex justify-center items-center"
           variants={imageAnimateChild}
         >
-          <Image
-            src="/home/BudgetPage.png"
-            alt="Budget Page Design"
-            fill
-            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 50vw, 100vw"
-            className="rounded-sm saturate-150"
-          />
+          <Link
+            href={'/login'}
+            className="uppercase p-4 bg-slate-100 rounded-2xl font-extrabold"
+          >
+            getting start
+          </Link>
         </motion.div>
-        <motion.div
-          className="relative flex-1 w-[25vw] h-[30vh]"
-          variants={imageAnimateChild}
-        >
-          <Image
-            src="/home/MyWalletPage.png"
-            alt="Budget Page Design"
-            fill
-            sizes="(max-width: 768px) 33vw, (max-width: 1024px) 50vw, 100vw"
-            className="rounded-sm saturate-150"
-          />
-        </motion.div>
+      </motion.div>
+      <motion.div
+        className="absolute bottom-0 w-screen"
+        variants={WaterWaveAnime}
+        initial="hidden"
+        animate="show"
+      >
+        <WaterWave />
       </motion.div>
     </div>
   );

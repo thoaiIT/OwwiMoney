@@ -155,6 +155,7 @@ module.exports = {
           from: { opacity: 0, transform: 'translate(-50%, -48%) scale(0.96)' },
           to: { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
         },
+
         // Toast
         hide: {
           from: { opacity: 1 },
@@ -168,6 +169,7 @@ module.exports = {
           from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
           to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
         },
+
         // End Toast
         progressSmall: {
           '0%': {
@@ -185,6 +187,8 @@ module.exports = {
             width: '100%',
           },
         },
+
+        //Waterfill
         wave: {
           '0%': {
             x: '-400px',
@@ -203,6 +207,31 @@ module.exports = {
             y: '-30px',
           },
         },
+        //end Waterfill
+
+        //WaterWave
+        moveForever: {
+          '0%': {
+            transform: 'translate3d(-90px,0,0)',
+          },
+          '100%': {
+            transform: 'translate3d(85px,0,0)',
+          },
+        },
+        //end WaterWave
+
+        //button gaming shadow
+        colorAnim: {
+          '0%': {
+            fill: 'white',
+          },
+          '50%': {
+            fill: '#FBC638',
+          },
+          '100%': {
+            fill: 'white',
+          },
+        },
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -219,6 +248,14 @@ module.exports = {
         //Loading effect
         waveFillUp: 'wave 0.7s infinite linear, fillUp 10s infinite ease-out alternate',
         transitionTiming: 'cubic-bezier(0.36,0.55,0.63,0.48)',
+
+        //WaterWave
+        moveForever: 'moveForever 25s cubic-bezier(.55,.5,.45,.5) infinite',
+      },
+      boxShadow: {
+        //button gaming shadow
+        buttonShadow: '6px 6px 0 black',
+        buttonHoverShadow: '10px 10px 0 #FBC638',
       },
     },
   },

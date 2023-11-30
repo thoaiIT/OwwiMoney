@@ -1,5 +1,5 @@
 import { options } from '@/app/api/auth/[...nextauth]/options';
-import HomePage from '@/components/home/Home';
+import HomePage from '@/components/home/HomePage';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
