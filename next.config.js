@@ -3,6 +3,9 @@ const nextConfig = {
   experimental: {
     appDir: true,
     fontLoaders: [{ loader: '@next/font/google', options: { subsets: ['latin'] } }],
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
   reactStrictMode: false,
 };

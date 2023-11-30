@@ -26,7 +26,6 @@ const CommonAvatar: React.FC<CommonAvatarProps> = ({
     <div className="flex flex-col items-center justify-center">
       <Avatar.Root
         onClick={() => {
-          console.log('click');
           !!handleClick && handleClick();
         }}
         className={tailwindMerge(
