@@ -15,6 +15,7 @@ import { tailwindMerge } from '@/utils/helper';
 import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
+import { IsNotEmpty } from 'class-validator';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
@@ -67,35 +68,34 @@ export type FileType = {
 };
 
 export class NewTransactionModel {
-  // @IsNotEmpty({ message: 'Partner is required' })
-  partnerId: string | undefined;
+  @IsNotEmpty({ message: 'Partner is required' })
+  partnerId?: string;
 
-  // @IsNotEmpty({ message: 'Type is required' })
-  type: string | undefined;
+  @IsNotEmpty({ message: 'Type is required' })
+  type?: string;
 
-  // @IsNotEmpty({ message: 'Category is required' })
-  category: string | undefined;
+  @IsNotEmpty({ message: 'Category is required' })
+  category?: string;
 
-  // @IsNotEmpty({ message: 'Wallet is required' })
-  wallet: string | undefined;
+  @IsNotEmpty({ message: 'Wallet is required' })
+  wallet?: string;
 
-  // @IsNotEmpty({ message: 'Created Date is required' })
-  createdDate: string | undefined;
+  @IsNotEmpty({ message: 'Created Date is required' })
+  createdDate?: string;
 
-  // @IsNotEmpty({ message: 'Amount is required' })
-  amount: number | undefined;
+  @IsNotEmpty({ message: 'Amount is required' })
+  amount?: number;
 
   @IsImage()
   @MaxSize(10000000)
-  invoiceImage: FileType | undefined;
+  invoiceImage?: FileType;
 
-  description: string | undefined;
+  description?: string;
 }
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
 const TransactionsDialog = () => {
-  const [options, setOptions] = useState<DataType[]>(frameworks);
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
@@ -111,7 +111,7 @@ const TransactionsDialog = () => {
     watch,
   } = useForm({
     values: {
-      partnerId: frameworks[0]?.value,
+      partnerId: '',
       type: '',
       category: '',
       wallet: '',
@@ -140,11 +140,11 @@ const TransactionsDialog = () => {
   });
 
   const handleSearch = (searchString: string) => {
-    setOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
+    setPartnerOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
   };
 
   const handleSelectItem = (item: DataType) => {
-    setOptions((prev) => {
+    setPartnerOptions((prev) => {
       prev.splice(prev.indexOf(item), 1);
       const items = [item, ...prev];
       return items;
@@ -174,7 +174,8 @@ const TransactionsDialog = () => {
       const partnerOptions: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
         return { value: partner.id, label: partner.name } as DataType;
       });
-
+      console.log({ partnerOptions, value0: partnerOptions?.[0]?.value as string });
+      setValue('partnerId', partnerOptions?.[0]?.value as string);
       setPartnerOptions(partnerOptions as DataType[]);
     };
     const fetchAllTypes = async () => {
@@ -190,13 +191,15 @@ const TransactionsDialog = () => {
       const walletOptions: DataType[] | undefined = allWallets.data?.wallets?.map((wallet) => {
         return { value: wallet.id, label: wallet.name } as DataType;
       });
-      console.log({ walletOptions });
       setWalletOptions(walletOptions as DataType[]);
     };
-    fetchAllPartners();
-    fetchAllTypes();
-    fetchAllWallet();
-  }, []);
+    console.log({ open });
+    if (open) {
+      fetchAllPartners();
+      fetchAllTypes();
+      fetchAllWallet();
+    }
+  }, [open]);
 
   useEffect(() => {
     const fetchCategoryByType = async () => {
@@ -220,81 +223,89 @@ const TransactionsDialog = () => {
         }
         titleDialog="New Transactions"
         customStyleHeader="text-2xl"
+        handleOpenChange={() => {
+          setOpen(!open);
+        }}
         handleSubmit={handleSubmitForm}
         handleClose={() => {
           reset();
         }}
       >
         <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
-        <div className="flex gap-5">
-          {options.map((item, index) => {
-            if (options.length === 7 || index < 6)
-              return (
-                <CommonAvatar
-                  handleClick={() => {
-                    setValue('partnerId', item.value);
-                  }}
-                  key={item.value}
-                  label={item.label}
-                  className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
-                  customLabel={tailwindMerge(watch('partnerId') === item.value && 'font-bold')}
-                />
-              );
-          })}
-          {options.length > 7 && (
-            <CommonPopover
-              open={open}
-              onOpenChange={() => {
-                setOpen(!open);
-              }}
-            >
-              <CommonPopoverTrigger asChild>
-                <div className="flex flex-col justify-center items-center">
-                  <CommonButton
-                    intent={'outline'}
-                    className="h-[60px] w-[60px] rounded-full"
-                  >
-                    <GoPlus size={24} />
-                  </CommonButton>
-                  <p
-                    className={
-                      'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
-                    }
-                  >
-                    More...
-                  </p>
-                </div>
-              </CommonPopoverTrigger>
-              <CommonPopoverContent>
-                <div className="flex items-center">
-                  <BsSearch className="w-4 ml-3" />
-                  <CommonInput
-                    name="search"
-                    intent="simple"
-                    placeholder="Search here... "
-                    className="text-base"
-                    onChange={(e) => {
-                      handleSearch(e.target.value);
+        {partnerOptions.length === 0 ? (
+          <div className="h-[60px] flex justify-center items-center">No Partner</div>
+        ) : (
+          <div className="flex gap-5">
+            {partnerOptions.map((item, index: number) => {
+              if (partnerOptions.length === 7 || index < 6)
+                return (
+                  <CommonAvatar
+                    handleClick={() => {
+                      setValue('partnerId', item.value);
                     }}
+                    key={item.value}
+                    label={item.label}
+                    className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
+                    customLabel={tailwindMerge(watch('partnerId') === item.value && 'font-bold')}
                   />
-                </div>
-                <div className="h-min overflow-y-auto border-t-2">
-                  {options.map((option, index) => {
-                    if (index > 5)
-                      return (
-                        <OptionItem
-                          key={option.value}
-                          item={option}
-                          onSelect={handleSelectItem}
-                          isActive={watch('partnerId') === option.value}
-                        />
-                      );
-                  })}
-                </div>
-              </CommonPopoverContent>
-            </CommonPopover>
-          )}
-        </div>
+                );
+            })}
+            {partnerOptions.length > 7 && (
+              <CommonPopover
+                open={open}
+                onOpenChange={() => {
+                  setOpen(!open);
+                }}
+              >
+                <CommonPopoverTrigger asChild>
+                  <div className="flex flex-col justify-center items-center">
+                    <CommonButton
+                      intent={'outline'}
+                      className="h-[60px] w-[60px] rounded-full"
+                    >
+                      <GoPlus size={24} />
+                    </CommonButton>
+                    <p
+                      className={
+                        'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
+                      }
+                    >
+                      More...
+                    </p>
+                  </div>
+                </CommonPopoverTrigger>
+                <CommonPopoverContent>
+                  <div className="flex items-center">
+                    <BsSearch className="w-4 ml-3" />
+                    <CommonInput
+                      name="search"
+                      intent="simple"
+                      placeholder="Search here... "
+                      className="text-base"
+                      onChange={(e) => {
+                        handleSearch(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="h-min max-h-96 overflow-y-auto border-t-2">
+                    {partnerOptions.map((option, index) => {
+                      if (index > 5)
+                        return (
+                          <OptionItem
+                            key={option.value}
+                            item={option}
+                            onSelect={handleSelectItem}
+                            isActive={watch('partnerId') === option.value}
+                          />
+                        );
+                    })}
+                  </div>
+                </CommonPopoverContent>
+              </CommonPopover>
+            )}
+          </div>
+        )}
+
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
