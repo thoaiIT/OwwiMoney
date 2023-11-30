@@ -49,7 +49,7 @@ const WalletDialog = ({ handleRerender }: WalletDialogProps) => {
       totalBalance: Number(totalAmount),
       name: walletName as string,
     };
-
+    console.log({ data });
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);

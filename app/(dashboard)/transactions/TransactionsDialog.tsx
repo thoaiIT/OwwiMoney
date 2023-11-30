@@ -124,8 +124,6 @@ const TransactionsDialog = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
-    // const file = new File([''], values.invoiceImage);
-    console.log({ values });
     const data: TransactionCreateType = {
       amount: values.amount as number,
       categoryId: values.category as string,
@@ -192,7 +190,7 @@ const TransactionsDialog = () => {
       const walletOptions: DataType[] | undefined = allWallets.data?.wallets?.map((wallet) => {
         return { value: wallet.id, label: wallet.name } as DataType;
       });
-
+      console.log({ walletOptions });
       setWalletOptions(walletOptions as DataType[]);
     };
     fetchAllPartners();
