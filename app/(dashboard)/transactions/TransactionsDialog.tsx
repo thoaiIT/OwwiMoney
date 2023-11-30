@@ -1,6 +1,6 @@
 'use Client';
 import { getCategoryByType } from '@/actions/controller/categoryController';
-import { getAllPartnerByUser } from '@/actions/controller/partnerController';
+import { getPartnerByType } from '@/actions/controller/partnerController';
 import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
@@ -170,7 +170,7 @@ const TransactionsDialog = () => {
 
   useEffect(() => {
     const fetchAllPartners = async () => {
-      const allPartners = await getAllPartnerByUser();
+      const allPartners = await getPartnerByType('');
       const partnerOptions: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
         return { value: partner.id, label: partner.name } as DataType;
       });

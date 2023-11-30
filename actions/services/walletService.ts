@@ -1,4 +1,4 @@
-import type { WalletCreateType } from '@/actions/controller/walletController';
+import type { WalletCreateType, WalletUpdateType } from '@/actions/controller/walletController';
 import type WalletRepository from '@/actions/repositories/walletRepository';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { HttpStatusCodes } from '@/helper/type';
@@ -50,6 +50,19 @@ class WalletService {
 
     const wallet = await this.walletRepository.getWalletById(walletId, userId);
     return { message: 'Success', data: { wallet }, status: HttpStatusCodes[200] };
+  }
+
+  async updateWallet(data: WalletUpdateType) {
+    const session = await getServerSession(options);
+    const userId = session?.user?.userId as string;
+
+    if (!userId) return { message: 'User is not valid', status: HttpStatusCodes[401] };
+
+    const walletExist = await this.walletRepository.getWalletById(data.walletId, userId);
+    if (!walletExist) return { message: 'Wallet or User Invalid', status: HttpStatusCodes[422] };
+
+    const wallet = await this.walletRepository.updateWallet({ ...data });
+    return { message: 'Updated Successfully', data: { wallet }, status: HttpStatusCodes[200] };
   }
 
   async deleteWallet(walletId: string) {

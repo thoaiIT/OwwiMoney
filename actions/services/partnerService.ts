@@ -2,6 +2,7 @@ import type { PartnerCreateType, PartnerUpdateType } from './../controller/partn
 // services/partnerService.ts
 import type PartnerRepository from '@/actions/repositories/partnerRepository';
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
 
@@ -26,7 +27,7 @@ class PartnerService {
     }
   }
 
-  async getAllPartnerByUser() {
+  async getAllPartnerByUser(pageSize: number, page: number) {
     try {
       const session = await getServerSession(options);
       const userId = session?.user?.userId as string;
@@ -34,8 +35,12 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      const partners = await this.partnerRepository.getAllPartnerByUser(userId);
-      return { message: 'Success', data: { partners }, status: HttpStatusCodes[200] };
+      const partners = await this.partnerRepository.getAllPartnerByUser(
+        userId,
+        pageSize || DEFAULT_PAGE_SIZE,
+        page || 1,
+      );
+      return { message: 'Success', data: partners, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
@@ -58,49 +63,77 @@ class PartnerService {
   }
 
   async getPartnerById(partnerId: string) {
-    const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    try {
+      const session = await getServerSession(options);
+      const userId = session?.user?.userId as string;
 
-    if (!userId) {
-      return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+
+      const partner = await this.partnerRepository.getPartnerById(partnerId, userId);
+      return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
     }
-
-    const partner = await this.partnerRepository.getPartnerById(partnerId, userId);
-    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 
   async updatePartner(data: PartnerUpdateType) {
-    const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    try {
+      const session = await getServerSession(options);
+      const userId = session?.user?.userId as string;
 
-    if (!userId) {
-      return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+
+      const partnerExist = await this.partnerRepository.getPartnerById(data.partnerId, userId);
+      if (!partnerExist) {
+        return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
+      }
+
+      const partner = await this.partnerRepository.updatePartner({ ...data });
+      return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
     }
-
-    const partnerExist = await this.partnerRepository.getPartnerById(data.partnerId, userId);
-    if (!partnerExist) {
-      return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
-    }
-
-    const partner = await this.partnerRepository.updatePartner({ ...data });
-    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 
   async deletePartner(partnerId: string) {
-    const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    try {
+      const session = await getServerSession(options);
+      const userId = session?.user?.userId as string;
 
-    if (!userId) {
-      return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+
+      const partnerExist = await this.partnerRepository.getPartnerById(partnerId, userId);
+      if (!partnerExist) {
+        return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
+      }
+
+      const partner = await this.partnerRepository.deletePartner(partnerId);
+      return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
     }
+  }
 
-    const partnerExist = await this.partnerRepository.getPartnerById(partnerId, userId);
-    if (!partnerExist) {
-      return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
+  async getPartnerByType(typeId: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = session?.user?.userId as string;
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const partners = await this.partnerRepository.getPartnerByType(typeId, userId);
+
+      return { message: 'Success', data: { partners }, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
     }
-
-    const partner = await this.partnerRepository.deletePartner(partnerId);
-    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
   }
 }
 
