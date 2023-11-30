@@ -1,3 +1,4 @@
+import type { UserUpdateType } from '@/actions/controller/userController';
 import type { User } from '@prisma/client';
 import prisma from '../../helper/lib/prismadb';
 
@@ -25,6 +26,17 @@ class UserRepository {
       data: {
         password: hashedPassword,
       },
+    });
+  }
+
+  async getUserById(userId: string) {
+    return prisma.user.findFirst({ where: { id: userId } });
+  }
+
+  async updateUser({ userId, name, email, bio, avatarUrl }: UserUpdateType & { userId: string }) {
+    return await prisma.user.update({
+      where: { id: userId },
+      data: { name, email, bio, avatarUrl },
     });
   }
 }

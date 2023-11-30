@@ -81,6 +81,7 @@ class UserBudgetRepository {
           select: {
             name: true,
             email: true,
+            avatarUrl: true,
           },
         },
       },
