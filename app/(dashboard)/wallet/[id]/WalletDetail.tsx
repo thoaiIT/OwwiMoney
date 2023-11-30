@@ -40,6 +40,7 @@ const WalletDetail = () => {
         const name = await getWalletTypeName(newWallet?.walletTypeId as string);
         setWallet(newWallet);
         setWalletTypeName(name.data);
+        setTriggerRerender(false);
       } else {
         router.replace('/notfound');
       }
