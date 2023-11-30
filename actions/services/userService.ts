@@ -1,9 +1,13 @@
 // services/userService.ts
 import { registerOTP } from '@/actions/OTP/registerOTP';
+import type { UserUpdateType } from '@/actions/controller/userController';
 import { forgetPasswordOTPTemplate } from '@/actions/mail/forgetPasswordOTPTemplate';
+import { uploadImageToCloudinary } from '@/actions/services/common/cloudinaryService';
+import { options } from '@/app/api/auth/[...nextauth]/options';
 import { sendEmail } from '@/helper/lib/email';
 import { GenerateOTP } from '@/utils';
 import bcrypt from 'bcrypt';
+import { getServerSession } from 'next-auth';
 import { HttpStatusCodes, type ErrorType } from '../../helper/type';
 import UserRepository from '../repositories/userRepository';
 
@@ -89,6 +93,78 @@ class UserService {
       const hashedPassword = await bcrypt.hash(password, 12);
 
       await this.userRepository.updateUserPassword(email, hashedPassword);
+
+      return { message: 'Change password successfully', status: HttpStatusCodes['200'] };
+    } catch (e) {
+      const error = e as ErrorType;
+      return { message: error.message, status: HttpStatusCodes['500'] };
+    }
+  }
+
+  // Get Info User by UserId
+  async getUserById() {
+    const session = await getServerSession(options);
+    const userId = session?.user?.userId as string;
+
+    if (!userId) {
+      return { message: 'User is not valid', status: HttpStatusCodes[401] };
+    }
+
+    const user = await this.userRepository.getUserById(userId);
+    return { message: 'Success', data: { user }, status: HttpStatusCodes[200] };
+  }
+
+  // Update User
+  async updateUser(data: UserUpdateType) {
+    const session = await getServerSession(options);
+    const userId = session?.user?.userId as string;
+
+    if (!userId) {
+      return { message: 'User is not valid', status: HttpStatusCodes[401] };
+    }
+
+    const userExist = await this.userRepository.getUserById(userId);
+    if (!userExist) {
+      return { message: 'Invalid User', status: HttpStatusCodes[422] };
+    }
+
+    const avatarUrl = await uploadImageToCloudinary(data.avatarUrl || '');
+
+    // Check if upload successful
+    if (!avatarUrl) {
+      return { message: 'Failed to upload avatar', status: HttpStatusCodes[500] };
+    }
+
+    const user = await this.userRepository.updateUser({ ...data, userId, avatarUrl });
+    return { message: 'Success', data: { user }, status: HttpStatusCodes[200] };
+  }
+
+  // Change password in profile page
+  async changePasswordProfile(oldPassword: string, newPassword: string) {
+    const session = await getServerSession(options);
+    const userId = session?.user?.userId as string;
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      if (!user) {
+        return { message: 'User is not exist!', status: HttpStatusCodes['404'] };
+      }
+
+      if (oldPassword === newPassword) {
+        return { message: 'Old password and new password must be different!', status: HttpStatusCodes['422'] };
+      }
+
+      // Check if the old password entered from the UI is not the same as the current password, then notify the user
+      const checkPassword = await bcrypt.compare(oldPassword, user.password as string);
+      if (!checkPassword) {
+        return {
+          message: 'The old password just entered does not match the current password',
+          status: HttpStatusCodes['400'],
+        };
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+      await this.userRepository.updateUserPassword(user.email, hashedPassword);
 
       return { message: 'Change password successfully', status: HttpStatusCodes['200'] };
     } catch (e) {
