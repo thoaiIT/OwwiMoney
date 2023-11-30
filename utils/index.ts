@@ -15,5 +15,3 @@ export const generateMailOTP = (otp: string) => {
     </html>
     `;
 };
-
-exports.GenerateOTP = GenerateOTP;

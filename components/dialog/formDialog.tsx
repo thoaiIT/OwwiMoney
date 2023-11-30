@@ -29,6 +29,7 @@ interface DialogFormProps {
   allowCloseOutside?: boolean;
   isNotUseDefaultFooter?: boolean;
   customTextFooterButton?: string;
+  className?: string;
 }
 
 const DialogForm = ({
@@ -44,6 +45,7 @@ const DialogForm = ({
   isNotUseDefaultFooter = false,
   handleSubmit,
   handleClose,
+  className,
 }: DialogFormProps) => {
   return (
     <Dialog
@@ -59,7 +61,7 @@ const DialogForm = ({
         <DialogOverlay />
         <DialogContent
           onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}
-          className="bg-theme"
+          className={tailwindMerge('bg-theme max-w-max', className)}
         >
           <DialogHeader className={tailwindMerge(customStyleHeader)}>
             <DialogTitle className="text-xl font-bold">{titleDialog}</DialogTitle>
