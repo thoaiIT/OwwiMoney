@@ -1,3 +1,5 @@
+import type { FileType } from '@/app/(dashboard)/transactions/TransactionsDialog';
+import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { IsNotEmpty } from 'class-validator';
 
 export class WalletModel {
@@ -16,4 +18,14 @@ export class WalletModel {
   description?: string | null;
 
   color?: string | null;
+}
+
+export class WalletModelReceive extends WalletModel {
+  @IsImage()
+  @MaxSize(10000000)
+  walletImage?: FileType | null;
+}
+
+export class WalletModelUpload extends WalletModel {
+  walletImage?: string | null;
 }

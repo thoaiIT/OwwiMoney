@@ -7,7 +7,7 @@ import type { Wallet } from '@prisma/client';
 
 export type WalletCreateType = Pick<
   Wallet,
-  'name' | 'description' | 'accountNumber' | 'walletTypeId' | 'totalBalance' | 'color'
+  'name' | 'description' | 'accountNumber' | 'walletTypeId' | 'totalBalance' | 'color' | 'walletImage'
 >;
 export type WalletUpdateType = WalletCreateType & { walletId: string };
 

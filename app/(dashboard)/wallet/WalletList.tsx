@@ -16,6 +16,7 @@ export interface WalletModel {
   totalBalance: number;
   userId: string;
   walletTypeId: string;
+  walletImage: string | null;
 }
 
 const WalletList = () => {
