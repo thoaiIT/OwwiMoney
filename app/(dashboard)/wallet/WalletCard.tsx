@@ -102,7 +102,7 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
           onClick={handleDeleteWallet}
           disabled={isLoading}
         >
-          Remove
+          {isLoading ? 'Loading...' : 'Remove'}
         </CommonButton>
         <CommonButton
           className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF]"
