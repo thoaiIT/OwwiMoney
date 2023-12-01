@@ -1,5 +1,11 @@
 'use client';
-import { deleteWallet, getWalletById, getWalletTypeName, updateWallet } from '@/actions/controller/walletController';
+import {
+  deleteWallet,
+  getWalletById,
+  getWalletTypeName,
+  updateWallet,
+  type WalletCreateType,
+} from '@/actions/controller/walletController';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
@@ -12,8 +18,6 @@ import type { Transaction } from '@prisma/client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-interface WalletDetailProps {}
 
 export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> & {
   category: string;
@@ -57,14 +61,16 @@ const WalletDetail = () => {
     { label: 'Actions', field: 'id', type: 'action' },
   ];
 
-  const handleUpdateWallet = async (data: any) => {
-    const result = await updateWallet({ ...data, walletId });
-    console.log(result);
-    if (result.status?.code === 200) {
-      toast.success(result.message as string);
-      setTriggerRerender(true);
-    } else {
-      toast.error(result.message as string);
+  const handleUpdateWallet = async (data: WalletCreateType) => {
+    if (walletId) {
+      const result = await updateWallet({ ...data, walletId });
+      console.log(result);
+      if (result.status?.code === 200) {
+        toast.success(result.message as string);
+        setTriggerRerender(true);
+      } else {
+        toast.error(result.message as string);
+      }
     }
   };
 
@@ -105,8 +111,17 @@ const WalletDetail = () => {
           </div>
           <div className="grid md:grid-cols-4 mt-8 gap-6">
             <div>
-              <p className="text-xl text-gray-03 font-semibold">Wallet Color</p>
-              <p className="text-2xl font-semibold">{wallet?.color ? wallet.color : 'White'}</p>
+              <p className="text-xl text-gray-03 font-semibold ">Wallet Color</p>
+              <div className="flex items-center gap-2">
+                <p
+                  className="text-2xl font-semibold"
+                  style={{
+                    color: `${wallet.color !== '#FFFFFF' ? wallet.color : '#000000'}`,
+                  }}
+                >
+                  {wallet?.color ? wallet.color : '#FFFFFF'}
+                </p>
+              </div>
             </div>
             {wallet.description && (
               <div className="col-span-3">

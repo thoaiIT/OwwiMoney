@@ -1,13 +1,13 @@
 'use client';
 
-import { getAllWalletType } from '@/actions/controller/walletController';
+import { getAllWalletType, type WalletCreateType } from '@/actions/controller/walletController';
 import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
-
 import { WalletModel } from '@/model/walletModel';
+
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { useEffect, useState } from 'react';
@@ -16,8 +16,8 @@ import { CiEdit } from 'react-icons/ci';
 import { FaPlus } from 'react-icons/fa';
 
 interface WalletDialogProps {
-  handleCreateWallet?: (data: WalletModel) => void;
-  handleUpdateWallet?: (data: WalletModel) => void;
+  handleCreateWallet?: (data: WalletCreateType) => void;
+  handleUpdateWallet?: (data: WalletCreateType) => void;
   type?: string;
 }
 
@@ -61,13 +61,13 @@ const WalletDialog = ({
       description: description as string,
       totalBalance: Number(totalBalance),
       name: name as string,
-      color: color || 'White',
+      color: color || '#FFFFFF',
     };
 
     if (type === 'create' && handleCreateWallet) handleCreateWallet(data);
     if (type === 'update' && handleUpdateWallet) handleUpdateWallet(data);
 
-    reset();
+    if (type === 'create') reset();
   });
 
   useEffect(() => {
@@ -182,14 +182,12 @@ const WalletDialog = ({
             <Controller
               name="color"
               control={control}
-              render={({ field: { onChange, value } }) => (
-                <CommonTextarea
-                  name="color"
-                  className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                  placeholder="Description"
+              render={({ field: { value, onChange } }) => (
+                <input
+                  type="color"
+                  className="rounded-[4px] p-2 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 w-full"
                   value={value as string}
                   onChange={onChange}
-                  errors={errors}
                 />
               )}
             />
