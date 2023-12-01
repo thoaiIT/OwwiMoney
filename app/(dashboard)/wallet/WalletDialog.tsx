@@ -39,6 +39,7 @@ const WalletDialog = ({
 }: WalletDialogProps & Partial<WalletModelUpload>) => {
   const [walletTypeOption, setWalletTypeOption] = useState<DataType[]>([{ label: '', value: '' }]);
   const [changeImage, setChangeImage] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {
     control,
@@ -89,6 +90,7 @@ const WalletDialog = ({
 
     if (type === 'create') reset();
 
+    setOpenDialog(false);
     setChangeImage(false);
   });
 
@@ -126,6 +128,10 @@ const WalletDialog = ({
         titleDialog={type === 'create' ? 'New Wallet' : 'Update Wallet'}
         customStyleHeader="text-2xl"
         handleSubmit={handleSubmitForm}
+        open={openDialog}
+        handleOpenChange={() => {
+          setOpenDialog(!openDialog);
+        }}
         handleClose={() => {
           setChangeImage(false);
           reset();
