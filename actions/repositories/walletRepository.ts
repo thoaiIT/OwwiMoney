@@ -83,7 +83,7 @@ class WalletRepository {
   async updateTotalBalance({ totalBalance, walletId }: { totalBalance: number; walletId: string }) {
     return await prisma.wallet.update({
       where: { id: walletId },
-      data: { totalBalance },
+      data: { totalBalance: { increment: totalBalance } },
     });
   }
 }

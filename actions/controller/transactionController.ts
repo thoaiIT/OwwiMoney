@@ -1,6 +1,6 @@
 'use server';
 import { getTypeById } from '@/actions/controller/typeController';
-import { getWalletById } from '@/actions/controller/walletController';
+import { getWalletById, updateTotalBalance } from '@/actions/controller/walletController';
 import TransactionRepository from '@/actions/repositories/transactionRepository';
 import TransactionService from '@/actions/services/transactionService';
 import { HttpStatusCodes } from '@/helper/type';
@@ -72,7 +72,20 @@ export const createTransaction = async (data: TransactionCreateType) => {
         return { message: 'Cannot create new transaction!!', status: HttpStatusCodes[500] };
       }
     })
-    // .then((result) => {})
+    .then(async (result) => {
+      try {
+        const type = await getTypeById(data.typeId);
+        const amount: number =
+          type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan' ? -data.amount : data.amount;
+
+        const update = await updateTotalBalance(amount, data.walletId);
+        if (update.status?.code === 200) {
+          return result;
+        } else return update;
+      } catch (error) {
+        return { message: 'Fail to update Total Balance of wallet', status: HttpStatusCodes[500] };
+      }
+    })
     .catch((error) => {
       console.log({ error });
       return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
@@ -90,14 +103,13 @@ export const getAllTransactionByUser = async (pageSize: number, page: number) =>
 
 export const checkWalletInfo = async (walletId: string, typeId: string, amount: number) => {
   const type = await getTypeById(typeId);
-  console.log({ type });
   if (type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan') {
     amount = -amount;
   }
   const walletInfo = await getWalletById(walletId);
   if (Number(walletInfo.data?.wallet?.totalBalance) + amount < 0) {
     return {
-      message: `Amount must be smaller than Total Balance of ${walletInfo.data?.wallet?.name || 'wallet'} (${
+      message: `Amount must be smaller than ${walletInfo.data?.wallet?.name || 'wallet'}'s Total Balance (${
         walletInfo.data?.wallet?.totalBalance || 0
       })`,
       status: HttpStatusCodes[400],
