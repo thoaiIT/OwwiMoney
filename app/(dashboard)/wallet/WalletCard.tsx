@@ -1,15 +1,17 @@
 'use client';
 
-import { deleteWallet, getWalletTypeName } from '@/actions/controller/walletController';
+import { deleteWallet } from '@/actions/controller/walletController';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import CreditIcon from '@/public/icons/credit.png';
 import DebitIcon from '@/public/icons/debit-card.png';
+import DigitalWallet from '@/public/icons/digital-wallet.png';
 import CashIcon from '@/public/icons/money.png';
-import Image, { type StaticImageData } from 'next/image';
+import OtherWallet from '@/public/icons/wallet.png';
+
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
@@ -18,12 +20,7 @@ interface WalletCardProps {
   handleRerender: () => void;
 }
 
-interface WalletTypeIcon {
-  name: string;
-  image: StaticImageData;
-}
-
-const walletTypeIcon = [
+export const walletTypeIcon = [
   {
     name: 'Cash',
     image: CashIcon,
@@ -36,23 +33,20 @@ const walletTypeIcon = [
     name: 'Debit',
     image: DebitIcon,
   },
+  {
+    name: 'Digital wallet',
+    image: DigitalWallet,
+  },
+  {
+    name: 'Others',
+    image: OtherWallet,
+  },
 ];
 
 const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
-  const [walletTypeName, setWalletTypeName] = useState<string | undefined>('');
-  const [displayIcon, setDisplayIcon] = useState<WalletTypeIcon>();
   const router = useRouter();
 
-  useEffect(() => {
-    console.log(wallet.color);
-    (async () => {
-      const result = await getWalletTypeName(wallet.walletTypeId);
-      const iconTarget = walletTypeIcon.find((item) => item.name === result.data);
-      setWalletTypeName(result.data);
-      setDisplayIcon(iconTarget);
-    })();
-  }, []);
-
+  const iconTarget = walletTypeIcon.find((item) => item.name === wallet.walletType?.typeName);
   const handleDeleteWallet = async () => {
     const result = await deleteWallet(wallet.id);
     if (result.status?.code === 200) {
@@ -62,11 +56,13 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
       toast.error(result.message);
     }
   };
+
+  const walletImageUrl = wallet.walletImage ? wallet.walletImage : iconTarget?.image;
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
         <CardTitle
-          className="flex justify-between items-center pb-3  gap-24"
+          className="flex justify-between items-center pb-3 gap-24 h-10"
           style={{
             borderBottom: `2px solid ${wallet.color !== '#FFFFFF' ? wallet.color : 'rgba(210, 210, 210, 0.25)'}`,
           }}
@@ -75,10 +71,10 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
             {wallet.name.length > 10 ? wallet.name.substring(0, 16) + '...' : wallet.name}
           </p>
           <div className="flex items-center gap-2">
-            <p className="text-gray-01 text-xs font-semibold">{walletTypeName}</p>
+            <p className="text-gray-01 text-xs font-semibold">{wallet.walletType?.typeName}</p>
             <Image
-              src={(displayIcon?.image as StaticImageData) || CashIcon}
-              alt={(displayIcon?.name as string) || ''}
+              src={walletImageUrl || CashIcon}
+              alt={(iconTarget?.name as string) || ''}
               width={42}
               height={42}
               unoptimized
