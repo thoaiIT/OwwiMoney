@@ -6,7 +6,10 @@ import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import CreditIcon from '@/public/icons/credit.png';
 import DebitIcon from '@/public/icons/debit-card.png';
+import DigitalWallet from '@/public/icons/digital-wallet.png';
 import CashIcon from '@/public/icons/money.png';
+import OtherWallet from '@/public/icons/wallet.png';
+
 import Image, { type StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -23,7 +26,7 @@ interface WalletTypeIcon {
   image: StaticImageData;
 }
 
-const walletTypeIcon = [
+export const walletTypeIcon = [
   {
     name: 'Cash',
     image: CashIcon,
@@ -36,6 +39,14 @@ const walletTypeIcon = [
     name: 'Debit',
     image: DebitIcon,
   },
+  {
+    name: 'Digital wallet',
+    image: DigitalWallet,
+  },
+  {
+    name: 'Others',
+    image: OtherWallet,
+  },
 ];
 
 const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
@@ -44,7 +55,6 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(wallet.color);
     (async () => {
       const result = await getWalletTypeName(wallet.walletTypeId);
       const iconTarget = walletTypeIcon.find((item) => item.name === result.data);
@@ -62,11 +72,13 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
       toast.error(result.message);
     }
   };
+
+  const walletImageUrl = wallet.walletImage ? wallet.walletImage : displayIcon?.image;
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
         <CardTitle
-          className="flex justify-between items-center pb-3  gap-24"
+          className="flex justify-between items-center pb-3 gap-24 h-10"
           style={{
             borderBottom: `2px solid ${wallet.color !== '#FFFFFF' ? wallet.color : 'rgba(210, 210, 210, 0.25)'}`,
           }}
@@ -77,7 +89,7 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
           <div className="flex items-center gap-2">
             <p className="text-gray-01 text-xs font-semibold">{walletTypeName}</p>
             <Image
-              src={(displayIcon?.image as StaticImageData) || CashIcon}
+              src={walletImageUrl || CashIcon}
               alt={(displayIcon?.name as string) || ''}
               width={42}
               height={42}

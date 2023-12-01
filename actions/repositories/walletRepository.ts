@@ -10,9 +10,20 @@ class WalletRepository {
     totalBalance,
     userId,
     color,
+    walletImage,
   }: WalletCreateType & { userId: string }) {
     return await prisma.wallet.create({
-      data: { name, description, accountNumber, walletTypeId, totalBalance, userId, deleted: false, color },
+      data: {
+        name,
+        description,
+        accountNumber,
+        walletTypeId,
+        totalBalance,
+        userId,
+        deleted: false,
+        color,
+        walletImage,
+      },
     });
   }
   async getAllWalletType() {
@@ -37,10 +48,11 @@ class WalletRepository {
     walletId,
     walletTypeId,
     description,
+    walletImage,
   }: WalletUpdateType) {
     return await prisma.wallet.update({
       where: { id: walletId },
-      data: { accountNumber, color, name, totalBalance, walletTypeId, description, deleted: false },
+      data: { accountNumber, color, name, totalBalance, walletTypeId, description, deleted: false, walletImage },
     });
   }
 
