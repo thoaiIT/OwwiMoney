@@ -7,6 +7,10 @@ import Loading from '@/components/loading';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
+interface WalletType {
+  typeName: string;
+}
+
 export interface WalletModel {
   id: string;
   name: string;
@@ -18,6 +22,7 @@ export interface WalletModel {
   userId: string;
   walletTypeId: string;
   walletImage: string | null;
+  walletType?: WalletType;
 }
 
 const WalletList = () => {
@@ -30,7 +35,6 @@ const WalletList = () => {
   };
 
   const handleCreateWallet = async (data: WalletCreateType) => {
-    console.log(data, wallets);
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
@@ -50,7 +54,7 @@ const WalletList = () => {
         setTriggerRerender(false);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching wallet data:', error);
+        toast.error('Error fetching wallet data:');
       }
     };
 

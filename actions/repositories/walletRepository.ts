@@ -70,6 +70,20 @@ class WalletRepository {
   async getAllWallet(userId: string) {
     return await prisma.wallet.findMany({
       where: { userId, deleted: false },
+      include: {
+        walletType: {
+          select: {
+            typeName: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateTotalBalance({ totalBalance, walletId }: { totalBalance: number; walletId: string }) {
+    return await prisma.wallet.update({
+      where: { id: walletId },
+      data: { totalBalance },
     });
   }
 }

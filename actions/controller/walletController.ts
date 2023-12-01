@@ -72,3 +72,11 @@ export const getWalletTypeName = async (walletTypeId: string) => {
     return { message: error, status: HttpStatusCodes[500] };
   }
 };
+
+export const updateTotalBalance = async (totalBalance: number, walletId: string) => {
+  try {
+    return await walletService.updateTotalBalance(totalBalance, walletId);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
