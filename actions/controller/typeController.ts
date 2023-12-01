@@ -15,3 +15,12 @@ export const getAllTypes = async () => {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
+
+export const getTypeById = async (typeId: string) => {
+  try {
+    const type = await typeService.getTypeById(typeId);
+    return type;
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};

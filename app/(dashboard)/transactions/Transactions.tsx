@@ -1,13 +1,16 @@
+import { getAllTransactionByUser } from '@/actions/controller/transactionController';
 import TabClient from '@/app/(dashboard)/transactions/TabClient';
-import { TableTransactionAll, type TransactionTableType } from '@/app/(dashboard)/transactions/TableClient';
+import { TableTransactionAll, type TransactionResType } from '@/app/(dashboard)/transactions/TableClient';
 
 type TransactionsProps = {
-  temp: string;
+  page: number;
+  pageSize: number;
 };
 
-const data: TransactionTableType[] = [];
-
-const Transactions: React.FC<TransactionsProps> = async () => {
+const Transactions = async ({ page, pageSize }: TransactionsProps) => {
+  const response = await getAllTransactionByUser(pageSize, page);
+  const data: TransactionResType[] = response.data?.transactions || [];
+  const totalPages: number = response.data?.totalPages || 0;
   return (
     <TabClient
       defaultValue="all"
@@ -20,7 +23,12 @@ const Transactions: React.FC<TransactionsProps> = async () => {
       tabContents={[
         {
           value: 'all',
-          children: <TableTransactionAll dataTable={data} />,
+          children: (
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
+            />
+          ),
         },
         { value: 'revenue', children: 'Revenue page' },
         { value: 'expenses', children: 'Expenses page' },
