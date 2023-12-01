@@ -1,0 +1,52 @@
+const WaterWave = () => {
+  return (
+    <div>
+      <svg
+        className="waves relative w-screen h-[25vh] min-h-[100px] max-h-[100px] 2xl:max-h-[200px]"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 24 150 28"
+        preserveAspectRatio="none"
+        shapeRendering="auto"
+      >
+        <defs>
+          <path
+            id="gentle-wave"
+            d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+          />
+        </defs>
+        <g className="parallax">
+          <use
+            xlinkHref="#gentle-wave"
+            className="animate-[moveForever_7s_cubic-bezier(.55,.5,.45,.5)_infinite_-2s]"
+            x="48"
+            y="0"
+            fill="rgba(255,255,255,0.7)"
+          />
+          <use
+            xlinkHref="#gentle-wave"
+            className="animate-[moveForever_10s_cubic-bezier(.55,.5,.45,.5)_infinite_-3s]"
+            x="48"
+            y="3"
+            fill="rgba(255,255,255,0.5)"
+          />
+          <use
+            xlinkHref="#gentle-wave"
+            className="animate-[moveForever_13s_cubic-bezier(.55,.5,.45,.5)_infinite_-4s]"
+            x="48"
+            y="5"
+            fill="rgba(255,255,255,0.3)"
+          />
+          <use
+            xlinkHref="#gentle-wave"
+            className="animate-[moveForever_20s_cubic-bezier(.55,.5,.45,.5)_infinite_-5s]"
+            x="48"
+            y="7"
+            fill="#fff"
+          />
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+export default WaterWave;

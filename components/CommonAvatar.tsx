@@ -1,3 +1,4 @@
+import CommonTooltip from '@/components/CommonTooltip';
 import emptyUser from '@/public/img/Avatar.png';
 import { tailwindMerge } from '@/utils/helper';
 import * as Avatar from '@radix-ui/react-avatar';
@@ -46,14 +47,16 @@ const CommonAvatar: React.FC<CommonAvatarProps> = ({
         </Avatar.Fallback>
       </Avatar.Root>
       {!!label && (
-        <p
-          className={tailwindMerge(
-            'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center',
-            customLabel,
-          )}
-        >
-          {label}
-        </p>
+        <CommonTooltip content={label}>
+          <p
+            className={tailwindMerge(
+              'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center',
+              customLabel,
+            )}
+          >
+            {label}
+          </p>
+        </CommonTooltip>
       )}
     </div>
   );

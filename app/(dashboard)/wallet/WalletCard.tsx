@@ -1,15 +1,18 @@
 'use client';
 
-import { deleteWallet, getWalletTypeName } from '@/actions/controller/walletController';
+import { deleteWallet } from '@/actions/controller/walletController';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import CreditIcon from '@/public/icons/credit.png';
 import DebitIcon from '@/public/icons/debit-card.png';
+import DigitalWallet from '@/public/icons/digital-wallet.png';
 import CashIcon from '@/public/icons/money.png';
-import Image, { type StaticImageData } from 'next/image';
+import OtherWallet from '@/public/icons/wallet.png';
+
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
@@ -18,12 +21,7 @@ interface WalletCardProps {
   handleRerender: () => void;
 }
 
-interface WalletTypeIcon {
-  name: string;
-  image: StaticImageData;
-}
-
-const walletTypeIcon = [
+export const walletTypeIcon = [
   {
     name: 'Cash',
     image: CashIcon,
@@ -36,43 +34,51 @@ const walletTypeIcon = [
     name: 'Debit',
     image: DebitIcon,
   },
+  {
+    name: 'Digital wallet',
+    image: DigitalWallet,
+  },
+  {
+    name: 'Others',
+    image: OtherWallet,
+  },
 ];
 
 const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
-  const [walletTypeName, setWalletTypeName] = useState<string | undefined>('');
-  const [displayIcon, setDisplayIcon] = useState<WalletTypeIcon>();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    (async () => {
-      const result = await getWalletTypeName(wallet.walletTypeId);
-      const iconTarget = walletTypeIcon.find((item) => item.name === result.data);
-      setWalletTypeName(result.data);
-      setDisplayIcon(iconTarget);
-    })();
-  }, []);
-
+  const iconTarget = walletTypeIcon.find((item) => item.name === wallet.walletType?.typeName);
   const handleDeleteWallet = async () => {
+    setIsLoading(true);
     const result = await deleteWallet(wallet.id);
     if (result.status?.code === 200) {
       toast.success(result.message);
-      handleRerender();
     } else {
       toast.error(result.message);
     }
+    handleRerender();
+    setIsLoading(false);
   };
+
+  const walletImageUrl = wallet.walletImage ? wallet.walletImage : iconTarget?.image;
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center border-b-[1px] pb-3 border-light-gray gap-24">
+        <CardTitle
+          className="flex justify-between items-center pb-3 gap-24 h-10"
+          style={{
+            borderBottom: `2px solid ${wallet.color !== '#FFFFFF' ? wallet.color : 'rgba(210, 210, 210, 0.25)'}`,
+          }}
+        >
           <p className="text-base font-bold text-gray-02">
             {wallet.name.length > 10 ? wallet.name.substring(0, 16) + '...' : wallet.name}
           </p>
           <div className="flex items-center gap-2">
-            <p className="text-gray-01 text-xs font-semibold">{walletTypeName}</p>
+            <p className="text-gray-01 text-xs font-semibold">{wallet.walletType?.typeName}</p>
             <Image
-              src={(displayIcon?.image as StaticImageData) || CashIcon}
-              alt={(displayIcon?.name as string) || ''}
+              src={walletImageUrl || CashIcon}
+              alt={(iconTarget?.name as string) || ''}
               width={42}
               height={42}
               unoptimized
@@ -94,8 +100,9 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
         <CommonButton
           className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400 font-semibold"
           onClick={handleDeleteWallet}
+          disabled={isLoading}
         >
-          Remove
+          {isLoading ? 'Loading...' : 'Remove'}
         </CommonButton>
         <CommonButton
           className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF]"

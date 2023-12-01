@@ -1,10 +1,15 @@
 'use client';
-import { createWallet, getAllWallet } from '@/actions/controller/walletController';
+import { createWallet, getAllWallet, type WalletCreateType } from '@/actions/controller/walletController';
 import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 import { CommonCard } from '@/components/card';
+import Loading from '@/components/loading';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+
+interface WalletType {
+  typeName: string;
+}
 
 export interface WalletModel {
   id: string;
@@ -16,17 +21,20 @@ export interface WalletModel {
   totalBalance: number;
   userId: string;
   walletTypeId: string;
+  walletImage: string | null;
+  walletType?: WalletType;
 }
 
 const WalletList = () => {
   const [wallets, setWallets] = useState<WalletModel[] | undefined>([]);
   const [triggerRerender, setTriggerRerender] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleRerender = () => {
     setTriggerRerender(true);
   };
 
-  const handleCreateWallet = async (data: any) => {
+  const handleCreateWallet = async (data: WalletCreateType) => {
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
@@ -39,19 +47,21 @@ const WalletList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const result = await getAllWallet();
-        console.log(result);
         const walletList = result.data?.wallets;
         setWallets(walletList);
         setTriggerRerender(false);
+        setLoading(false);
       } catch (error) {
-        console.error('Error fetching wallet data:', error);
+        toast.error('Error fetching wallet data:');
       }
     };
 
     fetchData();
   }, [triggerRerender]);
 
+  if (loading) return <Loading />;
   return (
     <div className="flex gap-4 flex-wrap">
       {wallets &&

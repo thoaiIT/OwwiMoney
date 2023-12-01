@@ -7,6 +7,7 @@ import TableHeader, { type ColumnType } from '@/components/table/TableHeader';
 import TablePagination from '@/components/table/TablePagination';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import OwwiNoDataImg from '@/public/img/Owwi-NoData.png';
+import { tailwindMerge } from '@/utils/helper';
 import { Table } from '@radix-ui/themes';
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -21,6 +22,7 @@ type TableProps<T> = {
   showFooterTotal?: boolean;
   showFooterAvg?: boolean;
   usePagination?: boolean;
+  customBorderStyle?: string;
 };
 
 /**
@@ -54,6 +56,8 @@ type TableProps<T> = {
  *
  * @param {Function} customCellHandler - Function for custom cell rendering.
  *
+ * @param {string} customBorderStyle - custom border for table. Ex: border, border radius padding.
+ *
  * @returns {JSX.Element} The rendered table component.
  */
 
@@ -67,6 +71,7 @@ const CommonTable = <TData,>({
   showFooterTotal,
   showFooterAvg,
   usePagination,
+  customBorderStyle,
   editHandler,
   deleteHandler,
   customHandler,
@@ -136,8 +141,12 @@ const CommonTable = <TData,>({
     tableData?.addCustomAction('insertNewRow', insertNewRow);
   }, [insertNewRow]);
 
+  useEffect(() => {
+    setDataRender(data);
+  }, [data]);
+
   return (
-    <CommonCard className="w-full p-4">
+    <CommonCard className={tailwindMerge(['w-full p-4', customBorderStyle])}>
       <Table.Root>
         <TableHeader
           columns={updatedColumns}
