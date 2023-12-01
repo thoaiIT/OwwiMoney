@@ -12,6 +12,7 @@ import OtherWallet from '@/public/icons/wallet.png';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { IoIosArrowForward } from 'react-icons/io';
 import { toast } from 'react-toastify';
 
@@ -44,17 +45,20 @@ export const walletTypeIcon = [
 ];
 
 const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const iconTarget = walletTypeIcon.find((item) => item.name === wallet.walletType?.typeName);
   const handleDeleteWallet = async () => {
+    setIsLoading(true);
     const result = await deleteWallet(wallet.id);
     if (result.status?.code === 200) {
       toast.success(result.message);
-      handleRerender();
     } else {
       toast.error(result.message);
     }
+    handleRerender();
+    setIsLoading(false);
   };
 
   const walletImageUrl = wallet.walletImage ? wallet.walletImage : iconTarget?.image;
@@ -96,6 +100,7 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
         <CommonButton
           className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400 font-semibold"
           onClick={handleDeleteWallet}
+          disabled={isLoading}
         >
           Remove
         </CommonButton>
