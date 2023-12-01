@@ -2,7 +2,7 @@
 import TransactionsDialog from '@/app/(dashboard)/transactions/TransactionsDialog';
 import { CommonTabs, TabsContent, TabsList, type tabsListType } from '@/components/Tab';
 import type React from 'react';
-import type { ReactNode } from 'react';
+import { Suspense, type ReactNode } from 'react';
 
 type TabClientProps = {
   defaultValue: string;
@@ -15,7 +15,9 @@ const TabClient: React.FC<TabClientProps> = ({ defaultValue, tabNames, tabConten
     <CommonTabs defaultValue={defaultValue}>
       <div className="flex justify-between">
         <TabsList tabNames={tabNames} />
-        <TransactionsDialog />
+        <Suspense fallback={''}>
+          <TransactionsDialog />
+        </Suspense>
       </div>
       {tabContents.map((tabContent) => (
         <TabsContent
