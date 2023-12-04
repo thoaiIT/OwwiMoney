@@ -111,7 +111,7 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
           handleSubmit={handleDeleteWallet}
           useCustomTrigger={
             <CommonButton className="w-fit text-[#FF4F5B] px-0  duration-300 transition-all bg-transparent hover:text-rose-500 hover:bg-transparent hover:transition-all hover:ring-0">
-              Remove
+              {isLoading ? 'Loading...' : 'Remove'}
             </CommonButton>
           }
         >
