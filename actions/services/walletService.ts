@@ -79,7 +79,7 @@ class WalletService {
     }
 
     const partner = await this.walletRepository.deleteWallet(walletId);
-    return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
+    return { message: 'Delete Successfully', data: { partner }, status: HttpStatusCodes[200] };
   }
 
   async getAllWalletType() {
