@@ -1,5 +1,6 @@
 'use client';
 
+import RootLoading from '@/components/RootLoading';
 import Breadcrumb from '@/components/breadscrumb';
 import SideBar from '@/components/dashboard/SideBar';
 import Loading from '@/components/loading';
@@ -22,7 +23,12 @@ const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
     console.log(session);
   }, [session]);
 
-  if (!session?.user?.emailConfirmed) return <Loading />;
+  if (!session?.user?.emailConfirmed)
+    return (
+      <div className="flex flex-col bg-light-mode dark:bg-dark-mode text-dark-mode dark:text-light-mode items-center justify-center h-screen marker:text-center">
+        <RootLoading />
+      </div>
+    );
   return (
     <div className="w-full">
       <div className="flex h-screen">
