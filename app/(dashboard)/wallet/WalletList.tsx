@@ -35,6 +35,7 @@ const WalletList = () => {
   };
 
   const handleCreateWallet = async (data: WalletCreateType) => {
+    setLoading(true);
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
@@ -42,6 +43,7 @@ const WalletList = () => {
     } else {
       toast.error(result.message as string);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

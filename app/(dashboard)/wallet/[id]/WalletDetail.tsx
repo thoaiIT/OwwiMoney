@@ -2,7 +2,6 @@
 import {
   deleteWallet,
   getWalletById,
-  getWalletTypeName,
   updateWallet,
   type WalletCreateType,
 } from '@/actions/controller/walletController';
@@ -30,8 +29,8 @@ export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> 
 
 const WalletDetail = () => {
   const [wallet, setWallet] = useState<WalletModel>();
-  const [walletTypeName, setWalletTypeName] = useState<string | undefined>('');
   const [triggerRerender, setTriggerRerender] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathName = usePathname();
   const parts = pathName.split('/');
@@ -41,11 +40,8 @@ const WalletDetail = () => {
     (async () => {
       const result = await getWalletById(walletId as string);
       const newWallet = result.data?.wallet;
-
       if (newWallet) {
-        const name = await getWalletTypeName(newWallet?.walletTypeId as string);
         setWallet(newWallet);
-        setWalletTypeName(name.data);
         setTriggerRerender(false);
       } else {
         router.replace('/notfound');
@@ -65,6 +61,7 @@ const WalletDetail = () => {
 
   const handleUpdateWallet = async (data: WalletCreateType) => {
     if (walletId) {
+      setIsLoading(true);
       const result = await updateWallet({ ...data, walletId });
       console.log(result);
       if (result.status?.code === 200) {
@@ -73,6 +70,7 @@ const WalletDetail = () => {
       } else {
         toast.error(result.message as string);
       }
+      setIsLoading(false);
     }
   };
 
@@ -86,7 +84,7 @@ const WalletDetail = () => {
     }
   };
 
-  if (!wallet) return <Loading />;
+  if (!wallet || isLoading) return <Loading />;
   return (
     <>
       <Title title="Wallet detail" />
@@ -102,7 +100,7 @@ const WalletDetail = () => {
                 </div>
                 <div>
                   <p className="text-xl text-gray-03 font-semibold">Wallet Type</p>
-                  <p className="text-2xl font-semibold">{walletTypeName}</p>
+                  <p className="text-2xl font-semibold">{wallet.walletType?.typeName}</p>
                 </div>
                 <div>
                   <p className="text-xl text-gray-03 font-semibold">Balance</p>
