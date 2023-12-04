@@ -37,6 +37,13 @@ class WalletRepository {
         userId,
         deleted: false,
       },
+      include: {
+        walletType: {
+          select: {
+            typeName: true,
+          },
+        },
+      },
     });
   }
 
