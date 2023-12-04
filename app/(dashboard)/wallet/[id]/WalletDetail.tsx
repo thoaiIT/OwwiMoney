@@ -71,8 +71,8 @@ const WalletDetail = () => {
         setTriggerRerender(true);
       } else {
         toast.error(result.message as string);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
   };
 
