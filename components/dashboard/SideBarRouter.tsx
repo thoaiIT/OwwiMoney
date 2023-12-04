@@ -28,7 +28,7 @@ const SideBarRouter = () => {
           'flex justify-start items-center py-5 px-4 mb-[5px] leading-[1.2] text-base font-medium',
           className,
           `${
-            pathname === href
+            pathname.startsWith(href)
               ? 'font-bold bg-theme-component text-theme rounded-3xl'
               : 'hover:font-bold hover:bg-theme-hover hover:rounded-3xl hover:duration-300'
           }`,
