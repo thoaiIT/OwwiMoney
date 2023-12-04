@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Fragment } from 'react';
 import { AiOutlineHome } from 'react-icons/ai';
 import { CiWallet } from 'react-icons/ci';
+import { GiOwl } from 'react-icons/gi';
 import { IoMdPaperPlane } from 'react-icons/io';
 import { IoAnalytics, IoSettingsOutline } from 'react-icons/io5';
 import { LuLayoutDashboard, LuTicket } from 'react-icons/lu';
@@ -43,9 +44,21 @@ const Breadcrumb = () => {
               index >= pathSegments.length - 1 && 'text-theme-text font-semibold',
             )}
           >
-            {iconMap[segment.toLowerCase()] && <span>{iconMap[segment.toLowerCase()]}</span>}
-            <span>{segment.charAt(0).toUpperCase() + segment.slice(1)}</span>
-            <span>{index < pathSegments.length - 1 && ' > '}</span>
+            {pathSegments[index - 1] === 'wallet' ? (
+              <>
+                <span className="flex items-center gap-2">
+                  <GiOwl />
+                  Details
+                </span>
+                <span>{index < pathSegments.length - 1 && ' > '}</span>
+              </>
+            ) : (
+              <>
+                {iconMap[segment.toLowerCase()] && <span>{iconMap[segment.toLowerCase()]}</span>}
+                <span>{segment.charAt(0).toUpperCase() + segment.slice(1)}</span>
+                <span>{index < pathSegments.length - 1 && ' > '}</span>
+              </>
+            )}
           </Link>
         </Fragment>
       ))}
