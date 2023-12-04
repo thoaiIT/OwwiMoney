@@ -38,6 +38,7 @@ const WalletDetail = () => {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const result = await getWalletById(walletId as string);
       const newWallet = result.data?.wallet;
       if (newWallet) {
@@ -46,6 +47,7 @@ const WalletDetail = () => {
       } else {
         router.replace('/notfound');
       }
+      setIsLoading(false);
     })();
   }, [triggerRerender]);
 
