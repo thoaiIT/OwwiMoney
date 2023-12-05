@@ -12,6 +12,7 @@ const partnerService = new PartnerService(partnerRepository);
 
 export const createPartner = async (data: PartnerCreateType) => {
   try {
+    console.log({ data });
     const result = await partnerService.createPartner(data);
     return result;
   } catch (error) {

@@ -5,13 +5,22 @@ import { CommonCard } from '@/components/card';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import CommonInput from '@/components/input';
 import { PartnerModel } from '@/model/partnerModel';
+import type { FileImageType } from '@/types/component';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-export default function PartnerForm() {
+export default function PartnerForm({
+  type,
+  submitHandler,
+}: {
+  type: 'create' | 'update';
+  submitHandler: (value: any) => void;
+}) {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
-
+  const [changeImage, setChangeImage] = useState(false);
+  const avatar = '';
   const resolver = classValidatorResolver(PartnerModel);
   const {
     control,
@@ -33,9 +42,24 @@ export default function PartnerForm() {
     resolver,
   });
 
+  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileImageType) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (event) {
+        const base64String = event.target?.result;
+
+        onChange({ base64String: base64String as string, size: file.size, type: file.type });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmitForm = handleSubmit(async (values: PartnerModel) => {
-    // const file = new File([''], values.invoiceImage);
     console.log({ values });
+    submitHandler?.(values);
   });
 
   useEffect(() => {
@@ -53,6 +77,44 @@ export default function PartnerForm() {
   return (
     <CommonCard className="p-4 md:p-16 md:pr-20 lg:pr-40 2xl:pr-96 w-full">
       <div className="grid grid-cols-3 gap-4 items-center">
+        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Partner Image</p>
+        <div className="col-span-2">
+          {type === 'update' && avatar ? (
+            <div className="flex gap-2 w-1/2">
+              <Image
+                src={avatar}
+                alt={''}
+                width={42}
+                height={42}
+                unoptimized
+              />
+              <button
+                onClick={() => setChangeImage(true)}
+                className="hover:text-theme-component font-medium"
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <Controller
+              name="avatar"
+              control={control}
+              render={({ field: { onChange } }) => (
+                <CommonInput
+                  type="file"
+                  name="avatar"
+                  className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+                  placeholder="Shopping"
+                  onChange={(e) => {
+                    handleChangeImage(e, onChange);
+                  }}
+                  errors={errors}
+                />
+              )}
+            />
+          )}
+        </div>
+
         <p className={'text-base font-semibold leading-6'}>Name</p>
         <div className="col-span-2">
           <Controller
