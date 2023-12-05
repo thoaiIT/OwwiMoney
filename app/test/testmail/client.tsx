@@ -1,11 +1,11 @@
 'use client';
-import React from 'react';
+import { sendMailWarning } from '@/actions/controller/userBudgetController';
 import { Button } from '@radix-ui/themes';
-import { GenerateOTP } from '../../../utils';
+import { confirmOTP } from '../../../actions/OTP/confirmOTP';
+import { registerOTP } from '../../../actions/OTP/registerOTP';
 import { registerOTPTemplate } from '../../../actions/mail/registerOTPTemplate';
 import { sendEmail } from '../../../helper/lib/email';
-import { registerOTP } from '../../../actions/OTP/registerOTP';
-import { confirmOTP } from '../../../actions/OTP/confirmOTP';
+import { GenerateOTP } from '../../../utils';
 
 function client() {
   const sendEmailHandler = async () => {
@@ -30,6 +30,10 @@ function client() {
     }
   };
 
+  const sendMailWarningHanlder = async () => {
+    await sendMailWarning('65659829c4d7b838b4f09b1f');
+  };
+
   return (
     <>
       <div className="flex flex-row gap-2">
@@ -46,6 +50,14 @@ function client() {
             name="otp"
           />
           <Button type="submit">Confirm OTP</Button>
+        </form>
+        <form action={sendMailWarningHanlder}>
+          <input
+            id="otp"
+            type="text"
+            name="otp"
+          />
+          <Button type="submit">send warning</Button>
         </form>
       </div>
     </>

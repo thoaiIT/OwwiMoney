@@ -1,10 +1,23 @@
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { options } from '../../../app/api/auth/[...nextauth]/options';
-const Page = async () => {
-  const session = await getServerSession(options);
-  if (!session?.user?.emailConfirmed) redirect('/verification');
-  return <div>Transactions</div>;
+import Transactions from '@/app/(dashboard)/transactions/Transactions';
+import Title from '@/components/dashboard/Title';
+import Loading from '@/components/loading';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
+import type { ObjectWithDynamicKeys } from '@/helper/type';
+import { Suspense } from 'react';
+
+type SearchParams = { searchParams: ObjectWithDynamicKeys<string> };
+const Page = async ({ searchParams }: SearchParams) => {
+  const page = Number(searchParams.page) || 1;
+  const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
+  return (
+    <Suspense fallback={<Loading />}>
+      <Title title="Recent Transactions" />
+      <Transactions
+        page={page}
+        pageSize={pageSize}
+      />
+    </Suspense>
+  );
 };
 
 export default Page;

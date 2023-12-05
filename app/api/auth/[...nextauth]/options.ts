@@ -1,10 +1,26 @@
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcrypt';
-import { type AuthOptions } from 'next-auth';
+import { type AuthOptions, type ISODateString, type User } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import CredentialProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '../../../../helper/lib/prismadb';
+
+export interface CustomSession {
+  expires: ISODateString;
+  user?: CustomUser;
+}
+
+export interface CustomUser {
+  id?: string | null;
+  name?: string | null;
+  username?: string | null;
+  email?: string | null;
+  image?: string | null;
+  emailConfirmed?: boolean | unknown;
+  userId?: string | unknown;
+}
 
 export const options: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -79,11 +95,9 @@ export const options: AuthOptions = {
       if (trigger === 'update') return { ...token, ...session.user };
       return { ...token, ...user };
     },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.userId = token.userId;
-        session.user.emailConfirmed = token.emailConfirmed;
-      }
+
+    async session({ session, token, user }: { session: CustomSession; token: JWT; user: User }) {
+      session.user = { ...token, emailConfirmed: token.emailConfirmed, userId: token.userId };
       return session;
     },
   },

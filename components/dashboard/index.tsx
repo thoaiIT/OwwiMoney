@@ -1,24 +1,50 @@
 'use client';
 
+import RootLoading from '@/components/RootLoading';
+import Breadcrumb from '@/components/breadscrumb';
+import SideBar from '@/components/dashboard/SideBar';
+import Loading from '@/components/loading';
+import { ScrollCustom } from '@/components/scroll';
+import ThemeSwitch from '@/components/theme-switch';
 import { Box } from '@radix-ui/themes';
-import React, { Suspense } from 'react';
-import Breadcrumb from '../breadscrumb';
-import Loading from '../loading';
-import { ScrollCustom } from '../scroll';
-import SideBar from './SideBar';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { Suspense, useEffect } from 'react';
 
 const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
+  const { data: session } = useSession({
+    required: true,
+  });
+  const router = useRouter();
+  useEffect(() => {
+    if (!session?.user?.emailConfirmed && session) {
+      router.push('/verification');
+    }
+    console.log(session);
+  }, [session]);
+
+  if (!session?.user?.emailConfirmed)
+    return (
+      <div className="flex flex-col bg-light-mode dark:bg-dark-mode text-dark-mode dark:text-light-mode items-center justify-center h-screen marker:text-center">
+        <RootLoading />
+      </div>
+    );
   return (
-    <div className="md:container p-5">
-      <div className="flex">
+    <div className="w-full">
+      <div className="flex h-screen">
         <SideBar />
-        <ScrollCustom className="h-screen w-full lg:w-2/4 md:w-3/4 lg:px-8 lg:py-4 xl:px-12  md:p-6">
+        <ScrollCustom className="h-full w-full lg:w-5/6 md:w-3/5 lg:px-8 lg:py-4 xl:px-12 md:p-6 flex flex-col px-4">
+          <Suspense fallback={<Loading />}>
+            <div className="flex justify-between h-20 items-center">
+              <Breadcrumb />
+              <div>
+                <ThemeSwitch />
+                <Box>hello</Box>
+              </div>
+            </div>
+          </Suspense>
           {children}
         </ScrollCustom>
-        <Suspense fallback={<Loading />}>
-          <Breadcrumb />
-          <Box>hello</Box>
-        </Suspense>
       </div>
     </div>
   );

@@ -103,8 +103,8 @@ model UserBudget {
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id])
 
-    expected String?
-    actual   String?
+    expected Float?
+    actual   Float?
     status   String?
 }
 
@@ -112,13 +112,27 @@ model Wallet {
     id            String  @id @default(auto()) @map("_id") @db.ObjectId
     name          String
     description   String?
-    accountNumber String?
+    deleted       Boolean
+    accountNumber String
     color         String?
+    totalBalance  Float
+    walletImage   String?
 
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id])
 
+    walletType   WalletType @relation(fields: [walletTypeId], references: [id])
+    walletTypeId String     @db.ObjectId
+
     Transaction Transaction[]
+}
+
+model WalletType {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    typeName    String
+    description String?
+    // Thêm các trường khác mô tả thông tin chi tiết của từng loại tài khoản
+    Wallet      Wallet[]
 }
 
 model Room {
@@ -158,6 +172,8 @@ model Otp {
 
 model Transaction {
     id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    createdDate DateTime
 
     userId String @db.ObjectId
     user   User   @relation(fields: [userId], references: [id])

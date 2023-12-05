@@ -1,7 +1,8 @@
 'use client';
 
 import { forgetPassword } from '@/actions/user/forgetPassword';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { VerificationModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +11,6 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CiLogout } from 'react-icons/ci';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
 import { confirmOTP } from '../../actions/OTP/confirmOTP';
 import { sendOTP } from '../../actions/OTP/sendOTP';
 import OwwiFigure from '../../public/img/Owwi_figure.png';
@@ -23,17 +23,13 @@ interface VerificationFormProps {
   email?: string;
 }
 
-const schema = Yup.object().shape({
-  verification: Yup.string()
-    .required('Require verification code!')
-    .max(6, '6 digits code required')
-    .min(6, '6 digits code required'),
-});
+const resolver = classValidatorResolver(VerificationModel);
 
 const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
   const router = useRouter();
   const [time, setTime] = useState(60);
   const [resend, setResend] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { data: session, update } = useSession();
 
   const {
@@ -44,7 +40,7 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
     values: {
       verification: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   useEffect(() => {
@@ -80,17 +76,20 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
 
   const handleSubmitForm = handleSubmit(async (values: { verification: string }) => {
     const { verification } = values;
+    setLoading(true);
     const result = await confirmOTP(verification, email);
     if (result.status && result.status.code === 201) {
+      setLoading(false);
       if (type !== 'EmailVerification') {
         await update({ ...session, user: { ...session?.user, emailConfirmed: true } });
         router.replace('/dashboard');
       } else {
-        router.replace('/newpassword');
+        router.replace(`/newpassword?email=${email}`);
       }
       toast.success('Verification updated successfully');
     } else {
       // Show error
+      setLoading(false);
       toast.error(result.message as string);
     }
     console.log({ result });
@@ -147,8 +146,9 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
       <CommonButton
         className="rounded-[5px] bg-dark-blue text-white hover:bg-blue-950"
         onClick={handleSubmitForm}
+        disabled={loading}
       >
-        VERIFY
+        {loading ? 'Loading...' : 'VERIFY'}
       </CommonButton>
       {time === 0 && (
         <p className="text-gray-400 mt-1 text-center">

@@ -1,20 +1,18 @@
 'use client';
 
-import { forgetPassword } from '@/actions/user/forgetPassword';
+import { forgetPassword } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { ForgotPasswordModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
 
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-});
+const resolver = classValidatorResolver(ForgotPasswordModel);
 
 const ForgotPasswordForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,12 +25,14 @@ const ForgotPasswordForm = () => {
     values: {
       email: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
     console.log(values);
+    setIsLoading(true);
     await forgetPassword({ email: values.email }).then((result) => {
+      setIsLoading(false);
       if (result.status?.code === 200) {
         router.push(`/emailverification?email=${values.email}`);
       } else {
@@ -58,7 +58,7 @@ const ForgotPasswordForm = () => {
         control={control}
         render={({ field: { onChange, value } }) => (
           <CommonInput
-            name="Email"
+            name="email"
             value={value}
             onChange={onChange}
             type="text"

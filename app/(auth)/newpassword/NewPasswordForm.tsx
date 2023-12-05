@@ -1,32 +1,19 @@
 'use client';
 
+import { changePassword } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import Heading from '@/components/login/Heading';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { NewPasswordModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 
-const getCharacterValidationError = (str: string) => {
-  return `Your password must have at least 1 ${str} character`;
-};
+const resolver = classValidatorResolver(NewPasswordModel);
 
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  password: Yup.string()
-    .required('No password provided.')
-    .min(7, 'Password is too short - should be 7 chars minimum.')
-    .matches(/[0-9]/, getCharacterValidationError('digit'))
-    .matches(/[a-z]/, getCharacterValidationError('lowercase'))
-    .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
-  confirmPassword: Yup.string()
-    .required('Please retype your password.')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
-});
-
-const NewPasswordForm = () => {
+const NewPasswordForm = ({ email }: { email: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const {
@@ -38,18 +25,20 @@ const NewPasswordForm = () => {
       password: '',
       confirmPassword: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
-    console.log(values);
-    // await forgetPassword({ email: values.email }).then((result) => {
-    //   if (result.status?.code === 200) {
-    //     router.push(`/emailverification?email=${values.email}`);
-    //   } else {
-    //     toast.error(result.status?.message);
-    //   }
-    // });
+    setIsLoading(true);
+    await changePassword({ email, password: values.password }).then((result) => {
+      setIsLoading(false);
+      if (result.status?.code === 200) {
+        toast.success(result.message);
+        router.replace('/login');
+      } else {
+        toast.error(result.message);
+      }
+    });
   });
   return (
     <>
@@ -64,37 +53,42 @@ const NewPasswordForm = () => {
       <p className="text-gray-400">
         Set the new password for your account so you can login and access all <br /> featuress.
       </p>
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="Enter new password"
-            value={value}
-            onChange={onChange}
-            type="password"
-            placeholder="7 symbols at least"
-            className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors}
-          />
-        )}
-      />
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
-            name="Confirm password"
-            value={value}
-            onChange={onChange}
-            type="password"
-            placeholder="7 symbols at least"
-            className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl"
-            errors={errors}
-          />
-        )}
-      />
-
+      <div>
+        <label htmlFor="password"> Enter new password</label>
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="password"
+              value={value}
+              onChange={onChange}
+              type="password"
+              placeholder="9 symbols at least"
+              className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
+      <div>
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <CommonInput
+              name="confirmPassword"
+              value={value}
+              onChange={onChange}
+              type="password"
+              placeholder="9 symbols at least"
+              className="rounded-full border-gray-200 py-6 px-4 focus-visible:ring-none text-xl mt-2"
+              errors={errors}
+            />
+          )}
+        />
+      </div>
       <CommonButton
         intent={'secondary'}
         className="py-6"

@@ -1,6 +1,8 @@
 'use client';
 
-import React, { Fragment, type ReactNode } from 'react';
+import { CommonButton } from '@/components/button';
+import { Fragment, type ReactNode } from 'react';
+import { tailwindMerge } from '../../utils/helper';
 import {
   Dialog,
   DialogClose,
@@ -8,13 +10,9 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from './dialog';
-import { CommonButton } from '../button';
-import { tailwindMerge } from '../../utils/helper';
 
 interface DialogFormProps {
   titleDialog: ReactNode;
@@ -24,10 +22,14 @@ interface DialogFormProps {
   customStyleHeader?: string;
   customStyleFooter?: string;
   useCustomFooter?: ReactNode;
+  open?: boolean;
   handleSubmit?: () => void;
+  handleClose?: () => void;
+  handleOpenChange?: () => void;
   allowCloseOutside?: boolean;
   isNotUseDefaultFooter?: boolean;
   customTextFooterButton?: string;
+  className?: string;
 }
 
 const DialogForm = ({
@@ -41,44 +43,61 @@ const DialogForm = ({
   allowCloseOutside,
   customTextFooterButton,
   isNotUseDefaultFooter = false,
+  open,
   handleSubmit,
+  handleClose,
+  handleOpenChange,
+  className,
 }: DialogFormProps) => {
   return (
-    <Dialog>
-      <DialogTrigger>
-        {useCustomTrigger ? (
-          <Fragment>{useCustomTrigger}</Fragment>
-        ) : (
-          <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>
-        )}
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        handleOpenChange?.();
+        !open && !!handleClose && handleClose();
+      }}
+    >
+      <DialogTrigger asChild>
+        {useCustomTrigger ? useCustomTrigger : <CommonButton>{useCustomNameButton || 'Open Dialog'}</CommonButton>}
       </DialogTrigger>
+      <DialogContent
+        onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}
+        className={tailwindMerge('bg-theme max-w-max', className)}
+      >
+        <DialogHeader className={tailwindMerge(customStyleHeader)}>
+          <DialogTitle className="text-xl font-bold">{titleDialog}</DialogTitle>
+          <DialogClose onClick={() => console.log('check')} />
+        </DialogHeader>
 
-      <DialogPortal>
-        <DialogOverlay />
+        <DialogDescription>{children}</DialogDescription>
 
-        <DialogContent onPointerDownOutside={(e) => allowCloseOutside ?? e.preventDefault()}>
-          <DialogHeader className={tailwindMerge(customStyleHeader)}>
-            <DialogTitle>{titleDialog}</DialogTitle>
-            <DialogClose onClick={() => console.log('check')} />
-          </DialogHeader>
-
-          <DialogDescription>{children}</DialogDescription>
-
-          <DialogFooter className={tailwindMerge(customStyleFooter)}>
-            {useCustomFooter ? (
-              <Fragment>{useCustomFooter}</Fragment>
-            ) : (
-              <Fragment>
-                {!isNotUseDefaultFooter && (
-                  <DialogClose>
-                    <button onClick={handleSubmit}>{customTextFooterButton ?? 'Submit'}</button>
-                  </DialogClose>
-                )}
-              </Fragment>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </DialogPortal>
+        <DialogFooter className={tailwindMerge(customStyleFooter)}>
+          {useCustomFooter ? (
+            <Fragment>{useCustomFooter}</Fragment>
+          ) : (
+            <Fragment>
+              {!isNotUseDefaultFooter && (
+                <DialogClose asChild>
+                  <div className="flex gap-2">
+                    <CommonButton
+                      intent={'outline'}
+                      className="max-w-max rounded-md"
+                    >
+                      {customTextFooterButton ?? 'Cancel'}
+                    </CommonButton>
+                    <CommonButton
+                      className="max-w-max rounded-md bg-theme-component hover:bg-theme-component hover:opacity-90 hover:ring-0"
+                      onClick={handleSubmit}
+                    >
+                      {customTextFooterButton ?? 'Submit'}
+                    </CommonButton>
+                  </div>
+                </DialogClose>
+              )}
+            </Fragment>
+          )}
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 };

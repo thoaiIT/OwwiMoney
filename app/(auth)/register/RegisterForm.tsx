@@ -1,41 +1,21 @@
 'use client';
 
-import { yupResolver } from '@hookform/resolvers/yup';
+import { registerUser } from '@/actions/controller/userController';
+import { RegisterModel } from '@/model/authModel';
+import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import { registerUser } from '../../../actions/user/registerUser';
 import { CommonButton } from '../../../components/button';
 import CommonInput from '../../../components/input';
 import Heading from '../../../components/login/Heading';
+import OwwiFigure from '../../../public/img/Owwi_figure.png';
 
-interface RegisterModel {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-const getCharacterValidationError = (str: string) => {
-  return `Your password must have at least 1 ${str} character`;
-};
-
-// Yup schema to validate the form
-const schema = Yup.object().shape({
-  email: Yup.string().required('No email provided').email(),
-  password: Yup.string()
-    .required('No password provided.')
-    .min(7, 'Password is too short - should be 7 chars minimum.')
-    .matches(/[0-9]/, getCharacterValidationError('digit'))
-    .matches(/[a-z]/, getCharacterValidationError('lowercase'))
-    .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
-  confirmPassword: Yup.string()
-    .required('Please retype your password.')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
-});
+const resolver = classValidatorResolver(RegisterModel);
 
 const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,18 +31,20 @@ const RegisterForm = () => {
       password: '',
       confirmPassword: '',
     },
-    resolver: yupResolver(schema),
+    resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: RegisterModel) => {
     setIsLoading(true);
     const { email, password } = values;
+
     const result = await registerUser({
-      email,
-      password,
-      name: email.split('@')[0] || 'user',
+      email: email || '',
+      password: password || '',
+      name: email?.split('@')[0] || 'user',
     });
-    if (result?.body?.userId) {
+
+    if (result?.data?.userId) {
       await signIn('credentials', { ...values, redirect: false }).then(async (callback) => {
         setIsLoading(false);
         if (callback?.ok) {
@@ -83,75 +65,94 @@ const RegisterForm = () => {
 
   return (
     <>
-      <Heading
-        title="Hello!"
-        custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
-      />
+      <div className="flex items-center justify-center xl:justify-start">
+        <Image
+          src={OwwiFigure}
+          alt="owwi"
+          width={70}
+          height={70}
+          className="xl:hidden"
+        />
+        <Heading
+          title="Hello!"
+          custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
+        />
+      </div>
       <Heading
         title="Sign Up to Get Started"
         custom="text-4xl text-center xl:text-start font-light"
       />
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
+      <form className="flex flex-col gap-3">
+        <div>
+          <label htmlFor="email">Email</label>
+          <Controller
             name="email"
-            value={value}
-            onChange={onChange}
-            placeholder="Username@gmail.com"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base "
-            errors={errors}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="email"
+                value={value}
+                onChange={onChange}
+                placeholder="Username@gmail.com"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <Controller
             name="password"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="password"
+                type="password"
+                value={value}
+                onChange={onChange}
+                placeholder="Password"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <CommonInput
+        </div>
+        <div>
+          <label htmlFor="confirmPassword">Confirm password</label>
+          <Controller
             name="confirmPassword"
-            type="password"
-            value={value}
-            onChange={onChange}
-            placeholder="Confirm Password"
-            className="xl:w-[70%] rounded-full border-gray-200 py-6 focus-visible:ring-none text-base"
-            errors={errors}
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="confirmPassword"
+                type="password"
+                value={value}
+                onChange={onChange}
+                placeholder="Confirm Password"
+                className="rounded-full border-gray-200 py-6 focus-visible:ring-none text-base mt-2"
+                errors={errors}
+              />
+            )}
           />
-        )}
-      />
-
-      <p className="text-sm flex items-center">
-        Have an account yet?
-        <Link
-          href="/login"
-          className="ml-1 text-dark-blue hover:text-blue-500"
+        </div>
+        <p className="text-sm flex items-center">
+          Have an account yet?
+          <Link
+            href="/login"
+            className="ml-1 text-dark-blue hover:text-blue-500"
+          >
+            Login here
+          </Link>
+        </p>
+        <CommonButton
+          intent={'secondary'}
+          disabled={isLoading}
+          onClick={handleSubmitForm}
         >
-          Login here
-        </Link>
-      </p>
-      <CommonButton
-        intent={'secondary'}
-        disabled={isLoading}
-        onClick={handleSubmitForm}
-      >
-        {isLoading ? 'Loading...' : 'Register'}
-      </CommonButton>
+          {isLoading ? 'Loading...' : 'Register'}
+        </CommonButton>
+      </form>
     </>
   );
 };

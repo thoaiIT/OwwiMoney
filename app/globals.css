@@ -11,6 +11,8 @@ html {
   --theme-foreground: #1c2024;
   --theme-hover: #e0e0e0;
   --theme-text: #3f72af;
+  --theme-component: #112d4e;
+  --theme-logo: #465685;
 }
 
 html.dark {
@@ -19,6 +21,8 @@ html.dark {
   --theme-foreground: #f9f7f7;
   --theme-hover: #0c243f;
   --theme-text: #4698d0;
+  --theme-component: #3f72af;
+  --theme-logo: #ffffff;
 }
 
 .remove-arrow::-webkit-inner-spin-button,
@@ -27,5 +31,5 @@ html.dark {
   margin: 0;
 }
 .remove-arrow {
-  -moz-appearance: textfield;
+  --moz-appearance: textfield;
 }
