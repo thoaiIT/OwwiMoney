@@ -4,7 +4,7 @@ const StartButton = () => {
   return (
     <div className="grid">
       <Link
-        href="/login"
+        href={'/login?616E696D6174696F6E3D74727565'}
         className="flex justify-center items-center cta relative m-auto py-[19px] px-[22px] transition-all duration-[0.2s] ease-linear group active:transform active:scale-96"
       >
         <span

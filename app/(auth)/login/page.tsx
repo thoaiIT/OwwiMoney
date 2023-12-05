@@ -5,11 +5,15 @@ import FormWrap from '../../../components/login/FormWrap';
 import OwwiFigure from '../../../public/img/Owwi_figure.png';
 import LoginForm from './LoginForm';
 
-const Page = async () => {
+const Page = async ({ searchParams }: { searchParams: Record<string, string> }) => {
+  const animated = Buffer.from(Object.keys(searchParams)[0] || '', 'hex').toString('utf-8') === 'animation=true';
+
+  console.log({ searchParams });
   return (
     <>
-      <TransitionEffect />
+      {animated && <TransitionEffect />}
       <div className="min-h-screen bg-owwi-pattern bg-cover bg-no-repeat flex-grow flex items-center p-2 md:p-6">
+        {}
         <Container custom="w-[1426px] h-[749px]">
           <div className="grid xl:grid-cols-2 gap-2 h-full relative">
             <FormWrap custom="px-6 md:px-12">
