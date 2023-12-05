@@ -4,6 +4,8 @@ import { deleteWallet } from '@/actions/controller/walletController';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
+import ConfirmDialog from '@/components/dialog/confirmDialog';
+import Loading from '@/components/loading';
 import CreditIcon from '@/public/icons/credit.png';
 import DebitIcon from '@/public/icons/debit-card.png';
 import DigitalWallet from '@/public/icons/digital-wallet.png';
@@ -63,7 +65,15 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
 
   const walletImageUrl = wallet.walletImage ? wallet.walletImage : iconTarget?.image;
   return (
-    <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px]">
+    <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px] relative">
+      {isLoading && (
+        <>
+          <div className="absolute bg-gray-400 w-full h-full rounded-[8px] bg-opacity-10" />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <Loading />
+          </div>
+        </>
+      )}
       <CardHeader>
         <CardTitle
           className="flex justify-between items-center pb-3 gap-24 h-10"
@@ -97,13 +107,25 @@ const WalletCard = ({ wallet, handleRerender }: WalletCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between ">
-        <CommonButton
+        {/* <CommonButton
           className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400 font-semibold"
           onClick={handleDeleteWallet}
           disabled={isLoading}
         >
           {isLoading ? 'Loading...' : 'Remove'}
-        </CommonButton>
+        </CommonButton> */}
+        <ConfirmDialog
+          titleDialog="Confirm"
+          customTextFooterButton="Confirm"
+          handleSubmit={handleDeleteWallet}
+          useCustomTrigger={
+            <CommonButton className="w-fit text-[#FF4F5B] px-0  duration-300 transition-all bg-transparent hover:text-rose-500 hover:bg-transparent hover:transition-all hover:ring-0">
+              Remove
+            </CommonButton>
+          }
+        >
+          Are you sure you want to delete this wallet?
+        </ConfirmDialog>
         <CommonButton
           className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF]"
           onClick={() => router.push(`/wallet/${wallet.id}`)}
