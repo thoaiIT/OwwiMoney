@@ -10,6 +10,7 @@ import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardFooter, CardHeader, CommonCard } from '@/components/card';
 import Title from '@/components/dashboard/Title';
+import ConfirmDialog from '@/components/dialog/confirmDialog';
 import Loading from '@/components/loading';
 import CommonTable from '@/components/table/CommonTable';
 import type { ColumnType } from '@/components/table/TableHeader';
@@ -29,7 +30,6 @@ export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> 
 
 const WalletDetail = () => {
   const [wallet, setWallet] = useState<WalletModel>();
-  const [triggerRerender, setTriggerRerender] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathName = usePathname();
@@ -38,16 +38,17 @@ const WalletDetail = () => {
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       const result = await getWalletById(walletId as string);
       const newWallet = result.data?.wallet;
       if (newWallet) {
         setWallet(newWallet);
-        setTriggerRerender(false);
       } else {
         router.replace('/notfound');
       }
+      setIsLoading(false);
     })();
-  }, [triggerRerender]);
+  }, []);
 
   const columns: ColumnType<TransactionTableType>[] = [
     { label: 'Category', field: 'category', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
@@ -63,10 +64,10 @@ const WalletDetail = () => {
     if (walletId) {
       setIsLoading(true);
       const result = await updateWallet({ ...data, walletId });
-      console.log(result);
       if (result.status?.code === 200) {
         toast.success(result.message as string);
-        setTriggerRerender(true);
+        const newWallet = result.data?.wallet as WalletModel;
+        setWallet((prevWallet) => ({ ...prevWallet, ...newWallet }));
       } else {
         toast.error(result.message as string);
       }
@@ -153,12 +154,18 @@ const WalletDetail = () => {
             handleUpdateWallet={handleUpdateWallet}
             {...wallet}
           />
-          <CommonButton
-            className="bg-transparent hover:bg-transparent hover:ring-0 text-[#FF4F5B] w-fit p-0 hover:text-rose-400 font-semibold"
-            onClick={handleRemoveWallet}
+          <ConfirmDialog
+            titleDialog="Confirm"
+            customTextFooterButton="Confirm"
+            handleSubmit={handleRemoveWallet}
+            useCustomTrigger={
+              <CommonButton className="w-fit font-bold text-[#FF4F5B] px-0  duration-300 transition-all bg-transparent hover:text-rose-500 hover:bg-transparent hover:transition-all hover:ring-0">
+                Remove
+              </CommonButton>
+            }
           >
-            Remove
-          </CommonButton>
+            Are you sure you want to delete this wallet?
+          </ConfirmDialog>
         </CardFooter>
       </CommonCard>
       <Title title="Transition History" />
