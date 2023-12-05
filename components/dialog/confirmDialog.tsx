@@ -1,23 +1,15 @@
 'use client';
 
 import { CommonButton } from '@/components/button';
+import { DialogDescription } from '@radix-ui/react-dialog';
 import { Fragment, type ReactNode } from 'react';
 import { tailwindMerge } from '../../utils/helper';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './dialog';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './dialog';
 
-interface DialogFormProps {
+interface ConfirmDialogProps {
   titleDialog: ReactNode;
-  children: ReactNode;
   useCustomTrigger?: ReactNode;
+  children: ReactNode;
   useCustomNameButton?: string;
   customStyleHeader?: string;
   customStyleFooter?: string;
@@ -32,12 +24,12 @@ interface DialogFormProps {
   className?: string;
 }
 
-const DialogForm = ({
+const ConfirmDialog = ({
   useCustomTrigger,
   useCustomNameButton,
-  children,
   titleDialog,
   customStyleHeader,
+  children,
   useCustomFooter,
   customStyleFooter,
   allowCloseOutside,
@@ -48,7 +40,7 @@ const DialogForm = ({
   handleClose,
   handleOpenChange,
   className,
-}: DialogFormProps) => {
+}: ConfirmDialogProps) => {
   return (
     <Dialog
       open={open}
@@ -66,11 +58,8 @@ const DialogForm = ({
       >
         <DialogHeader className={tailwindMerge(customStyleHeader)}>
           <DialogTitle className="text-xl font-bold">{titleDialog}</DialogTitle>
-          <DialogClose onClick={() => console.log('check')} />
         </DialogHeader>
-
         <DialogDescription>{children}</DialogDescription>
-
         <DialogFooter className={tailwindMerge(customStyleFooter)}>
           {useCustomFooter ? (
             <Fragment>{useCustomFooter}</Fragment>
@@ -83,7 +72,7 @@ const DialogForm = ({
                       intent={'outline'}
                       className="max-w-max rounded-md"
                     >
-                      {customTextFooterButton ?? 'Cancel'}
+                      {'Cancel'}
                     </CommonButton>
                     <CommonButton
                       className="max-w-max rounded-md bg-theme-component hover:bg-theme-component hover:opacity-90 hover:ring-0"
@@ -102,4 +91,4 @@ const DialogForm = ({
   );
 };
 
-export default DialogForm;
+export default ConfirmDialog;

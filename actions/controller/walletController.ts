@@ -7,7 +7,7 @@ import type { Wallet } from '@prisma/client';
 
 export type WalletCreateType = Pick<
   Wallet,
-  'name' | 'description' | 'accountNumber' | 'walletTypeId' | 'totalBalance' | 'color'
+  'name' | 'description' | 'accountNumber' | 'walletTypeId' | 'totalBalance' | 'color' | 'walletImage'
 >;
 export type WalletUpdateType = WalletCreateType & { walletId: string };
 
@@ -70,5 +70,13 @@ export const getWalletTypeName = async (walletTypeId: string) => {
     return await walletService.getWalletTypeName(walletTypeId);
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
+  }
+};
+
+export const updateTotalBalance = async (totalBalance: number, walletId: string) => {
+  try {
+    return await walletService.updateTotalBalance(totalBalance, walletId);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };

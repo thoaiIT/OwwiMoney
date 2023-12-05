@@ -47,7 +47,12 @@ export function IsImage(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: FileType) {
-          return value.type === 'image/jpeg' || value.type === 'image/jpeg' || value.type === 'image/png';
+          return (
+            value.type === 'image/jpeg' ||
+            value.type === 'image/jpeg' ||
+            value.type === 'image/png' ||
+            value.type === ''
+          );
         },
         defaultMessage() {
           return 'Image must be .png or .jpg';

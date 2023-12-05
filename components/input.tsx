@@ -10,18 +10,23 @@ export interface InputProps {
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
-  minValue?: string;
+  minValue?: string | number;
   icon?: ReactNode;
   name: string;
-  value?: string;
+  value?: string | number;
   errors?: FieldErrors;
   maxLength?: number;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   isDisabled?: boolean;
+  preventCharacters?: boolean;
 }
 
 export function capitalizeFirstLetter(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function isNumber(c: string) {
+  return !isNaN(parseFloat(c)) && isFinite(Number(c));
 }
 
 const textFieldVariants = cva(
@@ -57,6 +62,7 @@ const CommonInput = ({
   maxLength,
   isDisabled,
   minValue,
+  preventCharacters,
   ...props
 }: InputProps) => {
   return (
@@ -65,7 +71,14 @@ const CommonInput = ({
       <input
         maxLength={maxLength}
         value={value}
-        onChange={onChange}
+        onChange={(e) => {
+          if (preventCharacters) {
+            console.log('change');
+            (isNumber(e.target.value) || e.target.value === '') && onChange?.(e);
+          } else {
+            onChange?.(e);
+          }
+        }}
         type={type}
         min={minValue}
         readOnly={isDisabled}
