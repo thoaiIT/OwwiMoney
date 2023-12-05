@@ -20,9 +20,9 @@ export const createPartner = async (data: PartnerCreateType) => {
   }
 };
 
-export const getAllPartnerByUser = async (pageSize: number, page: number) => {
+export const getAllPartnerByUser = async (pageSize: number, page: number, query?: string) => {
   try {
-    return await partnerService.getAllPartnerByUser(pageSize, page);
+    return await partnerService.getAllPartnerByUser(pageSize, page, query);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

@@ -17,7 +17,7 @@ class PartnerRepository {
     });
   }
 
-  async getAllPartnerByUser(userId: string, pageSize: number, page: number) {
+  async getAllPartnerByUser(userId: string, pageSize: number, page: number, query?: string) {
     const [partners, total] = await Promise.all([
       client.partner.findMany({
         where: { userId, deleted: false },
@@ -30,12 +30,23 @@ class PartnerRepository {
       }),
     ]);
 
+    const lowerQuery = query?.toLocaleLowerCase() || '';
+
     const totalPages = Math.ceil(total / pageSize);
     return {
-      partners: partners.map((partner) => {
-        const formatPartner = { ...partner, typeName: partner.type.name };
-        return formatPartner;
-      }),
+      partners: partners
+        .map((partner) => {
+          const formatPartner = { ...partner, typeName: partner.type.name };
+          return formatPartner;
+        })
+        .filter((partner) => {
+          return (
+            partner.name?.toLowerCase().includes(lowerQuery) ||
+            partner.email?.toLowerCase().includes(lowerQuery) ||
+            partner.address?.toLowerCase().includes(lowerQuery) ||
+            partner.description?.toLowerCase().includes(lowerQuery)
+          );
+        }),
       totalPages,
     };
   }

@@ -27,7 +27,7 @@ class PartnerService {
     }
   }
 
-  async getAllPartnerByUser(pageSize: number, page: number) {
+  async getAllPartnerByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
       const userId = session?.user?.userId as string;
@@ -39,6 +39,7 @@ class PartnerService {
         userId,
         pageSize || DEFAULT_PAGE_SIZE,
         page || 1,
+        query,
       );
       return { message: 'Success', data: partners, status: HttpStatusCodes[200] };
     } catch (error) {
