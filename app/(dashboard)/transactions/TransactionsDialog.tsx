@@ -21,7 +21,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -32,6 +32,12 @@ export type FileType = {
   base64String: string;
   type: string;
   size: number;
+};
+
+export type TransactionsDialogProps = {
+  openDialog: boolean;
+  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  formType?: 'create' | 'edit';
 };
 
 export class NewTransactionModel {
@@ -63,14 +69,13 @@ export class NewTransactionModel {
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog = () => {
+const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openDialog, setOpenDialog }) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -204,12 +209,16 @@ const TransactionsDialog = () => {
     <Box>
       <DialogForm
         useCustomTrigger={
-          <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
-            <FaPlus />
-            Add Transactions
-          </CommonButton>
+          formType === 'edit' ? (
+            <></>
+          ) : (
+            <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
+              <FaPlus />
+              Add Transactions
+            </CommonButton>
+          )
         }
-        titleDialog="New Transactions"
+        titleDialog={formType === 'edit' ? 'Edit Transaction' : 'New Transaction'}
         customStyleHeader="text-2xl"
         open={openDialog}
         handleOpenChange={() => {

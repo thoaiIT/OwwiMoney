@@ -1,10 +1,11 @@
 'use client';
+import TransactionsDialog from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonTable from '@/components/table/CommonTable';
 import type { ColumnType } from '@/components/table/TableHeader';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import useTableData from '@/components/table/hooks/useTableData';
 import type { Transaction } from '@prisma/client';
-import { useEffect } from 'react';
+import { Fragment, Suspense, useEffect, useState } from 'react';
 
 type TableTransactionAllProps = {
   dataTable: TransactionResType[];
@@ -40,8 +41,10 @@ export type TransactionResType = Omit<Transaction, 'createdAt' | 'updatedAt' | '
 };
 
 export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTable, totalPages }) => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
   const editHandler = (id: string) => {
     console.log('My custom edit ' + id);
+    setOpenDialog(true);
   };
 
   const deleteHandler = (id: string) => {
@@ -65,16 +68,25 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
   return (
-    <CommonTable
-      data={dataTable}
-      tableData={tableData}
-      columns={columns}
-      keyField={'id'}
-      editHandler={editHandler}
-      deleteHandler={deleteHandler}
-      useRowNumber
-      usePagination
-      customBorderStyle="rounded-tl-none rounded-tr-none"
-    />
+    <Fragment>
+      <Suspense fallback={''}>
+        <TransactionsDialog
+          formType="edit"
+          openDialog={openDialog}
+          setOpenDialog={setOpenDialog}
+        />
+      </Suspense>
+      <CommonTable
+        data={dataTable}
+        tableData={tableData}
+        columns={columns}
+        keyField={'id'}
+        editHandler={editHandler}
+        deleteHandler={deleteHandler}
+        useRowNumber
+        usePagination
+        customBorderStyle="rounded-tl-none rounded-tr-none"
+      />
+    </Fragment>
   );
 };
