@@ -39,7 +39,8 @@ const WalletList = () => {
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
-      handleRerender();
+      const newWallet = result.data?.wallet as WalletModel;
+      setWallets((prevWallet) => (prevWallet ? [...prevWallet, newWallet] : [newWallet]));
     } else {
       toast.error(result.message as string);
     }
@@ -53,7 +54,7 @@ const WalletList = () => {
         const result = await getAllWallet();
         const walletList = result.data?.wallets;
         setWallets(walletList);
-        setTriggerRerender(false);
+        // setTriggerRerender(false);
         setLoading(false);
       } catch (error) {
         toast.error('Error fetching wallet data:');
@@ -61,7 +62,7 @@ const WalletList = () => {
     };
 
     fetchData();
-  }, [triggerRerender]);
+  }, []);
 
   if (loading) return <Loading />;
   return (
