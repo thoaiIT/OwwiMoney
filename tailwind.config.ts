@@ -14,8 +14,6 @@ module.exports = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'owwi-pattern': "url('/img/Owwi_background.png')",
         'owwi-logo': "url('/images/Owwi_logo.png')",
-        'money-pattern': "url('/images/moneypattern.png')",
-        'owl-pattern': "url('/images/owlpattern.png')",
       },
       fontWeight: {
         display: {
@@ -232,6 +230,16 @@ module.exports = {
             fill: 'white',
           },
         },
+
+        //loading animation
+        jump: {
+          '0%, 100%': {
+            transform: 'translateY(0)',
+          },
+          '50%': {
+            transform: 'translateY(-10px)',
+          },
+        },
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -251,6 +259,9 @@ module.exports = {
 
         //WaterWave
         moveForever: 'moveForever 25s cubic-bezier(.55,.5,.45,.5) infinite',
+
+        //Loaiding Jumping
+        jump: 'jump .5s ease-in infinite',
       },
       boxShadow: {
         //button gaming shadow

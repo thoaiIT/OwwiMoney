@@ -1,7 +1,11 @@
 'use Client';
 import { getCategoryByType } from '@/actions/controller/categoryController';
 import { getPartnerByType } from '@/actions/controller/partnerController';
-import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
+import {
+  checkWalletInfo,
+  createTransaction,
+  type TransactionCreateType,
+} from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
@@ -17,51 +21,13 @@ import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
 import { GoPlus } from 'react-icons/go';
 import { toast } from 'react-toastify';
-
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-  {
-    value: 'javascript',
-    label: 'Javascript',
-  },
-  {
-    value: 'html',
-    label: 'Html',
-  },
-  {
-    value: 'css',
-    label: 'CSS',
-  },
-  {
-    value: 'java',
-    label: 'Java',
-  },
-];
 
 export type FileType = {
   base64String: string;
@@ -103,8 +69,11 @@ const TransactionsDialog = () => {
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
+  const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+
+  const router = useRouter();
 
   const {
     control,
@@ -128,31 +97,37 @@ const TransactionsDialog = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
-    console.log(values);
-
-    const data: TransactionCreateType = {
-      amount: Number(values.amount),
-      categoryId: values.category as string,
-      createdDate: values.createdDate as string,
-      description: values.description as string,
-      invoiceImageUrl: values.invoiceImage?.base64String as string,
-      partnerId: values.partnerId as string,
-      typeId: values.type as string,
-      walletId: values.wallet as string,
-    };
-    const res = await createTransaction(data);
-    if (res.status?.code === 201) {
-      toast.success(res.message as string);
-      setOpenDialog(false);
-      reset();
-      setPartnerOptions([]);
+    const walletInfo = await checkWalletInfo(values.wallet as string, values.type as string, values.amount as number);
+    if (walletInfo.status?.code === 200) {
+      const data: TransactionCreateType = {
+        amount: Number(values.amount),
+        categoryId: values.category as string,
+        createdDate: values.createdDate as string,
+        description: values.description as string,
+        invoiceImageUrl: values.invoiceImage?.base64String as string,
+        partnerId: values.partnerId as string,
+        typeId: values.type as string,
+        walletId: values.wallet as string,
+      };
+      const res = await createTransaction(data);
+      if (res.status?.code === 201) {
+        toast.success(res.message as string);
+        setOpenDialog(false);
+        reset();
+        setPartnerOptions([]);
+        router.refresh();
+      } else {
+        toast.error(res.message as string);
+      }
     } else {
-      toast.error(res.message as string);
+      toast.info(walletInfo.message);
     }
   });
 
   const handleSearch = (searchString: string) => {
-    setPartnerOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
+    setMorePartnerOptions(
+      partnerOptions.slice(6).filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())),
+    );
   };
 
   const handleSelectItem = (item: DataType) => {
@@ -201,6 +176,10 @@ const TransactionsDialog = () => {
       fetchAllWallet();
     }
   }, [openDialog]);
+
+  useEffect(() => {
+    setMorePartnerOptions(partnerOptions.slice(6));
+  }, [partnerOptions]);
 
   useEffect(() => {
     const fetchCategoriesByType = async () => {
@@ -342,16 +321,15 @@ const TransactionsDialog = () => {
                     />
                   </div>
                   <div className="h-min max-h-96 overflow-y-auto border-t-2">
-                    {partnerOptions.map((option, index) => {
-                      if (index > 5)
-                        return (
-                          <OptionItem
-                            key={option.value}
-                            item={option}
-                            onSelect={handleSelectItem}
-                            isActive={watch('partnerId') === option.value}
-                          />
-                        );
+                    {morePartnerOptions.map((option) => {
+                      return (
+                        <OptionItem
+                          key={option.value}
+                          item={option}
+                          onSelect={handleSelectItem}
+                          isActive={watch('partnerId') === option.value}
+                        />
+                      );
                     })}
                   </div>
                 </CommonPopoverContent>

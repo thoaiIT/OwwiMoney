@@ -1,11 +1,10 @@
-import WaterFill from '@/components/WaterFill';
+import RootLoading from '@/components/RootLoading';
 
 const Loading = () => {
   return (
-    <div className="flex flex-col bg-celestial_blue items-center justify-center h-screen marker:text-center">
-      <WaterFill />
+    <div className="flex flex-col bg-light-mode dark:bg-dark-mode text-dark-mode dark:text-light-mode items-center justify-center h-screen marker:text-center">
+      <RootLoading />
     </div>
-    // <div className="animate-spin w-20 h-20 border-t-4 border-b-4  border-orange-400 rounded-full" />
   );
 };
 

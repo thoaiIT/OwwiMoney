@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
+import StartButton from '@/components/home/StartButton';
 import WaterWave from '@/components/home/WaterWave';
 import { Lobster } from 'next/font/google';
-import Link from 'next/link';
 
 const lobster = Lobster({ variable: '--display-font', preload: false, subsets: ['latin'], weight: ['400', '400'] });
 const HomePage = () => {
@@ -126,7 +126,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#0e0e0e]">
+    <div className="h-screen overflow-hidden bg-dark-mode dark:bg-light-mode">
       <motion.div
         className="absolute inset-0 h-screen w-screen z-0"
         variants={bgAnimate}
@@ -148,7 +148,7 @@ const HomePage = () => {
         initial="hidden"
         animate="show"
       >
-        <div className={`text-2xl font-semibold text-zinc-50 underline ${lobster.className}`}>Owwimutiverse</div>
+        <div className={`text-2xl font-semibold text-light-mode underline ${lobster.className}`}>Owwimutiverse</div>
       </motion.div>
 
       <div className="relative top-[120px]">
@@ -159,7 +159,7 @@ const HomePage = () => {
           animate="show"
         >
           <motion.h1
-            className="lg:text-9xl lg:text-left md:text-8xl sm:text-6xl text-4xl text-center text-light-blue tracking-tighter font-bold"
+            className="lg:text-9xl lg:text-left md:text-8xl sm:text-6xl text-4xl text-center text-light-mode dark:text-dark-mode tracking-tighter font-bold"
             variants={textAnimate2}
             custom={-150}
           >
@@ -203,12 +203,13 @@ const HomePage = () => {
           className="flex justify-center items-center"
           variants={imageAnimateChild}
         >
-          <Link
+          {/* <Link
             href={'/login'}
             className="uppercase p-4 bg-slate-100 rounded-2xl font-extrabold"
           >
             getting start
-          </Link>
+          </Link> */}
+          <StartButton />
         </motion.div>
       </motion.div>
       <motion.div

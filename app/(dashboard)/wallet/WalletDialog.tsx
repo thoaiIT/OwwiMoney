@@ -1,16 +1,18 @@
 'use client';
 
 import { getAllWalletType, type WalletCreateType } from '@/actions/controller/walletController';
+import type { FileType } from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
-import { WalletModel } from '@/model/walletModel';
+import { WalletModelReceive, WalletModelUpload } from '@/model/walletModel';
 
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { CiEdit } from 'react-icons/ci';
 import { FaPlus } from 'react-icons/fa';
@@ -21,7 +23,7 @@ interface WalletDialogProps {
   type?: string;
 }
 
-const resolver = classValidatorResolver(WalletModel);
+const resolver = classValidatorResolver(WalletModelReceive);
 
 const WalletDialog = ({
   handleCreateWallet,
@@ -33,8 +35,11 @@ const WalletDialog = ({
   walletTypeId,
   color,
   description,
-}: WalletDialogProps & Partial<WalletModel>) => {
+  walletImage: walletImageUrl,
+}: WalletDialogProps & Partial<WalletModelUpload>) => {
   const [walletTypeOption, setWalletTypeOption] = useState<DataType[]>([{ label: '', value: '' }]);
+  const [changeImage, setChangeImage] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {
     control,
@@ -49,12 +54,27 @@ const WalletDialog = ({
       totalBalance: totalBalance || '',
       description,
       color,
+      walletImage: { base64String: '', size: 0, type: '' },
     },
     resolver,
   });
+  const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileType) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
 
-  const handleSubmitForm = handleSubmit(async (values: WalletModel) => {
-    const { accountNumber, walletTypeId, description, totalBalance, name, color } = values;
+      reader.onload = function (event) {
+        const base64String = event.target?.result;
+
+        onChange({ base64String: base64String as string, size: file.size, type: file.type });
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmitForm = handleSubmit(async (values: WalletModelReceive) => {
+    const { accountNumber, walletTypeId, description, totalBalance, name, color, walletImage } = values;
     const data = {
       accountNumber: accountNumber as string,
       walletTypeId: walletTypeId as string,
@@ -62,12 +82,16 @@ const WalletDialog = ({
       totalBalance: Number(totalBalance),
       name: name as string,
       color: color || '#FFFFFF',
+      walletImage: walletImage?.base64String ? (walletImage?.base64String as string) : (walletImageUrl as string),
     };
 
     if (type === 'create' && handleCreateWallet) handleCreateWallet(data);
     if (type === 'update' && handleUpdateWallet) handleUpdateWallet(data);
 
     if (type === 'create') reset();
+
+    setOpenDialog(false);
+    setChangeImage(false);
   });
 
   useEffect(() => {
@@ -104,7 +128,12 @@ const WalletDialog = ({
         titleDialog={type === 'create' ? 'New Wallet' : 'Update Wallet'}
         customStyleHeader="text-2xl"
         handleSubmit={handleSubmitForm}
+        open={openDialog}
+        handleOpenChange={() => {
+          setOpenDialog(!openDialog);
+        }}
         handleClose={() => {
+          setChangeImage(false);
           reset();
         }}
       >
@@ -115,7 +144,7 @@ const WalletDialog = ({
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="name"
-              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 md:w-96 w-72"
+              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
               placeholder="Wallet name"
               value={String(value)}
               onChange={onChange}
@@ -149,7 +178,7 @@ const WalletDialog = ({
             <CommonInput
               name="accountNumber"
               className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-              placeholder="Shopping"
+              placeholder="Account number"
               value={String(value)}
               onChange={onChange}
               errors={errors}
@@ -176,23 +205,64 @@ const WalletDialog = ({
             />
           )}
         />
-        {type === 'update' && (
-          <>
-            <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet color</p>
-            <Controller
-              name="color"
-              control={control}
-              render={({ field: { value, onChange } }) => (
-                <input
-                  type="color"
-                  className="rounded-[4px] p-2 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 w-full"
-                  value={value as string}
-                  onChange={onChange}
+
+        <div className="flex gap-2">
+          <div className={`${type === 'create' ? 'w-full' : 'w-1/2'}`}>
+            <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet Image</p>
+            {type === 'update' && walletImageUrl && !changeImage ? (
+              <div className="flex gap-2 w-1/2">
+                <Image
+                  src={walletImageUrl}
+                  alt={name as string}
+                  width={42}
+                  height={42}
+                  unoptimized
                 />
-              )}
-            />
-          </>
-        )}
+                <button
+                  onClick={() => setChangeImage(true)}
+                  className="hover:text-theme-component font-medium"
+                >
+                  Change
+                </button>
+              </div>
+            ) : (
+              <Controller
+                name="walletImage"
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <CommonInput
+                    type="file"
+                    name="walletImage"
+                    className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+                    placeholder="Shopping"
+                    onChange={(e) => {
+                      handleChangeInvoiceImage(e, onChange);
+                    }}
+                    errors={errors}
+                  />
+                )}
+              />
+            )}
+          </div>
+          {type === 'update' && (
+            <div className="w-1/2">
+              <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet color</p>
+              <Controller
+                name="color"
+                control={control}
+                render={({ field: { value, onChange } }) => (
+                  <input
+                    type="color"
+                    className="rounded-[4px] p-2 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 w-full"
+                    value={value as string}
+                    onChange={onChange}
+                  />
+                )}
+              />
+            </div>
+          )}
+        </div>
+
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Description</p>
         <Controller
           name="description"

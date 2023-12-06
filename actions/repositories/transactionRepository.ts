@@ -27,6 +27,42 @@ class TransactionRepository {
       },
     });
   }
+
+  async getAllTransactionByUser(userId: string, pageSize: number, page: number) {
+    const [transactions, total] = await Promise.all([
+      client.transaction.findMany({
+        // where: { userId, deleted: false },
+        where: {
+          userId,
+        },
+        include: { type: true, category: true, partner: true, wallet: true },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      client.transaction.count({
+        // where: { userId, deleted: false },
+        where: { userId },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / pageSize);
+    return {
+      transactions: transactions.map((transaction) => {
+        const formatTransaction = {
+          ...transaction,
+          createdDate: `${transaction.createdDate.getDay()}-${
+            transaction.createdDate.getMonth() + 1
+          }-${transaction.createdDate.getFullYear()}`,
+          typeName: transaction.type.name,
+          categoryName: transaction.category.name,
+          partnerName: transaction.partner.name,
+          walletName: transaction.wallet.name,
+        };
+        return formatTransaction;
+      }),
+      totalPages,
+    };
+  }
 }
 
 export default TransactionRepository;

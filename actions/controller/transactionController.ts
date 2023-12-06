@@ -1,4 +1,6 @@
 'use server';
+import { getTypeById } from '@/actions/controller/typeController';
+import { getWalletById, updateTotalBalance } from '@/actions/controller/walletController';
 import TransactionRepository from '@/actions/repositories/transactionRepository';
 import TransactionService from '@/actions/services/transactionService';
 import { HttpStatusCodes } from '@/helper/type';
@@ -38,6 +40,8 @@ const base64ToUint8Array = (base64String: string) => {
 
 const uploadToCloudinary = async (base64String: string) => {
   try {
+    if (!base64String) return '';
+
     const uint8Array = base64ToUint8Array(base64String);
 
     const result: UploadApiResponse | undefined = await new Promise((resolve, reject) => {
@@ -68,9 +72,49 @@ export const createTransaction = async (data: TransactionCreateType) => {
         return { message: 'Cannot create new transaction!!', status: HttpStatusCodes[500] };
       }
     })
+    .then(async (result) => {
+      try {
+        const type = await getTypeById(data.typeId);
+        const amount: number =
+          type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan' ? -data.amount : data.amount;
+
+        const update = await updateTotalBalance(amount, data.walletId);
+        if (update.status?.code === 200) {
+          return result;
+        } else return update;
+      } catch (error) {
+        return { message: 'Fail to update Total Balance of wallet', status: HttpStatusCodes[500] };
+      }
+    })
     .catch((error) => {
       console.log({ error });
       return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
     });
   return result;
+};
+
+export const getAllTransactionByUser = async (pageSize: number, page: number) => {
+  try {
+    return await transactionService.getAllTransactionByUser(pageSize, page);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const checkWalletInfo = async (walletId: string, typeId: string, amount: number) => {
+  const type = await getTypeById(typeId);
+  if (type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan') {
+    amount = -amount;
+  }
+  const walletInfo = await getWalletById(walletId);
+  if (Number(walletInfo.data?.wallet?.totalBalance) + amount < 0) {
+    return {
+      message: `Amount must be smaller than ${walletInfo.data?.wallet?.name || 'wallet'}'s Total Balance (${
+        walletInfo.data?.wallet?.totalBalance || 0
+      })`,
+      status: HttpStatusCodes[400],
+    };
+  }
+
+  return { message: 'OK', status: HttpStatusCodes[200] };
 };
