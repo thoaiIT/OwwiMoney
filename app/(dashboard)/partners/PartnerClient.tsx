@@ -30,6 +30,10 @@ export default function PartnerClient({
   const router = useRouter();
   const pathname = usePathname();
 
+  const editHandler = (id: string) => {
+    router.push(`/partners/${id}/edit`);
+  };
+
   useEffect(() => {
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
@@ -84,26 +88,28 @@ export default function PartnerClient({
           tableData={tableData}
           columns={[
             {
-              label: 'Name',
-              field: 'name',
-              sortable: true,
-            },
-            {
               label: 'Image',
               field: 'image',
               customRender: (row: string) => {
                 if (row) {
                   return (
-                    <Image
-                      src={row}
-                      alt={row}
-                      width={64}
-                      height={64}
-                    />
+                    <div className="py-1">
+                      <Image
+                        src={row}
+                        alt={row}
+                        width={64}
+                        height={64}
+                      />
+                    </div>
                   );
                 }
                 return <></>;
               },
+            },
+            {
+              label: 'Name',
+              field: 'name',
+              sortable: true,
             },
             {
               label: 'Type',
@@ -122,6 +128,7 @@ export default function PartnerClient({
           useRowNumber
           usePagination
           customBorderStyle="rounded-tl-none rounded-tr-none"
+          editHandler={editHandler}
         />
       )}
     </div>

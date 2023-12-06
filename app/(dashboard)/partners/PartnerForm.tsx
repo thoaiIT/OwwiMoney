@@ -1,3 +1,4 @@
+import type { PartnerUpdateType } from '@/actions/controller/partnerController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { CommonButton } from '@/components/button';
 import { CommonCard } from '@/components/card';
@@ -10,15 +11,19 @@ import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 
+type PartnerFormProps = Partial<PartnerUpdateType>;
+
 export default function PartnerForm({
   type,
+  partnerData,
   submitHandler,
 }: {
   type: 'create' | 'update';
+  partnerData?: PartnerFormProps;
   submitHandler: (value: any) => void;
 }) {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
-  const [partnerImage, setPartnerImage] = useState('');
+  const [partnerImage, setPartnerImage] = useState(partnerData?.image || '');
   const resolver = classValidatorResolver(PartnerModel);
   const {
     control,
@@ -30,12 +35,12 @@ export default function PartnerForm({
   } = useForm({
     values: {
       avatar: { base64String: '', size: 0, type: '' },
-      name: '',
-      email: '',
-      contact: '',
-      address: '',
-      type: '',
-      description: '',
+      name: partnerData?.name || '',
+      email: partnerData?.email || '',
+      contact: partnerData?.contact || '',
+      address: partnerData?.address || '',
+      type: partnerData?.typeId || '',
+      description: partnerData?.description || '',
     },
     resolver,
   });
@@ -74,28 +79,15 @@ export default function PartnerForm({
     fetchAllTypes();
   }, []);
 
+  useEffect(() => {
+    setPartnerImage(partnerData?.image || '');
+  }, [partnerData?.image]);
+  console.log({ partnerImage });
   return (
     <CommonCard className="p-4 md:p-16 md:pr-20 lg:pr-40 2xl:pr-96 w-full">
       <div className="grid grid-cols-3 gap-4 items-center">
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Partner Image</p>
         <div className="col-span-2">
-          {/* <Controller
-            name="avatar"
-            control={control}
-            render={({ field: { onChange } }) => (
-              <CommonInput
-                type="file"
-                name="avatar"
-                accept="image/*"
-                className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                placeholder="Shopping"
-                onChange={(e) => {
-                  handleChangeImage(e, onChange);
-                }}
-                errors={errors}
-              />
-            )}
-          /> */}
           <input
             type="file"
             id="upload-file"
@@ -106,7 +98,7 @@ export default function PartnerForm({
           {!partnerImage && (
             <label
               htmlFor="upload-file"
-              className="inline-block px-4 py-4 bg-blue-500 text-white rounded-2xl text-center cursor-pointer border-2 border-dashed border-blue-500 hover:bg-blue-300 transition-all duration-300"
+              className="inline-block px-4 py-4 bg-white text-slate-400 rounded-2xl text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-white-400 hover:text-white transition-all duration-300"
             >
               <FaCloudUploadAlt />{' '}
             </label>
@@ -114,7 +106,7 @@ export default function PartnerForm({
           {partnerImage && (
             <label
               htmlFor="upload-file"
-              className="relative inline-block w-16 h-16 bg-blue-500 text-white rounded-full overflow-hidden text-center cursor-pointer border-2 border-dashed border-blue-500 hover:bg-blue-300 transition-all duration-300"
+              className="relative inline-block w-16 h-16 bg-white text-slate-400 rounded-full overflow-hidden text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-white-400 hover:text-white transition-all duration-300"
             >
               <Image
                 src={partnerImage}
@@ -210,13 +202,30 @@ export default function PartnerForm({
             />
           )}
         />
+        <p className={'text-base font-semibold leading-6'}>Description</p>
+        <div className="col-span-2">
+          <Controller
+            name="description"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <CommonInput
+                name="description"
+                className="col-span-2 px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+                placeholder="Add Description"
+                value={value}
+                onChange={onChange}
+                errors={errors}
+              />
+            )}
+          />
+        </div>
       </div>
       <div className="flex justify-end w-full mt-6">
         <CommonButton
           className="w-fit"
           onClick={handleSubmitForm}
         >
-          Submit
+          {type === 'create' ? 'Create' : 'Update'}
         </CommonButton>
       </div>
     </CommonCard>

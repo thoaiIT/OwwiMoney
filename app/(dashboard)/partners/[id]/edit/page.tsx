@@ -1,12 +1,5 @@
-import Title from '@/components/dashboard/Title';
+import PartnerUpdateClient from '@/app/(dashboard)/partners/[id]/edit/PartnerUpdateClient';
 
-type Props = { searchParams: { id: string } };
-
-export default function page(params: Props) {
-  console.log({ params });
-  return (
-    <>
-      <Title title="Edit Partner" />
-    </>
-  );
+export default function Page({ params }: { params: { id: string } }) {
+  return <PartnerUpdateClient id={params.id || ''} />;
 }
