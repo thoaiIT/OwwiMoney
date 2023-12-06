@@ -80,34 +80,56 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
   const clickDay = useCallback(
     (day: number, month = date.month() + 1, year = date.year()) => {
       const fullDay = `${year}-${month}-${day}`;
-      let newStart = fullDay;
-      let newEnd = asSingle ? fullDay : null;
+      let newStart;
+      let newEnd = null;
 
-      const chosePeriod = (start: string, end: string) => {
+      function chosePeriod(start: string, end: string) {
+        const ipt = input?.current;
         changeDatepickerValue(
           {
             startDate: dayjs(start).format('YYYY-MM-DD'),
             endDate: dayjs(end).format('YYYY-MM-DD'),
           },
-          input?.current,
+          ipt,
         );
         hideDatepicker();
-      };
-
-      if (period.start && !period.end) {
-        const condition = dayjs(fullDay).isSame(dayjs(period.start)) || dayjs(fullDay).isAfter(dayjs(period.start));
-        newStart = condition ? period.start : fullDay;
-        newEnd = condition ? fullDay : period.start;
-      } else if (period.end && !period.start) {
-        const condition = dayjs(fullDay).isSame(dayjs(period.end)) || dayjs(fullDay).isBefore(dayjs(period.end));
-        newStart = condition ? fullDay : period.start || '';
-        newEnd = condition ? period.end : fullDay;
-      } else if (!period.start && !period.end) {
-        changeDayHover(fullDay);
       }
 
-      if (!showFooter && newStart && newEnd) {
-        chosePeriod(newStart, newEnd);
+      if (period.start && period.end) {
+        if (changeDayHover) {
+          changeDayHover(null);
+        }
+        changePeriod({
+          start: null,
+          end: null,
+        });
+      }
+
+      if ((!period.start && !period.end) || (period.start && period.end)) {
+        if (!period.start && !period.end) {
+          changeDayHover(fullDay);
+        }
+        newStart = fullDay;
+        if (asSingle) {
+          newEnd = fullDay;
+          chosePeriod(fullDay, fullDay);
+        }
+      } else {
+        if (period.start && !period.end) {
+          const condition = dayjs(fullDay).isSame(dayjs(period.start)) || dayjs(fullDay).isAfter(dayjs(period.start));
+          newStart = condition ? period.start : fullDay;
+          newEnd = condition ? fullDay : period.start;
+        } else {
+          const condition = dayjs(fullDay).isSame(dayjs(period.end)) || dayjs(fullDay).isBefore(dayjs(period.end));
+          newStart = condition ? fullDay : period.start;
+          newEnd = condition ? period.end : fullDay;
+        }
+
+        if (!showFooter) {
+          if (newStart && newEnd) {
+            chosePeriod(newStart, newEnd);
+          }
+        }
       }
 
       if (!(newEnd && newStart) || showFooter) {
@@ -117,7 +139,18 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
         });
       }
     },
-    [asSingle, changeDatepickerValue, changeDayHover, changePeriod, date, hideDatepicker, period, showFooter, input],
+    [
+      asSingle,
+      changeDatepickerValue,
+      changeDayHover,
+      changePeriod,
+      date,
+      hideDatepicker,
+      period.end,
+      period.start,
+      showFooter,
+      input,
+    ],
   );
 
   const clickPreviousDays = useCallback(
