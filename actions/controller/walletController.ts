@@ -55,9 +55,10 @@ export const getWalletById = async (walletId: string) => {
   }
 };
 
-export const updateWallet = async (data: WalletUpdateType) => {
+export const updateWallet = async (data: WalletUpdateType, checkImage: boolean) => {
+  const url = checkImage ? await uploadToCloudinary(data.walletImage || '') : data.walletImage;
   try {
-    return await walletService.updateWallet(data);
+    return await walletService.updateWallet({ ...data, walletImage: url as string });
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

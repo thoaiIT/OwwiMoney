@@ -60,10 +60,10 @@ const WalletDetail = () => {
     { label: 'Actions', field: 'id', type: 'action' },
   ];
 
-  const handleUpdateWallet = async (data: WalletCreateType) => {
+  const handleUpdateWallet = async (data: WalletCreateType, checkImage: boolean) => {
     if (walletId) {
       setIsLoading(true);
-      const result = await updateWallet({ ...data, walletId });
+      const result = await updateWallet({ ...data, walletId }, checkImage);
       if (result.status?.code === 200) {
         toast.success(result.message as string);
         const newWallet = result.data?.wallet as WalletModel;

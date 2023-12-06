@@ -19,7 +19,7 @@ import { FaPlus } from 'react-icons/fa';
 
 interface WalletDialogProps {
   handleCreateWallet?: (data: WalletCreateType) => void;
-  handleUpdateWallet?: (data: WalletCreateType) => void;
+  handleUpdateWallet?: (data: WalletCreateType, checkImage: boolean) => void;
   type?: string;
 }
 
@@ -39,6 +39,7 @@ const WalletDialog = ({
 }: WalletDialogProps & Partial<WalletModelUpload>) => {
   const [walletTypeOption, setWalletTypeOption] = useState<DataType[]>([{ label: '', value: '' }]);
   const [changeImage, setChangeImage] = useState(false);
+  const [isNewImage, setIsNewImage] = useState(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {
@@ -70,6 +71,7 @@ const WalletDialog = ({
       };
 
       reader.readAsDataURL(file);
+      setIsNewImage(true);
     }
   };
 
@@ -85,13 +87,16 @@ const WalletDialog = ({
       walletImage: walletImage?.base64String ? (walletImage?.base64String as string) : (walletImageUrl as string),
     };
 
+    console.log(data);
+
     if (type === 'create' && handleCreateWallet) handleCreateWallet(data);
-    if (type === 'update' && handleUpdateWallet) handleUpdateWallet(data);
+    if (type === 'update' && handleUpdateWallet) handleUpdateWallet(data, isNewImage);
 
     if (type === 'create') reset();
 
     setOpenDialog(false);
     setChangeImage(false);
+    setIsNewImage(false);
   });
 
   useEffect(() => {
