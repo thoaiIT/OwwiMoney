@@ -8,7 +8,7 @@ import { AiOutlineHome } from 'react-icons/ai';
 import { CiWallet } from 'react-icons/ci';
 import { GiOwl } from 'react-icons/gi';
 import { IoMdPaperPlane } from 'react-icons/io';
-import { IoAnalytics, IoSettingsOutline } from 'react-icons/io5';
+import { IoAnalytics, IoPricetags, IoSettingsOutline } from 'react-icons/io5';
 import { LuLayoutDashboard, LuTicket } from 'react-icons/lu';
 
 const Breadcrumb = () => {
@@ -22,6 +22,7 @@ const Breadcrumb = () => {
     wallet: <CiWallet />,
     analytics: <IoAnalytics />,
     borrowers: <LuTicket />,
+    category: <IoPricetags />,
     setting: <IoSettingsOutline />,
   };
 

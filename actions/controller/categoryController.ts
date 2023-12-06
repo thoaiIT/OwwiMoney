@@ -10,7 +10,7 @@ export type CategoryUpdateType = CategoryCreateType & { categoryId: string };
 const categoryRepository = new CategoryRepository();
 const categoryService = new CategoryService(categoryRepository);
 
-export const createPartner = async (data: CategoryCreateType) => {
+export const createCategory = async (data: CategoryCreateType) => {
   try {
     const result = await categoryService.createCategory(data);
     return result;
@@ -20,7 +20,7 @@ export const createPartner = async (data: CategoryCreateType) => {
   }
 };
 
-export const getAllPartnerByUser = async () => {
+export const getAllCategoryByUser = async () => {
   try {
     return await categoryService.getAllCategoryByUser();
   } catch (error) {
