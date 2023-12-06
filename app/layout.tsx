@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${quickSand.variable} !scroll-smooth`}
     >
-      <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode`}>
+      <body className={`${quickSand.className} bg-light-mode dark:bg-dark-mode min-h-screen`}>
         <ToastContainer />
         <AuthProvider>
           <ToastProvider>
