@@ -36,7 +36,7 @@ export interface DatepickerType {
   inputId?: string;
   readOnly?: boolean;
   disabledDates?: DateRangeType[] | null;
-  errors?: FieldErrors | string;
+  errors?: FieldErrors;
 }
 
 export interface DatepickerStore {
@@ -108,5 +108,6 @@ export interface YearProps {
 
 export type InputProps = {
   setContextRef?: (ref: RefObject<HTMLInputElement>) => void;
-  errors: any;
+  errors?: FieldErrors;
+  name: string;
 };
