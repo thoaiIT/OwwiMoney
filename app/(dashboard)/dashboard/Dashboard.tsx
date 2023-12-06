@@ -19,6 +19,7 @@ const Dashboard = () => {
       <hr />
       <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
       <CommonDatePicker
+        name="datepicker"
         value={value}
         onChange={handleChange}
         asSingle
