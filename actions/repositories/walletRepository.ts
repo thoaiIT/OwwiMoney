@@ -60,6 +60,13 @@ class WalletRepository {
     return await prisma.wallet.update({
       where: { id: walletId },
       data: { accountNumber, color, name, totalBalance, walletTypeId, description, deleted: false, walletImage },
+      include: {
+        walletType: {
+          select: {
+            typeName: true,
+          },
+        },
+      },
     });
   }
 
