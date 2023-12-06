@@ -38,7 +38,7 @@ const base64ToUint8Array = (base64String: string) => {
   }
 };
 
-const uploadToCloudinary = async (base64String: string) => {
+export const uploadToCloudinary = async (base64String: string) => {
   try {
     if (!base64String) return '';
 
@@ -63,6 +63,7 @@ const uploadToCloudinary = async (base64String: string) => {
 };
 
 export const createTransaction = async (data: TransactionCreateType) => {
+  console.log(data.invoiceImageUrl);
   const result = uploadToCloudinary(data.invoiceImageUrl || '')
     .then(async (url) => {
       try {
