@@ -4,7 +4,6 @@ import { uploadToCloudinary } from '@/actions/controller/transactionController';
 import WalletRepository from '@/actions/repositories/walletRepository';
 import WalletService from '@/actions/services/walletService';
 import { HttpStatusCodes } from '@/helper/type';
-import type { WalletModel } from '@/model/walletModel';
 import type { Wallet } from '@prisma/client';
 
 export type WalletCreateType = Pick<
@@ -17,26 +16,18 @@ const walletRepository = new WalletRepository();
 const walletService = new WalletService(walletRepository);
 
 export const createWallet = async (data: WalletCreateType) => {
-  const result = await uploadToCloudinary(data.walletImage || '')
-    .then(async (url) => {
-      try {
-        const result = await walletService.createWallet({ ...data, walletImage: url as string });
-        return result;
-      } catch (error) {
-        console.error(error);
-        return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
-      }
-    })
-    .catch((error) => {
-      console.log({ error });
+  const url = await uploadToCloudinary(data.walletImage || '');
+  if (url) {
+    try {
+      const result = await walletService.createWallet({ ...data, walletImage: url as string });
+      return result;
+    } catch (error) {
+      console.error(error);
       return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
-    });
-  console.log(result);
-  return result as {
-    message: string;
-    status: { message: string; code: number } | undefined;
-    data: { wallet: WalletModel };
-  };
+    }
+  } else {
+    return { message: 'Failed to upload image to Cloudinary', status: HttpStatusCodes[500] };
+  }
 };
 
 export const getAllWallet = async () => {
