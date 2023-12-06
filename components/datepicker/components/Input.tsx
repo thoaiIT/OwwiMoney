@@ -4,8 +4,9 @@ import { useCallback, useContext, useEffect, useRef, type ChangeEvent, type FC }
 import { DatepickerContext } from '@/components/datepicker/const';
 import { type InputProps } from '@/components/datepicker/type';
 import { dateIsValid, parseFormattedDate } from '@/components/datepicker/utils';
+import { tailwindMerge } from '@/utils/helper';
 
-const Input: FC<InputProps> = () => {
+const Input: FC<InputProps> = ({ errors }) => {
   const {
     period,
     dayHover,
@@ -16,7 +17,6 @@ const Input: FC<InputProps> = () => {
     changeInputText,
     changeDatepickerValue,
     asSingle,
-    disabled,
     popoverDirection,
   } = useContext(DatepickerContext);
 
@@ -114,14 +114,18 @@ const Input: FC<InputProps> = () => {
   return (
     <>
       <input
-        className="w-60 border-2 p-2 rounded-md"
+        className={tailwindMerge([
+          'flex px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base rounded-md w-full',
+          !!errors && 'border-red-500 outline-red-500',
+        ])}
         ref={inputRef}
         type="text"
-        disabled={disabled}
-        placeholder="DD-MM-YYYY ~ DD-MM-YYYY"
+        readOnly
+        placeholder={!asSingle ? 'DD-MM-YYYY ~ DD-MM-YYYY' : 'DD-MM-YYYY'}
         value={inputText}
         onChange={handleInputChange}
       />
+      {!!errors && <span className={'text-red-500'}>{errors}</span>}
     </>
   );
 };

@@ -11,6 +11,7 @@ import { getAllWallet } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
+import CommonDatePicker from '@/components/datepicker';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
 import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
@@ -372,14 +373,12 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openD
               name="createdDate"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <CommonInput
-                  type="date"
+                <CommonDatePicker
+                  asSingle
                   name="createdDate"
-                  className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                  placeholder="Shopping"
                   value={value}
                   onChange={onChange}
-                  errors={errors}
+                  errors={errors.createdDate?.message}
                 />
               )}
             />
