@@ -1,5 +1,6 @@
 'use client';
 
+import { createCategory, type CategoryCreateType } from '@/actions/controller/categoryController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import type { FileType } from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonTextarea from '@/components/Textarea';
@@ -7,7 +8,7 @@ import { CommonButton } from '@/components/button';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
-import { CategoryModel } from '@/model/categoryModel';
+import { CategoryModel, CategoryModelReceive } from '@/model/categoryModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import Image from 'next/image';
@@ -41,8 +42,16 @@ const CategoryDialog = ({ type }: CategoryDialogProps) => {
     resolver,
   });
 
-  const handleSubmitForm = handleSubmit(async (values: CategoryModel) => {
-    console.log(values);
+  const handleSubmitForm = handleSubmit(async (values: CategoryModelReceive) => {
+    const data = {
+      categoryImage: values.categoryImage?.base64String,
+      name: values.name,
+      typeId: values.type,
+      description: values.description,
+    };
+
+    const result = await createCategory(data as CategoryCreateType);
+    console.log(result);
   });
 
   const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileType) => void) => {

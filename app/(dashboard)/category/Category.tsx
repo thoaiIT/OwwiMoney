@@ -1,13 +1,27 @@
 'use client';
 import CategoryDialog from '@/app/(dashboard)/category/CategoryDialog';
+import type { CategoryTableType } from '@/app/(dashboard)/category/page';
 import CommonInput from '@/components/input';
 import CommonTable from '@/components/table/CommonTable';
 import useTableData, { type UseTableDataResult } from '@/components/table/hooks/useTableData';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
+import { useEffect } from 'react';
 
-const Category = () => {
+interface CategoryProps {
+  dataTable: CategoryTableType[];
+  totalPages: number;
+}
+
+const Category = ({ dataTable, totalPages }: CategoryProps) => {
   const tableData: UseTableDataResult = useTableData();
-  const categories = 1;
+
+  useEffect(() => {
+    tableData.changeTotalPage(totalPages || 0);
+    console.log('cvvvv');
+  }, [totalPages]);
+
+  console.log({ dataTable });
   return (
     <>
       <div
@@ -28,11 +42,27 @@ const Category = () => {
           <CategoryDialog type="create" />
         </div>
       </div>
-      {categories && (
+      {dataTable && (
         <CommonTable
-          data={[]}
+          data={dataTable}
           tableData={tableData}
           columns={[
+            {
+              label: 'Image',
+              field: 'categoryImage',
+              customRender: (row) => {
+                console.log(row);
+
+                return (
+                  <Image
+                    src={row || ''}
+                    alt="image"
+                    width={24}
+                    height={24}
+                  />
+                );
+              },
+            },
             {
               label: 'Name',
               field: 'name',
