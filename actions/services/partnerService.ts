@@ -3,6 +3,7 @@ import type { PartnerCreateType, PartnerUpdateType } from './../controller/partn
 import type PartnerRepository from '@/actions/repositories/partnerRepository';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
 
@@ -20,7 +21,12 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      const partner = await this.partnerRepository.createPartner({ ...data, userId });
+      let imageUrl = '';
+      if (data.image) {
+        imageUrl = (await uploadToCloudinary(data.image)) || '';
+        if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
+      }
+      const partner = await this.partnerRepository.createPartner({ ...data, userId, image: imageUrl });
       return { message: 'Partner Created', data: { partner }, status: HttpStatusCodes[201] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };

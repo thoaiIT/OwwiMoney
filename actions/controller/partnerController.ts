@@ -4,7 +4,10 @@ import PartnerService from '@/actions/services/partnerService';
 import { HttpStatusCodes } from '@/helper/type';
 import type { Partner } from '@prisma/client';
 
-export type PartnerCreateType = Pick<Partner, 'typeId' | 'name' | 'contact' | 'address' | 'description' | 'email'>;
+export type PartnerCreateType = Pick<
+  Partner,
+  'typeId' | 'name' | 'contact' | 'address' | 'description' | 'email' | 'image'
+>;
 export type PartnerUpdateType = PartnerCreateType & { partnerId: string };
 
 const partnerRepository = new PartnerRepository();
@@ -12,12 +15,10 @@ const partnerService = new PartnerService(partnerRepository);
 
 export const createPartner = async (data: PartnerCreateType) => {
   try {
-    console.log({ data });
     const result = await partnerService.createPartner(data);
     return result;
   } catch (error) {
-    console.error(error);
-    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error!', status: HttpStatusCodes[500] };
   }
 };
 

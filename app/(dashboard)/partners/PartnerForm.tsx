@@ -4,11 +4,11 @@ import { CommonCard } from '@/components/card';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import CommonInput from '@/components/input';
 import { PartnerModel } from '@/model/partnerModel';
-import type { FileImageType } from '@/types/component';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import Image from 'next/image';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { FaCloudUploadAlt } from 'react-icons/fa';
 
 export default function PartnerForm({
   type,
@@ -18,8 +18,7 @@ export default function PartnerForm({
   submitHandler: (value: any) => void;
 }) {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
-  const [changeImage, setChangeImage] = useState(false);
-  const avatar = '';
+  const [partnerImage, setPartnerImage] = useState('');
   const resolver = classValidatorResolver(PartnerModel);
   const {
     control,
@@ -41,7 +40,7 @@ export default function PartnerForm({
     resolver,
   });
 
-  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileImageType) => void) => {
+  const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -49,7 +48,9 @@ export default function PartnerForm({
       reader.onload = function (event) {
         const base64String = event.target?.result;
 
-        onChange({ base64String: base64String as string, size: file.size, type: file.type });
+        setPartnerImage(base64String?.toString() || '');
+        // onChange({ base64String: base64String as string, size: file.size, type: file.type });
+        setValue('avatar', { base64String: base64String as string, size: file.size, type: file.type });
       };
 
       reader.readAsDataURL(file);
@@ -78,39 +79,49 @@ export default function PartnerForm({
       <div className="grid grid-cols-3 gap-4 items-center">
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Partner Image</p>
         <div className="col-span-2">
-          {type === 'update' && avatar ? (
-            <div className="flex gap-2 w-1/2">
-              <Image
-                src={avatar}
-                alt={''}
-                width={42}
-                height={42}
-                unoptimized
+          {/* <Controller
+            name="avatar"
+            control={control}
+            render={({ field: { onChange } }) => (
+              <CommonInput
+                type="file"
+                name="avatar"
+                accept="image/*"
+                className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+                placeholder="Shopping"
+                onChange={(e) => {
+                  handleChangeImage(e, onChange);
+                }}
+                errors={errors}
               />
-              <button
-                onClick={() => setChangeImage(true)}
-                className="hover:text-theme-component font-medium"
-              >
-                Change
-              </button>
-            </div>
-          ) : (
-            <Controller
-              name="avatar"
-              control={control}
-              render={({ field: { onChange } }) => (
-                <CommonInput
-                  type="file"
-                  name="avatar"
-                  className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                  placeholder="Shopping"
-                  onChange={(e) => {
-                    handleChangeImage(e, onChange);
-                  }}
-                  errors={errors}
-                />
-              )}
-            />
+            )}
+          /> */}
+          <input
+            type="file"
+            id="upload-file"
+            accept="image/*"
+            hidden
+            onChange={handleChangeImage}
+          />
+          {!partnerImage && (
+            <label
+              htmlFor="upload-file"
+              className="inline-block px-4 py-4 bg-blue-500 text-white rounded-2xl text-center cursor-pointer border-2 border-dashed border-blue-500 hover:bg-blue-300 transition-all duration-300"
+            >
+              <FaCloudUploadAlt />{' '}
+            </label>
+          )}
+          {partnerImage && (
+            <label
+              htmlFor="upload-file"
+              className="relative inline-block w-16 h-16 bg-blue-500 text-white rounded-full overflow-hidden text-center cursor-pointer border-2 border-dashed border-blue-500 hover:bg-blue-300 transition-all duration-300"
+            >
+              <Image
+                src={partnerImage}
+                layout="fill"
+                alt="partner image"
+              />{' '}
+            </label>
           )}
         </div>
 

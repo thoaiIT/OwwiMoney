@@ -3,8 +3,10 @@ import { createPartner, type PartnerCreateType } from '@/actions/controller/part
 import PartnerForm from '@/app/(dashboard)/partners/PartnerForm';
 import Title from '@/components/dashboard/Title';
 import type { PartnerModel } from '@/model/partnerModel';
+import { useRouter } from 'next/navigation';
 
 export default function PartnerCreateClient() {
+  const router = useRouter();
   const submitHandler = async (values: PartnerModel) => {
     console.log({ passed: values });
     const partner: PartnerCreateType = {
@@ -14,9 +16,13 @@ export default function PartnerCreateClient() {
       email: values.email || '',
       name: values.name || '',
       typeId: values.type || '',
+      image: values.avatar?.base64String || '',
     };
     const respone = await createPartner(partner);
-    console.log({ respone });
+
+    if (respone.status?.code === 201) {
+      router.push('/partners');
+    }
   };
   return (
     <div>

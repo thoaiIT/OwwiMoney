@@ -6,6 +6,7 @@ import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import useTableData from '@/components/table/hooks/useTableData';
 import type { Partner } from '@prisma/client';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import queryString from 'query-string';
@@ -86,6 +87,23 @@ export default function PartnerClient({
               label: 'Name',
               field: 'name',
               sortable: true,
+            },
+            {
+              label: 'Image',
+              field: 'image',
+              customRender: (row: string) => {
+                if (row) {
+                  return (
+                    <Image
+                      src={row}
+                      alt={row}
+                      width={64}
+                      height={64}
+                    />
+                  );
+                }
+                return <></>;
+              },
             },
             {
               label: 'Type',
