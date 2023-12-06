@@ -1,4 +1,3 @@
-'use client';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { CommonButton } from '@/components/button';
 import { CommonCard } from '@/components/card';

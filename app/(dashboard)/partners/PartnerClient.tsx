@@ -70,7 +70,7 @@ export default function PartnerClient({
         <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
           <Link
             href={'/partners/create'}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full h-full justify-center"
           >
             <FaPlus />
             Add Partner
