@@ -1,28 +1,13 @@
 'use client';
 
-import CommonDatePicker from '@/components/datepicker';
 import Link from 'next/link';
-import { useState } from 'react';
 
 const Dashboard = () => {
-  const [value, setValue] = useState({
-    startDate: null,
-    endDate: null,
-  });
-  const handleChange = (value: any) => {
-    setValue(value);
-    console.log('value', value);
-  };
   return (
     <div>
       Dashboard
       <hr />
       <Link href="/api/auth/signout?callbackUrl=/login">Logout</Link>
-      <CommonDatePicker
-        value={value}
-        onChange={handleChange}
-        asSingle
-      />
       {/* <FormSheet
         titleSheet="Are you sure absolutely sure?"
         side={'right'}

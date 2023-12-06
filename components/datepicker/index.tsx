@@ -13,6 +13,8 @@ const CommonDatePicker = ({
   disabled = false,
   inputId,
   classNames = undefined,
+  asSingle = false,
+  errors,
 }: DatepickerType) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const calendarContainerRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +123,7 @@ const CommonDatePicker = ({
   );
 
   useEffect(() => {
-    if (value && value.startDate && value.endDate) {
+    if (value && typeof value !== 'string' && value.startDate && value.endDate) {
       const startDate = dayjs(value.startDate);
       const endDate = dayjs(value.endDate);
       const validDate = startDate.isValid() && endDate.isValid();
@@ -131,20 +133,41 @@ const CommonDatePicker = ({
           start: formatDate(startDate),
           end: formatDate(endDate),
         });
-        setInputText(`${formatDate(startDate, 'DD-MM-YYYY')}${` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`}`);
+        setInputText(
+          `${formatDate(startDate, 'DD-MM-YYYY')}${asSingle ? '' : ` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`}`,
+        );
       }
     }
-    if (value && value.startDate === null && value.endDate === null) {
+
+    if (value && typeof value !== 'string' && value.startDate === null && value.endDate === null) {
       setPeriod({
         start: null,
         end: null,
       });
       setInputText('');
     }
-  }, [value]);
+  }, [asSingle, value]);
+
+  useEffect(() => {
+    if (typeof value !== 'string') {
+      const startDate = value?.startDate;
+      const endDate = value?.endDate;
+      if (startDate && dayjs(startDate).isValid()) {
+        setFirstDate(dayjs(startDate));
+        if (!asSingle) {
+          if (endDate && dayjs(endDate).isValid() && dayjs(endDate).startOf('month').isAfter(dayjs(startDate))) {
+            setSecondDate(dayjs(endDate));
+          } else {
+            setSecondDate(nextMonth(dayjs(startDate)));
+          }
+        }
+      }
+    }
+  }, [asSingle, value]);
 
   const contextValues = useMemo(() => {
     return {
+      asSingle,
       primaryColor: 'blue',
       calendarContainer: calendarContainerRef,
       arrowContainer: arrowRef,
@@ -165,6 +188,7 @@ const CommonDatePicker = ({
       input: inputRef,
     };
   }, [
+    asSingle,
     hideDatepicker,
     period,
     dayHover,
@@ -181,7 +205,10 @@ const CommonDatePicker = ({
   return (
     <DatepickerContext.Provider value={contextValues}>
       <div ref={containerRef}>
-        <Input setContextRef={setInputRef} />
+        <Input
+          setContextRef={setInputRef}
+          errors={errors}
+        />
         <div
           className="transition-all ease-out duration-300 absolute z-10 mt-[1px] text-sm lg:text-xs 2xl:text-sm translate-y-4 opacity-0 hidden"
           ref={calendarContainerRef}
@@ -201,13 +228,15 @@ const CommonDatePicker = ({
                   changeMonth={changeFirstMonth}
                   changeYear={changeFirstYear}
                 />
-                <Calendar
-                  date={secondDate}
-                  onClickPrevious={previousMonthSecond}
-                  onClickNext={nextMonthSecond}
-                  changeMonth={changeSecondMonth}
-                  changeYear={changeSecondYear}
-                />
+                {!asSingle && (
+                  <Calendar
+                    date={secondDate}
+                    onClickPrevious={previousMonthSecond}
+                    onClickNext={nextMonthSecond}
+                    changeMonth={changeSecondMonth}
+                    changeYear={changeSecondYear}
+                  />
+                )}
               </div>
             </div>
           </div>
