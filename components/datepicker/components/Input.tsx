@@ -4,9 +4,10 @@ import { useCallback, useContext, useEffect, useRef, type ChangeEvent, type FC }
 import { DatepickerContext } from '@/components/datepicker/const';
 import { type InputProps } from '@/components/datepicker/type';
 import { dateIsValid, parseFormattedDate } from '@/components/datepicker/utils';
+import { capitalizeFirstLetter } from '@/components/input';
 import { tailwindMerge } from '@/utils/helper';
 
-const Input: FC<InputProps> = ({ errors }) => {
+const Input: FC<InputProps> = ({ errors, name }) => {
   const {
     period,
     dayHover,
@@ -116,7 +117,7 @@ const Input: FC<InputProps> = ({ errors }) => {
       <input
         className={tailwindMerge([
           'flex px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base rounded-md w-full',
-          !!errors && 'border-red-500 outline-red-500',
+          errors && errors[name]?.message && 'border-red-500 outline-red-500',
         ])}
         ref={inputRef}
         type="text"
@@ -125,7 +126,9 @@ const Input: FC<InputProps> = ({ errors }) => {
         value={inputText}
         onChange={handleInputChange}
       />
-      {!!errors && <span className={'text-red-500'}>{errors}</span>}
+      {errors && errors[name]?.message && (
+        <span className={'text-red-500'}>{capitalizeFirstLetter(errors[name]?.message?.toString() || '')}</span>
+      )}
     </>
   );
 };
