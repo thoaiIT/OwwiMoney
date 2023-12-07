@@ -1,6 +1,6 @@
 'use client';
 
-import { createCategory, type CategoryCreateType } from '@/actions/controller/categoryController';
+import { type CategoryCreateType } from '@/actions/controller/categoryController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import type { FileType } from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonTextarea from '@/components/Textarea';
@@ -18,11 +18,12 @@ import { FaPlus } from 'react-icons/fa';
 
 interface CategoryDialogProps {
   type: string;
+  handleCreateCategpory: (value: CategoryCreateType) => void;
 }
 
 const resolver = classValidatorResolver(CategoryModel);
 
-const CategoryDialog = ({ type }: CategoryDialogProps) => {
+const CategoryDialog = ({ type, handleCreateCategpory }: CategoryDialogProps) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [changeImage, setChangeImage] = useState(false);
   const [isNewImage, setIsNewImage] = useState(false);
@@ -50,8 +51,7 @@ const CategoryDialog = ({ type }: CategoryDialogProps) => {
       description: values.description,
     };
 
-    const result = await createCategory(data as CategoryCreateType);
-    console.log(result);
+    if (type === 'create') handleCreateCategpory(data as CategoryCreateType);
   });
 
   const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileType) => void) => {

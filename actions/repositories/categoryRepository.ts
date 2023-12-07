@@ -17,7 +17,7 @@ class CategoryRepository {
         take: pageSize,
       }),
       client.category.count({
-        where: { userId },
+        where: { userId, deleted: false },
       }),
     ]);
 

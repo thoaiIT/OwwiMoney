@@ -120,7 +120,7 @@ class CategoryService {
     }
 
     const category = await this.categoryRepository.deleteCategory(categoryId);
-    return { message: 'Success', data: { category }, status: HttpStatusCodes[200] };
+    return { message: 'Delete category successfully', data: { category }, status: HttpStatusCodes[200] };
   }
 }
 
