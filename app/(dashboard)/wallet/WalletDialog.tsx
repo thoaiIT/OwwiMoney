@@ -87,8 +87,6 @@ const WalletDialog = ({
       walletImage: walletImage?.base64String ? (walletImage?.base64String as string) : (walletImageUrl as string),
     };
 
-    console.log(data);
-
     if (type === 'create' && handleCreateWallet) handleCreateWallet(data);
     if (type === 'update' && handleUpdateWallet) handleUpdateWallet(data, isNewImage);
 
