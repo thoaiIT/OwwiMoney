@@ -1,6 +1,6 @@
 'use client';
 
-import { type CategoryCreateType } from '@/actions/controller/categoryController';
+import { getCategoryById, type CategoryCreateType } from '@/actions/controller/categoryController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import type { FileType } from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonTextarea from '@/components/Textarea';
@@ -8,7 +8,7 @@ import { CommonButton } from '@/components/button';
 import CommonCombobox, { type DataType } from '@/components/combobox';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
-import { CategoryModel, CategoryModelReceive } from '@/model/categoryModel';
+import { CategoryModel, CategoryModelReceive, CategoryModelUpload } from '@/model/categoryModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import Image from 'next/image';
@@ -18,13 +18,26 @@ import { FaPlus } from 'react-icons/fa';
 
 interface CategoryDialogProps {
   type: string;
-  handleCreateCategpory: (value: CategoryCreateType) => void;
+  handleCreateCategory?: (value: CategoryCreateType) => void;
+  handleUpdateCategory?: (value: CategoryCreateType, isNewImage: boolean) => void;
+  openDialog?: boolean;
+  handleCloseDialog: () => void;
+  handleOpenChange: () => void;
+  categoryId?: string;
 }
 
 const resolver = classValidatorResolver(CategoryModel);
 
-const CategoryDialog = ({ type, handleCreateCategpory }: CategoryDialogProps) => {
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
+const CategoryDialog = ({
+  type,
+  handleCreateCategory,
+  handleUpdateCategory,
+  handleOpenChange,
+  handleCloseDialog,
+  categoryId,
+  openDialog,
+}: CategoryDialogProps & Partial<CategoryModelUpload>) => {
+  const [category, setCategory] = useState<CategoryCreateType>();
   const [changeImage, setChangeImage] = useState(false);
   const [isNewImage, setIsNewImage] = useState(false);
   const [categoryTypeOption, setCategoryTypeOption] = useState<DataType[]>([{ label: '', value: '' }]);
@@ -35,9 +48,9 @@ const CategoryDialog = ({ type, handleCreateCategpory }: CategoryDialogProps) =>
     reset,
   } = useForm({
     values: {
-      name: '',
-      type: '',
-      description: '',
+      name: category?.name || '',
+      type: category?.typeId || '',
+      description: category?.description || '',
       categoryImage: { base64String: '', size: 0, type: '' },
     },
     resolver,
@@ -45,13 +58,23 @@ const CategoryDialog = ({ type, handleCreateCategpory }: CategoryDialogProps) =>
 
   const handleSubmitForm = handleSubmit(async (values: CategoryModelReceive) => {
     const data = {
-      categoryImage: values.categoryImage?.base64String,
+      categoryImage: values.categoryImage?.base64String
+        ? (values.categoryImage?.base64String as string)
+        : (category?.categoryImage as string),
       name: values.name,
       typeId: values.type,
       description: values.description,
     };
 
-    if (type === 'create') handleCreateCategpory(data as CategoryCreateType);
+    console.log(values.categoryImage?.base64String);
+
+    if (type === 'create' && handleCreateCategory) handleCreateCategory(data as CategoryCreateType);
+    if (type === 'update' && handleUpdateCategory) handleUpdateCategory(data as CategoryCreateType, isNewImage);
+
+    setChangeImage(false);
+    setIsNewImage(false);
+    handleCloseDialog();
+    reset();
   });
 
   const handleChangeInvoiceImage = (e: ChangeEvent<HTMLInputElement>, onChange: (str: FileType) => void) => {
@@ -80,35 +103,50 @@ const CategoryDialog = ({ type, handleCreateCategpory }: CategoryDialogProps) =>
       setCategoryTypeOption(typeOptions as DataType[]);
     })();
   }, []);
+
+  useEffect(() => {
+    const getCategoryDetail = async () => {
+      setCategory({ name: '', description: '', typeId: '', categoryImage: '' });
+      const result = await getCategoryById(categoryId as string);
+      const categoryDetail = result.data?.category;
+      setCategory(categoryDetail as CategoryCreateType);
+    };
+
+    if (type === 'update' && categoryId && openDialog) {
+      getCategoryDetail();
+    }
+  }, [openDialog]);
   return (
     <Box>
       <DialogForm
         useCustomTrigger={
-          <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
-            <FaPlus />
-            Add new Category
-          </CommonButton>
+          type === 'create' ? (
+            <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
+              <FaPlus />
+              Add new Category
+            </CommonButton>
+          ) : (
+            <></>
+          )
         }
+        open={openDialog}
         titleDialog={type === 'create' ? 'New category' : 'Update category'}
         customStyleHeader="text-2xl"
         handleSubmit={handleSubmitForm}
-        open={openDialog}
-        handleOpenChange={() => {
-          setOpenDialog(!openDialog);
-        }}
+        handleOpenChange={handleOpenChange}
         handleClose={() => {
-          // setChangeImage(false);
+          setChangeImage(false);
           reset();
         }}
       >
         <div className="flex gap-2">
           <div className={`${type === 'create' ? 'w-full' : 'w-1/2'}`}>
-            <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet Image</p>
-            {type === 'update' ? (
+            <p className={'mb-2 text-base font-semibold leading-6 '}>Wallet Image</p>
+            {type === 'update' && !changeImage && category?.categoryImage ? (
               <div className="flex gap-2 w-1/2 mb-2">
                 <Image
-                  src={''}
-                  alt={''}
+                  src={(category?.categoryImage as string) || 'https://cdn-icons-png.flaticon.com/512/1864/1864521.png'}
+                  alt={'image'}
                   width={42}
                   height={42}
                   unoptimized

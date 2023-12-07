@@ -41,13 +41,22 @@ class CategoryRepository {
   }
 
   async getCategoryById(categoryId: string, userId: string) {
-    return client.category.findFirst({ where: { id: categoryId, userId, deleted: false } });
+    return await client.category.findFirst({
+      where: { id: categoryId, userId, deleted: false },
+      include: {
+        type: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
   }
 
-  async updateCategory({ categoryId, name, description, typeId }: CategoryUpdateType) {
+  async updateCategory({ categoryId, name, description, typeId, categoryImage }: CategoryUpdateType) {
     return await client.category.update({
       where: { id: categoryId },
-      data: { name, description, typeId, deleted: false },
+      data: { name, description, typeId, deleted: false, categoryImage },
     });
   }
 

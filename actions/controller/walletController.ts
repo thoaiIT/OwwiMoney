@@ -16,17 +16,14 @@ const walletRepository = new WalletRepository();
 const walletService = new WalletService(walletRepository);
 
 export const createWallet = async (data: WalletCreateType) => {
-  const url = await uploadToCloudinary(data.walletImage || '');
-  if (url) {
-    try {
-      const result = await walletService.createWallet({ ...data, walletImage: url as string });
-      return result;
-    } catch (error) {
-      console.error(error);
-      return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
-    }
-  } else {
-    return { message: 'Failed to upload image to Cloudinary', status: HttpStatusCodes[500] };
+  const url = data.walletImage ? await uploadToCloudinary(data.walletImage || '') : '';
+
+  try {
+    const result = await walletService.createWallet({ ...data, walletImage: url as string });
+    return result;
+  } catch (error) {
+    console.error(error);
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
 

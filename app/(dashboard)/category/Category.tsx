@@ -1,7 +1,13 @@
 'use client';
-import { createCategory, deleteCategory, type CategoryCreateType } from '@/actions/controller/categoryController';
+import {
+  createCategory,
+  deleteCategory,
+  updateCategory,
+  type CategoryCreateType,
+} from '@/actions/controller/categoryController';
 import CategoryDialog from '@/app/(dashboard)/category/CategoryDialog';
 import type { CategoryTableType } from '@/app/(dashboard)/category/page';
+import ConfirmDialog from '@/components/dialog/confirmDialog';
 import CommonInput from '@/components/input';
 import Loading from '@/components/loading';
 import CommonTable from '@/components/table/CommonTable';
@@ -22,6 +28,10 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
   const router = useRouter();
   const tableData: UseTableDataResult = useTableData();
   const [isLoading, setIsLoading] = useState(false);
+  const [categoryId, setCategoryId] = useState<string>();
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
 
   const columns: ColumnType<CategoryTableType>[] = [
     {
@@ -61,7 +71,7 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
     { label: 'Actions', field: 'id', type: 'action' },
   ];
 
-  const handleCreateCategpory = async (value: CategoryCreateType) => {
+  const handleCreateCategory = async (value: CategoryCreateType) => {
     setIsLoading(true);
     const result = await createCategory(value as CategoryCreateType);
     if (result.status?.code === 201) {
@@ -73,20 +83,34 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
     setIsLoading(false);
   };
 
-  const handleEditCategory = (id: string) => {
-    console.log('My custom edit ' + id);
+  const handleUpdateCategory = async (value: CategoryCreateType, isNewImage: boolean) => {
+    console.log({ isNewImage });
+    if (categoryId) {
+      setIsLoading(true);
+      const result = await updateCategory({ ...value, categoryId }, isNewImage);
+      if (result.status?.code === 200) {
+        toast.success(result.message as string);
+        setOpenEditDialog(false);
+        router.refresh();
+      } else {
+        toast.error(result.message as string);
+      }
+      setIsLoading(false);
+    }
   };
 
-  const handleDeleteCategory = async (id: string) => {
+  const handleDeleteCategory = async () => {
     setIsLoading(true);
-    const result = await deleteCategory(id);
-    if (result.status?.code === 200) {
-      toast.success(result.message as string);
-      router.refresh();
-    } else {
-      toast.error(result.message as string);
+    if (categoryId) {
+      const result = await deleteCategory(categoryId as string);
+      if (result.status?.code === 200) {
+        toast.success(result.message as string);
+        router.refresh();
+      } else {
+        toast.error(result.message as string);
+      }
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -113,7 +137,14 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
         <div>
           <CategoryDialog
             type="create"
-            handleCreateCategpory={handleCreateCategpory}
+            handleCreateCategory={handleCreateCategory}
+            openDialog={openCreateDialog}
+            handleOpenChange={() => {
+              setOpenCreateDialog(!openCreateDialog);
+            }}
+            handleCloseDialog={() => {
+              setOpenCreateDialog(false);
+            }}
           />
         </div>
       </div>
@@ -126,10 +157,40 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
           useRowNumber
           usePagination
           customBorderStyle="rounded-tl-none rounded-tr-none"
-          editHandler={handleEditCategory}
-          deleteHandler={handleDeleteCategory}
+          editHandler={(id) => {
+            setCategoryId(id);
+            setOpenEditDialog(true);
+          }}
+          deleteHandler={(id) => {
+            setCategoryId(id);
+            setOpenConfirmDialog(true);
+          }}
         />
       )}
+      <ConfirmDialog
+        useCustomTrigger={<></>}
+        open={openConfirmDialog}
+        titleDialog="Confirm"
+        customTextFooterButton="Confirm"
+        handleSubmit={handleDeleteCategory}
+        handleOpenChange={() => {
+          setOpenConfirmDialog(!openConfirmDialog);
+        }}
+      >
+        Are you sure you want to delete this wallet?
+      </ConfirmDialog>
+      <CategoryDialog
+        openDialog={openEditDialog}
+        type="update"
+        categoryId={categoryId}
+        handleUpdateCategory={handleUpdateCategory}
+        handleOpenChange={() => {
+          setOpenEditDialog(!openEditDialog);
+        }}
+        handleCloseDialog={() => {
+          setOpenEditDialog(false);
+        }}
+      />
     </>
   );
 };
