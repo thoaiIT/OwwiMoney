@@ -106,7 +106,6 @@ const CategoryDialog = ({
 
   useEffect(() => {
     const getCategoryDetail = async () => {
-      setCategory({ name: '', description: '', typeId: '', categoryImage: '' });
       const result = await getCategoryById(categoryId as string);
       const categoryDetail = result.data?.category;
       setCategory(categoryDetail as CategoryCreateType);
