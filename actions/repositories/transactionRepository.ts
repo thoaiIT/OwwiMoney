@@ -50,7 +50,9 @@ class TransactionRepository {
       transactions: transactions.map((transaction) => {
         const formatTransaction = {
           ...transaction,
-          createdDate: String(transaction.createdDate),
+          createdDate: `${transaction.createdDate.getDay()}-${
+            transaction.createdDate.getMonth() + 1
+          }-${transaction.createdDate.getFullYear()}`,
           typeName: transaction.type.name,
           categoryName: transaction.category.name,
           partnerName: transaction.partner.name,

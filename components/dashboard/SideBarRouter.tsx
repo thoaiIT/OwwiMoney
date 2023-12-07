@@ -6,7 +6,7 @@ import type { IconType } from 'react-icons';
 import { FaPaperPlane, FaWallet } from 'react-icons/fa';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { IoMdAnalytics } from 'react-icons/io';
-import { IoSettings } from 'react-icons/io5';
+import { IoPricetags, IoSettings } from 'react-icons/io5';
 import { MdDashboard } from 'react-icons/md';
 import { PiTicketFill } from 'react-icons/pi';
 import { tailwindMerge } from '../../utils/helper';
@@ -28,7 +28,7 @@ const SideBarRouter = () => {
           'flex justify-start items-center py-5 px-4 mb-[5px] leading-[1.2] text-base font-medium',
           className,
           `${
-            pathname === href
+            pathname.startsWith(href)
               ? 'font-bold bg-theme-component text-theme rounded-3xl'
               : 'hover:font-bold hover:bg-theme-hover hover:rounded-3xl hover:duration-300'
           }`,
@@ -62,6 +62,11 @@ const SideBarRouter = () => {
         icon={FaPeopleGroup}
         title="Partners"
         href="/partners"
+      />
+      <ListItem
+        icon={IoPricetags}
+        title="Category"
+        href="/category"
       />
       <ListItem
         icon={IoMdAnalytics}
