@@ -1,5 +1,7 @@
 'use client';
+import { deletePartner } from '@/actions/controller/partnerController';
 import { CommonButton } from '@/components/button';
+import ConfirmDialog from '@/components/dialog/confirmDialog';
 import CommonInput from '@/components/input';
 import CommonTable from '@/components/table/CommonTable';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
@@ -25,6 +27,7 @@ export default function PartnerClient({
   totalPages?: number;
 }) {
   const [query, setQuery] = useState<string>('');
+  const [deleteId, setDeleteId] = useState<string>('');
   const tableData: UseTableDataResult = useTableData();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -32,6 +35,14 @@ export default function PartnerClient({
 
   const editHandler = (id: string) => {
     router.push(`/partners/${id}/edit`);
+  };
+
+  const deleteConfirmHandler = async () => {
+    const response = await deletePartner(deleteId);
+    if (response.status?.code === 200) {
+      router.prefetch('/partners');
+      router.push('/partners');
+    }
   };
 
   useEffect(() => {
@@ -53,6 +64,18 @@ export default function PartnerClient({
 
   return (
     <div className="mb-2">
+      <ConfirmDialog
+        open={!!deleteId}
+        titleDialog="Confirm"
+        customTextFooterButton="Confirm"
+        handleSubmit={() => deleteConfirmHandler()}
+        handleClose={() => {
+          setDeleteId('');
+        }}
+        useCustomTrigger={<></>}
+      >
+        Are you sure you want to delete this wallet?
+      </ConfirmDialog>
       <div
         key="search-partner-bar"
         className="flex justify-between bg-white-500 p-5 rounded-tl-2xl rounded-tr-2xl"
@@ -129,6 +152,9 @@ export default function PartnerClient({
           usePagination
           customBorderStyle="rounded-tl-none rounded-tr-none"
           editHandler={editHandler}
+          deleteHandler={(id: string) => {
+            setDeleteId(id);
+          }}
         />
       )}
     </div>

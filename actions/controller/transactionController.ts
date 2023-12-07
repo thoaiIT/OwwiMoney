@@ -15,6 +15,7 @@ const transactionRepository = new TransactionRepository();
 const transactionService = new TransactionService(transactionRepository);
 
 export const createTransaction = async (data: TransactionCreateType) => {
+  console.log(data.invoiceImageUrl);
   const result = uploadToCloudinary(data.invoiceImageUrl || '')
     .then(async (url) => {
       try {

@@ -20,9 +20,10 @@ export const DatepickerContext = createContext<DatepickerStore>({
   changeDatepickerValue: (value: DateValueType, e: HTMLInputElement | null | undefined) => {},
   showFooter: false,
   value: null,
-  disabled: false,
   disabledDates: null,
   inputName: undefined,
   classNames: undefined,
   popoverDirection: undefined,
+  errors: undefined,
+  name: undefined,
 });
