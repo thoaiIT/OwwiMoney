@@ -102,13 +102,14 @@ const TransactionsDialog = () => {
       const data: TransactionCreateType = {
         amount: Number(values.amount),
         categoryId: values.category as string,
-        createdDate: values.createdDate as string,
+        createdDate: (values.createdDate as { endDate?: string }).endDate as string,
         description: values.description as string,
         invoiceImageUrl: values.invoiceImage?.base64String as string,
         partnerId: values.partnerId as string,
         typeId: values.type as string,
         walletId: values.wallet as string,
       };
+      console.log(data);
       const res = await createTransaction(data);
       if (res.status?.code === 201) {
         toast.success(res.message as string);
@@ -369,7 +370,7 @@ const TransactionsDialog = () => {
                   name="createdDate"
                   value={value}
                   onChange={onChange}
-                  errors={errors.createdDate?.message}
+                  errors={errors}
                 />
               )}
             />
