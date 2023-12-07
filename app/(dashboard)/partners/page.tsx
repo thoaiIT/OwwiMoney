@@ -7,7 +7,7 @@ type SearchParams = { searchParams: any };
 export default async function Partners({ searchParams }: SearchParams) {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
-  const respone = await getAllPartnerByUser(pageSize, page);
+  const respone = await getAllPartnerByUser(pageSize, page, searchParams?.query);
 
   return (
     <div>
