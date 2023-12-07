@@ -1,23 +1,21 @@
 'use client';
-import {
-  createPartner,
-  getPartnerById,
-  type PartnerCreateType,
-  type PartnerUpdateType,
-} from '@/actions/controller/partnerController';
+import { getPartnerById, updatePartner, type PartnerUpdateType } from '@/actions/controller/partnerController';
 import PartnerForm from '@/app/(dashboard)/partners/PartnerForm';
 import Title from '@/components/dashboard/Title';
 import type { PartnerModel } from '@/model/partnerModel';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function PartnerUpdateClient({ id }: { id: string }) {
   const router = useRouter();
   const [partnerData, setPartnerData] = useState<PartnerUpdateType>({} as PartnerUpdateType);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const submitHandler = async (values: PartnerModel) => {
-    console.log({ passed: values });
-    const partner: PartnerCreateType = {
+    setIsLoading(true);
+    const partner: PartnerUpdateType = {
+      partnerId: id,
       address: values.address || '',
       contact: values.contact || '',
       description: values.description || '',
@@ -26,10 +24,12 @@ export default function PartnerUpdateClient({ id }: { id: string }) {
       typeId: values.type || '',
       image: values.avatar?.base64String || '',
     };
-    const respone = await createPartner(partner);
-
-    if (respone.status?.code === 201) {
+    const respone = await updatePartner(partner);
+    setIsLoading(false);
+    if (respone.status?.code === 200) {
+      toast.success('Updated partner successfully!');
       router.push('/partners');
+      router.prefetch('/partners');
     }
   };
 
@@ -50,6 +50,7 @@ export default function PartnerUpdateClient({ id }: { id: string }) {
         type="update"
         submitHandler={submitHandler}
         partnerData={partnerData}
+        isLoading={isLoading}
       />
     </div>
   );

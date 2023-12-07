@@ -97,8 +97,8 @@ export default function PartnerClient({
                       <Image
                         src={row}
                         alt={row}
-                        width={64}
-                        height={64}
+                        width={32}
+                        height={32}
                       />
                     </div>
                   );

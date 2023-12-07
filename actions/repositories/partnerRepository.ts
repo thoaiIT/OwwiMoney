@@ -94,10 +94,10 @@ class PartnerRepository {
     return client.partner.findMany({ where: { typeId, userId, deleted: false } });
   }
 
-  async updatePartner({ partnerId, typeId, name, contact, address, description, email }: PartnerUpdateType) {
+  async updatePartner({ partnerId, typeId, name, contact, address, description, email, image }: PartnerUpdateType) {
     return await client.partner.update({
       where: { id: partnerId },
-      data: { typeId, name, deleted: false, contact, address, description, email },
+      data: { typeId, name, deleted: false, contact, address, description, email, image },
     });
   }
 

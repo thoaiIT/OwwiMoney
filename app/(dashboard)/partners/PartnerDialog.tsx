@@ -125,7 +125,6 @@ const PartnerDialog = () => {
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
     // const file = new File([''], values.invoiceImage);
-    console.log({ values });
     const data: TransactionCreateType = {
       amount: values.amount as number,
       categoryId: values.category as string,

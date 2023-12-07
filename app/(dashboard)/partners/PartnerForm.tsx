@@ -17,10 +17,12 @@ export default function PartnerForm({
   type,
   partnerData,
   submitHandler,
+  isLoading,
 }: {
   type: 'create' | 'update';
   partnerData?: PartnerFormProps;
   submitHandler: (value: any) => void;
+  isLoading?: boolean;
 }) {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [partnerImage, setPartnerImage] = useState(partnerData?.image || '');
@@ -63,7 +65,6 @@ export default function PartnerForm({
   };
 
   const handleSubmitForm = handleSubmit(async (values: PartnerModel) => {
-    console.log({ values });
     submitHandler?.(values);
   });
 
@@ -98,15 +99,15 @@ export default function PartnerForm({
           {!partnerImage && (
             <label
               htmlFor="upload-file"
-              className="inline-block px-4 py-4 bg-white text-slate-400 rounded-2xl text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-white-400 hover:text-white transition-all duration-300"
+              className="inline-block px-2 py-2 bg-white text-slate-400 rounded-2xl text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-slate-400 hover:text-white transition-all duration-300"
             >
-              <FaCloudUploadAlt />{' '}
+              <FaCloudUploadAlt size="40" />{' '}
             </label>
           )}
           {partnerImage && (
             <label
               htmlFor="upload-file"
-              className="relative inline-block w-16 h-16 bg-white text-slate-400 rounded-full overflow-hidden text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-white-400 hover:text-white transition-all duration-300"
+              className="relative inline-block w-16 h-16 bg-white text-slate-400 rounded-2xl overflow-hidden text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-slate-400 hover:text-white transition-all duration-300"
             >
               <Image
                 src={partnerImage}
@@ -222,8 +223,9 @@ export default function PartnerForm({
       </div>
       <div className="flex justify-end w-full mt-6">
         <CommonButton
-          className="w-fit"
+          className={`w-fit ${isLoading ? 'bg-white-300' : ''} `}
           onClick={handleSubmitForm}
+          disabled={isLoading}
         >
           {type === 'create' ? 'Create' : 'Update'}
         </CommonButton>

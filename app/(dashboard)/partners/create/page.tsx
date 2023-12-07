@@ -4,11 +4,11 @@ import PartnerForm from '@/app/(dashboard)/partners/PartnerForm';
 import Title from '@/components/dashboard/Title';
 import type { PartnerModel } from '@/model/partnerModel';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function PartnerCreateClient() {
   const router = useRouter();
   const submitHandler = async (values: PartnerModel) => {
-    console.log({ passed: values });
     const partner: PartnerCreateType = {
       address: values.address || '',
       contact: values.contact || '',
@@ -21,6 +21,8 @@ export default function PartnerCreateClient() {
     const respone = await createPartner(partner);
 
     if (respone.status?.code === 201) {
+      toast.success('Partner created successfully');
+      router.prefetch('/partners');
       router.push('/partners');
     }
   };
