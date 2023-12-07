@@ -141,7 +141,7 @@ const CategoryDialog = ({
       >
         <div className="flex gap-2">
           <div className={`${type === 'create' ? 'w-full' : 'w-1/2'}`}>
-            <p className={'mb-2 text-base font-semibold leading-6 '}>Wallet Image</p>
+            <p className={'mb-2 text-base font-semibold leading-6 '}>Category Image</p>
             {type === 'update' && !changeImage && category?.categoryImage ? (
               <div className="flex gap-2 w-1/2 mb-2">
                 <Image

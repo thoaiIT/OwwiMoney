@@ -22,9 +22,9 @@ export const createCategory = async (data: CategoryCreateType) => {
   }
 };
 
-export const getAllCategoryByUser = async (pageSize: number, page: number) => {
+export const getAllCategoryByUser = async (pageSize: number, page: number, query?: string) => {
   try {
-    return await categoryService.getAllCategoryByUser(pageSize, page);
+    return await categoryService.getAllCategoryByUser(pageSize, page, query);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

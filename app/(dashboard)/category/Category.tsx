@@ -15,7 +15,8 @@ import type { ColumnType } from '@/components/table/TableHeader';
 import useTableData, { type UseTableDataResult } from '@/components/table/hooks/useTableData';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -32,6 +33,9 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [query, setQuery] = useState<string>('');
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const columns: ColumnType<CategoryTableType>[] = [
     {
@@ -84,7 +88,6 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
   };
 
   const handleUpdateCategory = async (value: CategoryCreateType, isNewImage: boolean) => {
-    console.log({ isNewImage });
     if (categoryId) {
       setIsLoading(true);
       const result = await updateCategory({ ...value, categoryId }, isNewImage);
@@ -117,6 +120,19 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
 
+  useEffect(() => {
+    const currenQuery = queryString.parse(searchParams.toString());
+    const updatedQuery = { ...currenQuery, query, page: 1 };
+    const url = queryString.stringifyUrl(
+      {
+        url: pathname,
+        query: updatedQuery,
+      },
+      { skipNull: true },
+    );
+    router.push(url);
+  }, [query]);
+
   return (
     <>
       {isLoading && <Loading />}
@@ -132,6 +148,11 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
             name="searchKey"
             className="border-none hover:border-none outline-none shadow-none w-60"
             intent="simple"
+            placeholder="Search by name, type"
+            value={query}
+            onChange={(event) => {
+              setQuery((prev) => event.target.value);
+            }}
           />
         </div>
         <div>

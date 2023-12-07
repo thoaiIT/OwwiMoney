@@ -8,16 +8,35 @@ class CategoryRepository {
     });
   }
 
-  async getAllCategoryByUser(userId: string, pageSize: number, page: number) {
+  async getAllCategoryByUser(userId: string, pageSize: number, page: number, query?: string) {
+    type FilterInside = { mode?: 'insensitive' | 'sensitive'; contains?: string };
+
+    const queryFilter: Array<Record<string, FilterInside | Record<string, FilterInside>>> = [
+      {
+        name: {
+          mode: 'insensitive',
+          contains: query || '',
+        },
+      },
+      {
+        type: {
+          name: {
+            mode: 'insensitive',
+            contains: query || '',
+          },
+        },
+      },
+    ];
+
     const [categories, total] = await Promise.all([
       client.category.findMany({
-        where: { userId, deleted: false },
+        where: { userId, deleted: false, OR: queryFilter },
         include: { type: true },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
       client.category.count({
-        where: { userId, deleted: false },
+        where: { userId, deleted: false, OR: queryFilter },
       }),
     ]);
 
