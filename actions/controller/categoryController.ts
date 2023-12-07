@@ -1,7 +1,7 @@
 'use server';
-import { uploadToCloudinary } from '@/actions/controller/transactionController';
 import CategoryRepository from '@/actions/repositories/categoryRepository';
 import CategoryService from '@/actions/services/categoryService';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { HttpStatusCodes } from '@/helper/type';
 import type { Category } from '@prisma/client';
 

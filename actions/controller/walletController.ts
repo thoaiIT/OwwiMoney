@@ -1,8 +1,8 @@
 'use server';
 
-import { uploadToCloudinary } from '@/actions/controller/transactionController';
 import WalletRepository from '@/actions/repositories/walletRepository';
 import WalletService from '@/actions/services/walletService';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { HttpStatusCodes } from '@/helper/type';
 import type { Wallet } from '@prisma/client';
 

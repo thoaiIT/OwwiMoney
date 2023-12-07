@@ -48,7 +48,6 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     console.log('My custom delete ' + id);
   };
 
-  console.log({ dataTable });
   const columns: ColumnType<TransactionResType>[] = [
     { label: 'Category', field: 'categoryName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Partner', field: 'partnerName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
