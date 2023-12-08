@@ -42,8 +42,11 @@ export type TransactionResType = Omit<Transaction, 'createdAt' | 'updatedAt' | '
 
 export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTable, totalPages }) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [editId, setEditId] = useState<string>('');
+  // const [deleteId, setDeleteId] = useState<string>('');
   const editHandler = (id: string) => {
     console.log('My custom edit ' + id);
+    setEditId(id);
     setOpenDialog(true);
   };
 
@@ -51,7 +54,6 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     console.log('My custom delete ' + id);
   };
 
-  console.log({ dataTable });
   const columns: ColumnType<TransactionResType>[] = [
     { label: 'Category', field: 'categoryName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Partner', field: 'partnerName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
@@ -71,6 +73,7 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     <Fragment>
       <Suspense fallback={''}>
         <TransactionsDialog
+          transactionId={editId}
           formType="edit"
           openDialog={openDialog}
           setOpenDialog={setOpenDialog}

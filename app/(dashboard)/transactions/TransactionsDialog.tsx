@@ -4,6 +4,7 @@ import { getPartnerByType } from '@/actions/controller/partnerController';
 import {
   checkWalletInfo,
   createTransaction,
+  getTransactionById,
   type TransactionCreateType,
 } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
@@ -39,6 +40,22 @@ export type TransactionsDialogProps = {
   openDialog: boolean;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   formType?: 'create' | 'edit';
+  transactionId?: string;
+};
+
+export type TransactionType = {
+  id: string;
+  createdDate: string;
+  userId: string;
+  partnerId: string;
+  categoryId: string;
+  typeId: string;
+  walletId: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+  invoiceImageUrl: string;
 };
 
 export class NewTransactionModel {
@@ -70,12 +87,18 @@ export class NewTransactionModel {
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openDialog, setOpenDialog }) => {
+const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
+  formType,
+  openDialog,
+  setOpenDialog,
+  transactionId,
+}) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
+  const [transaction, setTransaction] = useState<TransactionType>();
   const [open, setOpen] = useState<boolean>(false);
 
   const router = useRouter();
@@ -203,9 +226,29 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openD
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
     };
-    watch('type') && fetchPartnersByType();
-    watch('type') && fetchCategoriesByType();
+    console.log('fetch');
+    if (openDialog) {
+      watch('type') && fetchPartnersByType();
+      watch('type') && fetchCategoriesByType();
+    }
   }, [watch('type')]);
+
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      const transaction = await getTransactionById(transactionId as string);
+      setTransaction(transaction.data as TransactionType);
+    };
+    if (transactionId && openDialog) fetchTransaction();
+  }, [transactionId]);
+
+  useEffect(() => {
+    if (transaction) {
+      console.log('setValue');
+      setValue('type', transaction.typeId);
+      setValue('category', transaction.categoryId);
+      console.log({ value: watch() });
+    }
+  }, [transaction, openDialog]);
 
   return (
     <Box>
@@ -262,6 +305,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openD
                   name="category"
                   valueProp={value}
                   onChange={onChange}
+                  maxVisibleItems={10}
                   optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Category...'}
