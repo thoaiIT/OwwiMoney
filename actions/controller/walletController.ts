@@ -2,6 +2,7 @@
 
 import WalletRepository from '@/actions/repositories/walletRepository';
 import WalletService from '@/actions/services/walletService';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { HttpStatusCodes } from '@/helper/type';
 import type { Wallet } from '@prisma/client';
 
@@ -15,8 +16,10 @@ const walletRepository = new WalletRepository();
 const walletService = new WalletService(walletRepository);
 
 export const createWallet = async (data: WalletCreateType) => {
+  const url = data.walletImage ? await uploadToCloudinary(data.walletImage || '') : '';
+
   try {
-    const result = await walletService.createWallet(data);
+    const result = await walletService.createWallet({ ...data, walletImage: url as string });
     return result;
   } catch (error) {
     console.error(error);
@@ -40,9 +43,10 @@ export const getWalletById = async (walletId: string) => {
   }
 };
 
-export const updateWallet = async (data: WalletUpdateType) => {
+export const updateWallet = async (data: WalletUpdateType, checkImage: boolean) => {
+  const url = checkImage ? await uploadToCloudinary(data.walletImage || '') : data.walletImage;
   try {
-    return await walletService.updateWallet(data);
+    return await walletService.updateWallet({ ...data, walletImage: url as string });
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

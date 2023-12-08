@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import React, { type RefObject } from 'react';
+import type { FieldErrors } from 'react-hook-form';
 
 export interface Period {
   start: string | null;
@@ -13,7 +14,7 @@ export type DateRangeType = {
   endDate: DateType;
 };
 
-export type DateValueType = DateRangeType | null;
+export type DateValueType = DateRangeType | string | null;
 
 export type ClassNamesTypeProp = {
   container?: (p?: object | null | undefined) => string | undefined;
@@ -26,6 +27,7 @@ export type PopoverDirectionType = 'up' | 'down';
 
 export interface DatepickerType {
   value: DateValueType;
+  name: string;
   onChange: (value: DateValueType, e?: HTMLInputElement | null | undefined) => void;
   useRange?: boolean;
   asSingle?: boolean;
@@ -34,6 +36,7 @@ export interface DatepickerType {
   inputId?: string;
   readOnly?: boolean;
   disabledDates?: DateRangeType[] | null;
+  errors?: FieldErrors;
 }
 
 export interface DatepickerStore {
@@ -53,11 +56,12 @@ export interface DatepickerStore {
   showFooter?: boolean;
   placeholder?: string | null;
   value: DateValueType;
-  disabled?: boolean;
   disabledDates?: DateRangeType[] | null;
   inputName?: string;
   classNames?: ClassNamesTypeProp;
   popoverDirection?: PopoverDirectionType;
+  errors?: FieldErrors;
+  name?: string;
 }
 
 export interface Button {
@@ -104,4 +108,6 @@ export interface YearProps {
 
 export type InputProps = {
   setContextRef?: (ref: RefObject<HTMLInputElement>) => void;
+  errors?: FieldErrors;
+  name: string;
 };

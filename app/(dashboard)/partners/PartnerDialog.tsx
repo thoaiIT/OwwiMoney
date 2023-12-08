@@ -1,17 +1,12 @@
 'use Client';
 import { getCategoryByType } from '@/actions/controller/categoryController';
 import { getPartnerByType } from '@/actions/controller/partnerController';
-import {
-  checkWalletInfo,
-  createTransaction,
-  type TransactionCreateType,
-} from '@/actions/controller/transactionController';
+import { createTransaction, type TransactionCreateType } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
-import CommonDatePicker from '@/components/datepicker';
 import DialogForm from '@/components/dialog/formDialog';
 import CommonInput from '@/components/input';
 import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
@@ -20,14 +15,50 @@ import { tailwindMerge } from '@/utils/helper';
 import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
-import { IsNotEmpty, Min } from 'class-validator';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
 import { GoPlus } from 'react-icons/go';
-import { toast } from 'react-toastify';
+
+const frameworks = [
+  {
+    value: 'next.js',
+    label: 'Next.js',
+  },
+  {
+    value: 'sveltekit',
+    label: 'SvelteKit',
+  },
+  {
+    value: 'nuxt.js',
+    label: 'Nuxt.js',
+  },
+  {
+    value: 'remix',
+    label: 'Remix',
+  },
+  {
+    value: 'astro',
+    label: 'Astro',
+  },
+  {
+    value: 'javascript',
+    label: 'Javascript',
+  },
+  {
+    value: 'html',
+    label: 'Html',
+  },
+  {
+    value: 'css',
+    label: 'CSS',
+  },
+  {
+    value: 'java',
+    label: 'Java',
+  },
+];
 
 export type FileType = {
   base64String: string;
@@ -36,44 +67,40 @@ export type FileType = {
 };
 
 export class NewTransactionModel {
-  @IsNotEmpty({ message: 'Partner is required' })
-  partnerId?: string;
+  // @IsNotEmpty({ message: 'Partner is required' })
+  partnerId: string | undefined;
 
-  @IsNotEmpty({ message: 'Type is required' })
-  type?: string;
+  // @IsNotEmpty({ message: 'Type is required' })
+  type: string | undefined;
 
-  @IsNotEmpty({ message: 'Category is required' })
-  category?: string;
+  // @IsNotEmpty({ message: 'Category is required' })
+  category: string | undefined;
 
-  @IsNotEmpty({ message: 'Wallet is required' })
-  wallet?: string;
+  // @IsNotEmpty({ message: 'Wallet is required' })
+  wallet: string | undefined;
 
-  @IsNotEmpty({ message: 'Created Date is required' })
-  createdDate?: string;
+  // @IsNotEmpty({ message: 'Created Date is required' })
+  createdDate: string | undefined;
 
-  @IsNotEmpty({ message: 'Amount is required' })
-  @Min(1, { message: 'Amount must be larger 0' })
-  amount?: number;
+  // @IsNotEmpty({ message: 'Amount is required' })
+  amount: number | undefined;
 
   @IsImage()
   @MaxSize(10000000)
-  invoiceImage?: FileType;
+  invoiceImage: FileType | undefined;
 
-  description?: string;
+  description: string | undefined;
 }
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog = () => {
+const PartnerDialog = () => {
+  const [options, setOptions] = useState<DataType[]>(frameworks);
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
-  const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  const router = useRouter();
 
   const {
     control,
@@ -84,7 +111,7 @@ const TransactionsDialog = () => {
     watch,
   } = useForm({
     values: {
-      partnerId: '',
+      partnerId: frameworks[0]?.value,
       type: '',
       category: '',
       wallet: '',
@@ -97,42 +124,28 @@ const TransactionsDialog = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
-    const walletInfo = await checkWalletInfo(values.wallet as string, values.type as string, values.amount as number);
-    if (walletInfo.status?.code === 200) {
-      const data: TransactionCreateType = {
-        amount: Number(values.amount),
-        categoryId: values.category as string,
-        createdDate: (values.createdDate as { endDate?: string }).endDate as string,
-        description: values.description as string,
-        invoiceImageUrl: values.invoiceImage?.base64String as string,
-        partnerId: values.partnerId as string,
-        typeId: values.type as string,
-        walletId: values.wallet as string,
-      };
-      console.log(data);
-      const res = await createTransaction(data);
-      if (res.status?.code === 201) {
-        toast.success(res.message as string);
-        setOpenDialog(false);
-        reset();
-        setPartnerOptions([]);
-        router.refresh();
-      } else {
-        toast.error(res.message as string);
-      }
-    } else {
-      toast.info(walletInfo.message);
-    }
+    // const file = new File([''], values.invoiceImage);
+    const data: TransactionCreateType = {
+      amount: values.amount as number,
+      categoryId: values.category as string,
+      createdDate: values.createdDate as string,
+      description: values.createdDate as string,
+      invoiceImageUrl: values.invoiceImage?.base64String as string,
+      partnerId: values.partnerId as string,
+      typeId: values.type as string,
+      walletId: values.wallet as string,
+    };
+
+    await createTransaction(data);
+    reset();
   });
 
   const handleSearch = (searchString: string) => {
-    setMorePartnerOptions(
-      partnerOptions.slice(6).filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())),
-    );
+    setOptions(frameworks.filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())));
   };
 
   const handleSelectItem = (item: DataType) => {
-    setPartnerOptions((prev) => {
+    setOptions((prev) => {
       prev.splice(prev.indexOf(item), 1);
       const items = [item, ...prev];
       return items;
@@ -157,6 +170,14 @@ const TransactionsDialog = () => {
   };
 
   useEffect(() => {
+    const fetchAllPartners = async () => {
+      const allPartners = await getPartnerByType('');
+      const partnerOptions: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
+        return { value: partner.id, label: partner.name } as DataType;
+      });
+
+      setPartnerOptions(partnerOptions as DataType[]);
+    };
     const fetchAllTypes = async () => {
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
@@ -170,36 +191,23 @@ const TransactionsDialog = () => {
       const walletOptions: DataType[] | undefined = allWallets.data?.wallets?.map((wallet) => {
         return { value: wallet.id, label: wallet.name } as DataType;
       });
+
       setWalletOptions(walletOptions as DataType[]);
     };
-    if (openDialog) {
-      fetchAllTypes();
-      fetchAllWallet();
-    }
-  }, [openDialog]);
+    fetchAllPartners();
+    fetchAllTypes();
+    fetchAllWallet();
+  }, []);
 
   useEffect(() => {
-    setMorePartnerOptions(partnerOptions.slice(6));
-  }, [partnerOptions]);
-
-  useEffect(() => {
-    const fetchCategoriesByType = async () => {
+    const fetchCategoryByType = async () => {
       const category = await getCategoryByType(watch('type'));
-      const categoryOpts: DataType[] | undefined = category.data?.categories?.map((category) => {
+      const categoryOptions: DataType[] | undefined = category.data?.categories?.map((category) => {
         return { value: category.id, label: category.name } as DataType;
       });
-      setCategoryOptions(categoryOpts as DataType[]);
+      setCategoryOptions(categoryOptions as DataType[]);
     };
-    const fetchPartnersByType = async () => {
-      const allPartners = await getPartnerByType(watch('type'));
-      const partnerOpts: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
-        return { value: partner.id, label: partner.name } as DataType;
-      });
-      setValue('partnerId', partnerOpts?.[0]?.value as string);
-      setPartnerOptions(partnerOpts as DataType[]);
-    };
-    watch('type') && fetchPartnersByType();
-    watch('type') && fetchCategoriesByType();
+    watch('type') && fetchCategoryByType();
   }, [watch('type')]);
 
   return (
@@ -208,21 +216,86 @@ const TransactionsDialog = () => {
         useCustomTrigger={
           <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
             <FaPlus />
-            Add Transactions
+            Add Partner
           </CommonButton>
         }
-        titleDialog="New Transactions"
+        titleDialog="New Partner"
         customStyleHeader="text-2xl"
-        open={openDialog}
-        handleOpenChange={() => {
-          setOpenDialog(!openDialog);
-        }}
         handleSubmit={handleSubmitForm}
         handleClose={() => {
           reset();
-          setPartnerOptions([]);
         }}
       >
+        <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
+        <div className="flex gap-5">
+          {options.map((item, index) => {
+            if (options.length === 7 || index < 6)
+              return (
+                <CommonAvatar
+                  handleClick={() => {
+                    setValue('partnerId', item.value);
+                  }}
+                  key={item.value}
+                  label={item.label}
+                  className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
+                  customLabel={tailwindMerge(watch('partnerId') === item.value && 'font-bold')}
+                />
+              );
+          })}
+          {options.length > 7 && (
+            <CommonPopover
+              open={open}
+              onOpenChange={() => {
+                setOpen(!open);
+              }}
+            >
+              <CommonPopoverTrigger asChild>
+                <div className="flex flex-col justify-center items-center">
+                  <CommonButton
+                    intent={'outline'}
+                    className="h-[60px] w-[60px] rounded-full"
+                  >
+                    <GoPlus size={24} />
+                  </CommonButton>
+                  <p
+                    className={
+                      'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
+                    }
+                  >
+                    More...
+                  </p>
+                </div>
+              </CommonPopoverTrigger>
+              <CommonPopoverContent>
+                <div className="flex items-center">
+                  <BsSearch className="w-4 ml-3" />
+                  <CommonInput
+                    name="search"
+                    intent="simple"
+                    placeholder="Search here... "
+                    className="text-base"
+                    onChange={(e) => {
+                      handleSearch(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="h-min overflow-y-auto border-t-2">
+                  {options.map((option, index) => {
+                    if (index > 5)
+                      return (
+                        <OptionItem
+                          key={option.value}
+                          item={option}
+                          onSelect={handleSelectItem}
+                          isActive={watch('partnerId') === option.value}
+                        />
+                      );
+                  })}
+                </div>
+              </CommonPopoverContent>
+            </CommonPopover>
+          )}
+        </div>
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
@@ -263,82 +336,6 @@ const TransactionsDialog = () => {
             />
           </div>
         </div>
-        <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
-        {partnerOptions.length === 0 ? (
-          <div className="h-[60px] flex justify-center items-center text-base">
-            {watch('type') ? 'No Partner' : 'Please select type!!'}
-          </div>
-        ) : (
-          <div className="flex gap-5">
-            {partnerOptions.map((item, index: number) => {
-              if (partnerOptions.length === 7 || index < 6)
-                return (
-                  <CommonAvatar
-                    handleClick={() => {
-                      setValue('partnerId', item.value);
-                    }}
-                    key={item.value}
-                    label={item.label}
-                    className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
-                    customLabel={tailwindMerge(watch('partnerId') === item.value && 'font-bold')}
-                  />
-                );
-            })}
-            {partnerOptions.length > 7 && (
-              <CommonPopover
-                open={open}
-                onOpenChange={() => {
-                  setOpen(!open);
-                }}
-              >
-                <CommonPopoverTrigger asChild>
-                  <div className="flex flex-col justify-center items-center">
-                    <CommonButton
-                      intent={'outline'}
-                      className="h-[60px] w-[60px] rounded-full"
-                    >
-                      <GoPlus size={24} />
-                    </CommonButton>
-                    <p
-                      className={
-                        'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
-                      }
-                    >
-                      More...
-                    </p>
-                  </div>
-                </CommonPopoverTrigger>
-                <CommonPopoverContent>
-                  <div className="flex items-center">
-                    <BsSearch className="w-4 ml-3" />
-                    <CommonInput
-                      name="search"
-                      intent="simple"
-                      placeholder="Search here... "
-                      className="text-base"
-                      onChange={(e) => {
-                        handleSearch(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="h-min max-h-96 overflow-y-auto border-t-2">
-                    {morePartnerOptions.map((option) => {
-                      return (
-                        <OptionItem
-                          key={option.value}
-                          item={option}
-                          onSelect={handleSelectItem}
-                          isActive={watch('partnerId') === option.value}
-                        />
-                      );
-                    })}
-                  </div>
-                </CommonPopoverContent>
-              </CommonPopover>
-            )}
-          </div>
-        )}
-
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Wallet</p>
@@ -365,9 +362,11 @@ const TransactionsDialog = () => {
               name="createdDate"
               control={control}
               render={({ field: { onChange, value } }) => (
-                <CommonDatePicker
-                  asSingle
+                <CommonInput
+                  type="date"
                   name="createdDate"
+                  className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
+                  placeholder="Shopping"
                   value={value}
                   onChange={onChange}
                   errors={errors}
@@ -386,13 +385,11 @@ const TransactionsDialog = () => {
                 <CommonInput
                   name="amount"
                   type="number"
-                  minValue={1}
+                  minValue="0"
                   className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                  placeholder="0"
-                  value={value}
-                  onChange={(e) => {
-                    onChange(e.target.value === '' ? '' : Number(e.target.value));
-                  }}
+                  placeholder="Shopping"
+                  value={String(value)}
+                  onChange={onChange}
                   errors={errors}
                 />
               )}
@@ -427,7 +424,7 @@ const TransactionsDialog = () => {
               <CommonTextarea
                 name="description"
                 className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0"
-                placeholder="Description"
+                placeholder="Shopping"
                 value={value}
                 onChange={onChange}
                 errors={errors}
@@ -440,4 +437,4 @@ const TransactionsDialog = () => {
   );
 };
 
-export default TransactionsDialog;
+export default PartnerDialog;

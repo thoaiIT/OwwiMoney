@@ -92,7 +92,6 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
       setLoading(false);
       toast.error(result.message as string);
     }
-    console.log({ result });
   });
 
   return (

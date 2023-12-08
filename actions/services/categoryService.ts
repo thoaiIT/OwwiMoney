@@ -1,6 +1,7 @@
 import type { CategoryCreateType, CategoryUpdateType } from '@/actions/controller/categoryController';
 import type CategoryRepository from '@/actions/repositories/categoryRepository';
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
 
@@ -25,7 +26,7 @@ class CategoryService {
     }
   }
 
-  async getAllCategoryByUser() {
+  async getAllCategoryByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
       const userId = session?.user?.userId as string;
@@ -33,8 +34,14 @@ class CategoryService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      const categorys = await this.categoryRepository.getAllCategoryByUser(userId);
-      return { message: 'Success', data: { categorys }, status: HttpStatusCodes[200] };
+
+      const categories = await this.categoryRepository.getAllCategoryByUser(
+        userId,
+        pageSize || DEFAULT_PAGE_SIZE,
+        page || 1,
+        query,
+      );
+      return { message: 'Success', data: categories, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
@@ -114,7 +121,7 @@ class CategoryService {
     }
 
     const category = await this.categoryRepository.deleteCategory(categoryId);
-    return { message: 'Success', data: { category }, status: HttpStatusCodes[200] };
+    return { message: 'Delete category successfully', data: { category }, status: HttpStatusCodes[200] };
   }
 }
 
