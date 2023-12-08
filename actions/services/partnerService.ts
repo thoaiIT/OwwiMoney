@@ -3,6 +3,7 @@ import type { PartnerCreateType, PartnerUpdateType } from './../controller/partn
 import type PartnerRepository from '@/actions/repositories/partnerRepository';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
 
@@ -20,14 +21,19 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-      const partner = await this.partnerRepository.createPartner({ ...data, userId });
+      let imageUrl = '';
+      if (data.image) {
+        imageUrl = (await uploadToCloudinary(data.image)) || '';
+        if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
+      }
+      const partner = await this.partnerRepository.createPartner({ ...data, userId, image: imageUrl });
       return { message: 'Partner Created', data: { partner }, status: HttpStatusCodes[201] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
   }
 
-  async getAllPartnerByUser(pageSize: number, page: number) {
+  async getAllPartnerByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
       const userId = session?.user?.userId as string;
@@ -39,6 +45,7 @@ class PartnerService {
         userId,
         pageSize || DEFAULT_PAGE_SIZE,
         page || 1,
+        query,
       );
       return { message: 'Success', data: partners, status: HttpStatusCodes[200] };
     } catch (error) {
@@ -86,13 +93,19 @@ class PartnerService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-
       const partnerExist = await this.partnerRepository.getPartnerById(data.partnerId, userId);
       if (!partnerExist) {
         return { message: 'Invalid Partner or User', status: HttpStatusCodes[422] };
       }
 
-      const partner = await this.partnerRepository.updatePartner({ ...data });
+      let imageUrl = '';
+      if (data.image) {
+        imageUrl = (await uploadToCloudinary(data.image)) || '';
+        if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
+      }
+      console.log({ userId });
+      console.log({ ...data, image: imageUrl });
+      const partner = await this.partnerRepository.updatePartner({ ...data, image: imageUrl });
       return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };

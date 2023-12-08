@@ -24,6 +24,13 @@ class WalletRepository {
         color,
         walletImage,
       },
+      include: {
+        walletType: {
+          select: {
+            typeName: true,
+          },
+        },
+      },
     });
   }
   async getAllWalletType() {

@@ -20,7 +20,6 @@ const CoreDashboard = ({ children }: { children: React.ReactNode }) => {
     if (!session?.user?.emailConfirmed && session) {
       router.push('/verification');
     }
-    console.log(session);
   }, [session]);
 
   if (!session?.user?.emailConfirmed)

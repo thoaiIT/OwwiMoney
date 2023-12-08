@@ -19,6 +19,7 @@ export interface InputProps {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   isDisabled?: boolean;
   preventCharacters?: boolean;
+  accept?: string;
 }
 
 export function capitalizeFirstLetter(text: string): string {
@@ -63,12 +64,14 @@ const CommonInput = ({
   isDisabled,
   minValue,
   preventCharacters,
+  accept,
   ...props
 }: InputProps) => {
   return (
     <div className="w-full relative">
       {icon && icon}
       <input
+        accept={accept}
         maxLength={maxLength}
         value={value}
         onChange={(e) => {

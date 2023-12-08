@@ -54,7 +54,6 @@ const RegisterForm = () => {
         }
         if (callback?.error) {
           console.log(callback);
-          console.log('error');
         }
       });
     } else {

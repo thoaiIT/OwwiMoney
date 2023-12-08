@@ -6,7 +6,7 @@ import type { IconType } from 'react-icons';
 import { FaPaperPlane, FaWallet } from 'react-icons/fa';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import { IoMdAnalytics } from 'react-icons/io';
-import { IoSettings } from 'react-icons/io5';
+import { IoPricetags, IoSettings } from 'react-icons/io5';
 import { MdDashboard } from 'react-icons/md';
 import { PiTicketFill } from 'react-icons/pi';
 import { tailwindMerge } from '../../utils/helper';
@@ -62,6 +62,11 @@ const SideBarRouter = () => {
         icon={FaPeopleGroup}
         title="Partners"
         href="/partners"
+      />
+      <ListItem
+        icon={IoPricetags}
+        title="Category"
+        href="/category"
       />
       <ListItem
         icon={IoMdAnalytics}

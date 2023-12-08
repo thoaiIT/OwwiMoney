@@ -1,18 +1,20 @@
 'use server';
 import CategoryRepository from '@/actions/repositories/categoryRepository';
 import CategoryService from '@/actions/services/categoryService';
+import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { HttpStatusCodes } from '@/helper/type';
 import type { Category } from '@prisma/client';
 
-export type CategoryCreateType = Pick<Category, 'name' | 'description' | 'typeId'>;
+export type CategoryCreateType = Pick<Category, 'name' | 'description' | 'typeId' | 'categoryImage'>;
 export type CategoryUpdateType = CategoryCreateType & { categoryId: string };
 
 const categoryRepository = new CategoryRepository();
 const categoryService = new CategoryService(categoryRepository);
 
-export const createPartner = async (data: CategoryCreateType) => {
+export const createCategory = async (data: CategoryCreateType) => {
+  const url = data.categoryImage ? await uploadToCloudinary(data.categoryImage || '') : '';
   try {
-    const result = await categoryService.createCategory(data);
+    const result = await categoryService.createCategory({ ...data, categoryImage: url as string });
     return result;
   } catch (error) {
     console.error(error);
@@ -20,9 +22,9 @@ export const createPartner = async (data: CategoryCreateType) => {
   }
 };
 
-export const getAllPartnerByUser = async () => {
+export const getAllCategoryByUser = async (pageSize: number, page: number, query?: string) => {
   try {
-    return await categoryService.getAllCategoryByUser();
+    return await categoryService.getAllCategoryByUser(pageSize, page, query);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
@@ -48,15 +50,16 @@ export const getCategoryById = async (categoryId: string) => {
   try {
     return await categoryService.getCategoryById(categoryId);
   } catch (error) {
-    return { message: error, status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
 
-export const updateCategory = async (data: CategoryUpdateType) => {
+export const updateCategory = async (data: CategoryUpdateType, checkImage: boolean) => {
+  const url = checkImage ? await uploadToCloudinary(data.categoryImage || '') : data.categoryImage;
   try {
-    return await categoryService.updateCategory(data);
+    return await categoryService.updateCategory({ ...data, categoryImage: url as string });
   } catch (error) {
-    return { message: error, status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
 
@@ -64,6 +67,6 @@ export const deleteCategory = async (categoryId: string) => {
   try {
     return await categoryService.deleteCategory(categoryId);
   } catch (error) {
-    return { message: error, status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
