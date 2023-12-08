@@ -2,7 +2,7 @@
 import * as NProgress from 'nprogress';
 import { useEffect } from 'react';
 
-export type ProcessBarProps = {
+export type NextTopLoaderProps = {
   color?: string;
   initialPosition?: number;
   crawlSpeed?: number;
@@ -32,7 +32,7 @@ export type ProcessBarProps = {
  * @param showAtBottom To show the TopLoader at bottom.
  */
 
-const ProcessBar = ({
+const NextTopLoader = ({
   color = '#29d',
   height = 3,
   showSpinner,
@@ -45,7 +45,7 @@ const ProcessBar = ({
   template,
   zIndex = 1600,
   showAtBottom = false,
-}: ProcessBarProps) => {
+}: NextTopLoaderProps) => {
   // Any falsy (except undefined) will disable the shadow
   const boxShadow =
     !shadow && shadow !== undefined
@@ -154,4 +154,4 @@ const ProcessBar = ({
 
   return styles;
 };
-export default ProcessBar;
+export default NextTopLoader;
