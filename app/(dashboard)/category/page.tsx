@@ -9,6 +9,7 @@ interface CategoryPageProps {
   searchParams: {
     page: number;
     pageSize: number;
+    query: string;
   };
 }
 
@@ -17,7 +18,7 @@ export type CategoryTableType = CategoryCreateType & { id: string; typeName: str
 const Page = async ({ searchParams }: CategoryPageProps) => {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
-  const response = await getAllCategoryByUser(pageSize, page);
+  const response = await getAllCategoryByUser(pageSize, page, searchParams?.query);
   const data: CategoryTableType[] = response.data?.categories || [];
   const totalPages: number = response.data?.totalPages || 0;
   return (

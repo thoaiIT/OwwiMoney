@@ -26,7 +26,7 @@ class CategoryService {
     }
   }
 
-  async getAllCategoryByUser(pageSize: number, page: number) {
+  async getAllCategoryByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
       const userId = session?.user?.userId as string;
@@ -39,6 +39,7 @@ class CategoryService {
         userId,
         pageSize || DEFAULT_PAGE_SIZE,
         page || 1,
+        query,
       );
       return { message: 'Success', data: categories, status: HttpStatusCodes[200] };
     } catch (error) {
