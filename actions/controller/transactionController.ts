@@ -4,7 +4,7 @@ import { getWalletById, updateTotalBalance } from '@/actions/controller/walletCo
 import TransactionRepository from '@/actions/repositories/transactionRepository';
 import TransactionService from '@/actions/services/transactionService';
 import { uploadToCloudinary } from '@/helper/lib/cloudiary';
-import { HttpStatusCodes } from '@/helper/type';
+import { HttpStatusCodes, type ObjectWithDynamicKeys } from '@/helper/type';
 import type { Transaction } from '@prisma/client';
 
 export type TransactionCreateType = Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'createdDate'> & {
@@ -46,9 +46,21 @@ export const createTransaction = async (data: TransactionCreateType) => {
   return result;
 };
 
-export const getAllTransactionByUser = async (pageSize: number, page: number) => {
+export const getAllTransactionByUser = async (
+  pageSize: number,
+  page: number,
+  filter?: ObjectWithDynamicKeys<string | number>,
+) => {
   try {
-    return await transactionService.getAllTransactionByUser(pageSize, page);
+    return await transactionService.getAllTransactionByUser(pageSize, page, filter);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const getTransactionById = async (id: string) => {
+  try {
+    return await transactionService.getTransactionById(id);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

@@ -122,17 +122,17 @@ const NextTopLoader = ({
             });
           } else {
             NProgress.start();
-            (function (history) {
-              const pushState = history.pushState;
-              history.pushState = () => {
-                NProgress.done();
-                [].forEach.call(npgclass, (el: Element) => {
-                  el.classList.remove('nprogress-busy');
-                });
-                // eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
-                return pushState.apply(history, arguments as any);
-              };
-            })(window.history);
+            // (function (history) {
+            //   const pushState = history.pushState;
+            //   history.pushState = () => {
+            //     NProgress.done();
+            //     [].forEach.call(npgclass, (el: Element) => {
+            //       el.classList.remove('nprogress-busy');
+            //     });
+            //     // eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
+            //     return pushState.apply(history, arguments as any);
+            //   };
+            // })(window.history);
           }
         }
       } catch (err) {
