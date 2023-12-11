@@ -137,7 +137,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
         typeId: values.type as string,
         walletId: values.wallet as string,
       };
-      console.log(data);
+
       const res = await createTransaction(data);
       if (res.status?.code === 201) {
         toast.success(res.message as string);
@@ -212,6 +212,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     const fetchCategoriesByType = async () => {
+      console.log('fetchCategoriesByType');
       const category = await getCategoryByType(watch('type'));
       const categoryOpts: DataType[] | undefined = category.data?.categories?.map((category) => {
         return { value: category.id, label: category.name } as DataType;
@@ -226,12 +227,11 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
     };
-    console.log('fetch');
     if (openDialog) {
       watch('type') && fetchPartnersByType();
       watch('type') && fetchCategoriesByType();
     }
-  }, [watch('type')]);
+  }, [watch('type'), openDialog]);
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -243,10 +243,8 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     if (transaction) {
-      console.log('setValue');
       setValue('type', transaction.typeId);
       setValue('category', transaction.categoryId);
-      console.log({ value: watch() });
     }
   }, [transaction, openDialog]);
 
