@@ -4,6 +4,7 @@ import { getPartnerByType } from '@/actions/controller/partnerController';
 import {
   checkWalletInfo,
   createTransaction,
+  getTransactionById,
   type TransactionCreateType,
 } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
@@ -22,7 +23,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -33,6 +34,28 @@ export type FileType = {
   base64String: string;
   type: string;
   size: number;
+};
+
+export type TransactionsDialogProps = {
+  openDialog: boolean;
+  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  formType?: 'create' | 'edit';
+  transactionId?: string;
+};
+
+export type TransactionType = {
+  id: string;
+  createdDate: string;
+  userId: string;
+  partnerId: string;
+  categoryId: string;
+  typeId: string;
+  walletId: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+  invoiceImageUrl: string;
 };
 
 export class NewTransactionModel {
@@ -64,14 +87,19 @@ export class NewTransactionModel {
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog = () => {
+const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
+  formType,
+  openDialog,
+  setOpenDialog,
+  transactionId,
+}) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
+  const [transaction, setTransaction] = useState<TransactionType>();
   const [open, setOpen] = useState<boolean>(false);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -109,7 +137,7 @@ const TransactionsDialog = () => {
         typeId: values.type as string,
         walletId: values.wallet as string,
       };
-      console.log(data);
+
       const res = await createTransaction(data);
       if (res.status?.code === 201) {
         toast.success(res.message as string);
@@ -184,6 +212,7 @@ const TransactionsDialog = () => {
 
   useEffect(() => {
     const fetchCategoriesByType = async () => {
+      console.log('fetchCategoriesByType');
       const category = await getCategoryByType(watch('type'));
       const categoryOpts: DataType[] | undefined = category.data?.categories?.map((category) => {
         return { value: category.id, label: category.name } as DataType;
@@ -198,20 +227,41 @@ const TransactionsDialog = () => {
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
     };
-    watch('type') && fetchPartnersByType();
-    watch('type') && fetchCategoriesByType();
-  }, [watch('type')]);
+    if (openDialog) {
+      watch('type') && fetchPartnersByType();
+      watch('type') && fetchCategoriesByType();
+    }
+  }, [watch('type'), openDialog]);
+
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      const transaction = await getTransactionById(transactionId as string);
+      setTransaction(transaction.data as TransactionType);
+    };
+    if (transactionId && openDialog) fetchTransaction();
+  }, [transactionId]);
+
+  useEffect(() => {
+    if (transaction) {
+      setValue('type', transaction.typeId);
+      setValue('category', transaction.categoryId);
+    }
+  }, [transaction, openDialog]);
 
   return (
     <Box>
       <DialogForm
         useCustomTrigger={
-          <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
-            <FaPlus />
-            Add Transactions
-          </CommonButton>
+          formType === 'edit' ? (
+            <></>
+          ) : (
+            <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
+              <FaPlus />
+              Add Transactions
+            </CommonButton>
+          )
         }
-        titleDialog="New Transactions"
+        titleDialog={formType === 'edit' ? 'Edit Transaction' : 'New Transaction'}
         customStyleHeader="text-2xl"
         open={openDialog}
         handleOpenChange={() => {
@@ -253,6 +303,7 @@ const TransactionsDialog = () => {
                   name="category"
                   valueProp={value}
                   onChange={onChange}
+                  maxVisibleItems={10}
                   optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Category...'}

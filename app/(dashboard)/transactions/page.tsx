@@ -9,11 +9,13 @@ type SearchParams = { searchParams: ObjectWithDynamicKeys<string> };
 const Page = async ({ searchParams }: SearchParams) => {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
+  const tab = searchParams.tab || '';
   return (
     <Fragment>
       <Title title="Recent Transactions" />
       <Suspense fallback={<Loading />}>
         <Transactions
+          tab={tab}
           page={page}
           pageSize={pageSize}
         />
