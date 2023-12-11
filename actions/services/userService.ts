@@ -128,10 +128,14 @@ class UserService {
     if (!userExist) {
       return { message: 'Invalid User', status: HttpStatusCodes[422] };
     }
+    let url = '';
+    if (data.image?.startsWith('https')) {
+      url = data.image;
+    } else {
+      url = data.image ? ((await uploadImageToCloudinary(data.image || '')) as string) : '';
+    }
 
-    const avatarUrl = data.image ? await uploadImageToCloudinary(data.image || '') : '';
-
-    const user = await this.userRepository.updateUser({ ...data, userId, image: avatarUrl as string });
+    const user = await this.userRepository.updateUser({ ...data, userId, image: url as string });
     return { message: 'Update User Success', data: { user }, status: HttpStatusCodes[200] };
   }
 

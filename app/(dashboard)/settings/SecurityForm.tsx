@@ -4,13 +4,11 @@ import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
 import { SecurityModel } from '@/model/SettingModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { useRouter } from 'next/navigation';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 const resolver = classValidatorResolver(SecurityModel);
 const SecurityForm = () => {
-  const router = useRouter();
   const {
     control,
     handleSubmit,

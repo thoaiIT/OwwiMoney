@@ -63,6 +63,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
       email: values.email,
       image: accountImage,
     };
+    console.log(updateData);
     const result = await updateUser(updateData as UserUpdateType);
     if (result.status?.code === 200) {
       toast.success(result.message as string);
