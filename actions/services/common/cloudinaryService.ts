@@ -27,6 +27,8 @@ const base64ToUint8Array = (base64String: string) => {
 
 export const uploadImageToCloudinary = async (base64String: string): Promise<string | undefined> => {
   try {
+    if (!base64String) return '';
+
     const uint8Array = base64ToUint8Array(base64String);
 
     const result: UploadApiResponse | undefined = await new Promise((resolve, reject) => {

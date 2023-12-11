@@ -14,7 +14,7 @@ class TransactionService {
   async createTransaction(data: TransactionCreateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
@@ -27,7 +27,7 @@ class TransactionService {
   async getAllTransactionByUser(pageSize: number, page: number) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };

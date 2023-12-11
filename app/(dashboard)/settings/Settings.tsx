@@ -1,6 +1,19 @@
-import TabClient from '@/app/(dashboard)/transactions/TabClient';
+import { getUserById } from '@/actions/controller/userController';
+import AccountForm from '@/app/(dashboard)/settings/AccountForm';
+import SecurityForm from '@/app/(dashboard)/settings/SecurityForm';
+import TabClient from '@/app/(dashboard)/settings/TabClient';
 
-const Settings = () => {
+const Settings = async () => {
+  const result = await getUserById();
+  console.log(result);
+  const userProfile = {
+    name: result.data?.user?.name,
+    email: result.data?.user?.email,
+    phone: result.data?.user?.phone,
+    bio: result.data?.user?.bio,
+    image: result.data?.user?.image,
+  };
+
   return (
     <>
       <TabClient
@@ -12,9 +25,9 @@ const Settings = () => {
         tabContents={[
           {
             value: 'account',
-            children: 'aaaa',
+            children: <AccountForm accountData={userProfile} />,
           },
-          { value: 'security', children: 'Revenue page' },
+          { value: 'security', children: <SecurityForm /> },
         ]}
       />
     </>

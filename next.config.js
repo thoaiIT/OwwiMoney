@@ -9,7 +9,12 @@ const nextConfig = {
   },
   reactStrictMode: false,
   images: {
-    domains: ['res.cloudinary.com', 'cdn-icons-png.flaticon.com'],
+    domains: [
+      'res.cloudinary.com',
+      'cdn-icons-png.flaticon.com',
+      'avatars.githubusercontent.com',
+      'lh3.googleusercontent.com',
+    ],
   },
 };
 

@@ -14,7 +14,7 @@ class WalletService {
   async createWallet(data: WalletCreateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
@@ -28,7 +28,7 @@ class WalletService {
   async getAllWallet() {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -42,7 +42,7 @@ class WalletService {
 
   async getWalletById(walletId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -54,7 +54,7 @@ class WalletService {
 
   async updateWallet(data: WalletUpdateType) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) return { message: 'User is not valid', status: HttpStatusCodes[401] };
 
@@ -67,7 +67,7 @@ class WalletService {
 
   async deleteWallet(walletId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -102,7 +102,7 @@ class WalletService {
 
   async updateTotalBalance(totalBalance: number, walletId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) return { message: 'User is not valid', status: HttpStatusCodes[401] };
 

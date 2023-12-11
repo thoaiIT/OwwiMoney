@@ -17,7 +17,7 @@ class PartnerService {
   async createPartner(data: PartnerCreateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
@@ -36,7 +36,7 @@ class PartnerService {
   async getAllPartnerByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -56,7 +56,7 @@ class PartnerService {
   async getPartnerByName(name: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -72,7 +72,7 @@ class PartnerService {
   async getPartnerById(partnerId: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -88,7 +88,7 @@ class PartnerService {
   async updatePartner(data: PartnerUpdateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -115,7 +115,7 @@ class PartnerService {
   async deletePartner(partnerId: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -136,7 +136,7 @@ class PartnerService {
   async getPartnerByType(typeId: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };

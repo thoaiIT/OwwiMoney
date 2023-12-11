@@ -104,7 +104,8 @@ class UserService {
   // Get Info User by UserId
   async getUserById() {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    console.log(session?.user?.id);
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -117,7 +118,7 @@ class UserService {
   // Update User
   async updateUser(data: UserUpdateType) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -128,21 +129,17 @@ class UserService {
       return { message: 'Invalid User', status: HttpStatusCodes[422] };
     }
 
-    const avatarUrl = await uploadImageToCloudinary(data.avatarUrl || '');
+    const avatarUrl = data.image ? await uploadImageToCloudinary(data.image || '') : '';
 
-    // Check if upload successful
-    if (!avatarUrl) {
-      return { message: 'Failed to upload avatar', status: HttpStatusCodes[500] };
-    }
-
-    const user = await this.userRepository.updateUser({ ...data, userId, avatarUrl });
-    return { message: 'Success', data: { user }, status: HttpStatusCodes[200] };
+    const user = await this.userRepository.updateUser({ ...data, userId, image: avatarUrl as string });
+    return { message: 'Update User Success', data: { user }, status: HttpStatusCodes[200] };
   }
 
   // Change password in profile page
   async changePasswordProfile(oldPassword: string, newPassword: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
     try {
       const user = await this.userRepository.getUserById(userId);
       if (!user) {
