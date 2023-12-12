@@ -3,6 +3,7 @@ import { updateUser, type UserUpdateType } from '@/actions/controller/userContro
 import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
+import Loading from '@/components/loading';
 import { AccountModel } from '@/model/SettingModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import Image from 'next/image';
@@ -20,6 +21,7 @@ const resolver = classValidatorResolver(AccountModel);
 
 const AccountForm = ({ accountData }: AccountProps) => {
   const [accountImage, setAccountImage] = useState(accountData?.image || '');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -63,7 +65,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
       email: values.email,
       image: accountImage,
     };
-    console.log(updateData);
+    setIsLoading(true);
     const result = await updateUser(updateData as UserUpdateType);
     if (result.status?.code === 200) {
       toast.success(result.message as string);
@@ -71,6 +73,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
     } else {
       toast.error(result.message as string);
     }
+    setIsLoading(false);
   });
 
   useEffect(() => {
@@ -139,14 +142,17 @@ const AccountForm = ({ accountData }: AccountProps) => {
             />
           )}
         />
-        <CommonButton
-          intent={'secondary'}
-          onClick={handleSubmitForm}
-          disabled={false}
-          className="my-2 w-44 rounded-[4px] bg-theme-component hover:opacity-90 hover:bg-theme-component mt-6"
-        >
-          Update Profile
-        </CommonButton>
+        <div className="flex items-center gap-2">
+          <CommonButton
+            intent={'secondary'}
+            onClick={handleSubmitForm}
+            disabled={isLoading}
+            className="my-2 w-44 rounded-[4px] bg-theme-component hover:opacity-90 hover:bg-theme-component mt-2"
+          >
+            Update Profile
+          </CommonButton>
+          {isLoading && <Loading />}
+        </div>
       </div>
       <div className="md:col-span-2 flex flex-col items-center gap-8">
         <div className="font-semibold text-xl text-[#525256]">Your Profile Picture</div>
@@ -161,7 +167,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
           {!accountImage && (
             <label
               htmlFor="upload-file"
-              className=" w-80 h-80  flex items-center justify-center flex-col px-2 py-2 bg-white text-slate-400 rounded-2xl text-center cursor-pointer border-2 border-dashed border-dark-mode hover:bg-slate-400 hover:text-white transition-all duration-300"
+              className=" w-80 h-80 flex items-center justify-center flex-col px-2 py-2 bg-white text-slate-400 rounded-2xl text-center cursor-pointer border-2 border-dashed border-gray-400 hover:bg-slate-400 hover:text-white transition-all duration-300"
             >
               <FaCloudUploadAlt size="60" />
               <p>Upload your photo</p>
@@ -170,7 +176,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
           {accountImage && (
             <label
               htmlFor="upload-file"
-              className="relative w-80 h-80 flex items-center justify-center flex-col bg-white text-slate-400 rounded-2xl overflow-hidden text-center cursor-pointer border-2 border-dashed border-dark-mode transition-all duration-300"
+              className="relative w-80 h-80 flex items-center justify-center flex-col bg-white text-slate-400 rounded-2xl overflow-hidden text-center cursor-pointer border-2 border-solid border-gray-400 transition-all duration-300"
             >
               <Image
                 src={accountImage}
