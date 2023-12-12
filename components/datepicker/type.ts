@@ -7,11 +7,9 @@ export interface Period {
   end: string | null;
 }
 
-export type DateType = string | null | Date;
-
 export type DateRangeType = {
-  startDate: DateType;
-  endDate: DateType;
+  startDate: string;
+  endDate: string;
 };
 
 export type DateValueType = DateRangeType | string | null;
@@ -26,7 +24,7 @@ export type ClassNamesTypeProp = {
 export type PopoverDirectionType = 'up' | 'down';
 
 export interface DatepickerType {
-  value: DateValueType;
+  value: string | DateRangeType;
   name: string;
   onChange: (value: DateValueType, e?: HTMLInputElement | null | undefined) => void;
   useRange?: boolean;

@@ -100,6 +100,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [transaction, setTransaction] = useState<TransactionType>();
   const [open, setOpen] = useState<boolean>(false);
+  console.log(transaction);
 
   const router = useRouter();
 
@@ -112,14 +113,14 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     watch,
   } = useForm({
     values: {
-      partnerId: '',
-      type: '',
-      category: '',
-      wallet: '',
-      createdDate: '',
-      amount: 0,
+      partnerId: transaction?.partnerId || '',
+      type: transaction?.typeId || '',
+      category: transaction?.categoryId || '',
+      wallet: transaction?.walletId || '',
+      createdDate: transaction?.createdDate || '',
+      amount: transaction?.amount || 0,
       invoiceImage: { base64String: '', size: 0, type: '' },
-      description: '',
+      description: transaction?.description || '',
     },
     resolver,
   });
@@ -241,12 +242,12 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     if (transactionId && openDialog) fetchTransaction();
   }, [transactionId]);
 
-  useEffect(() => {
-    if (transaction) {
-      setValue('type', transaction.typeId);
-      setValue('category', transaction.categoryId);
-    }
-  }, [transaction, openDialog]);
+  // useEffect(() => {
+  //   if (transaction) {
+  //     setValue('type', transaction.typeId);
+  //     setValue('category', transaction.categoryId);
+  //   }
+  // }, [transaction, openDialog]);
 
   return (
     <Box>
