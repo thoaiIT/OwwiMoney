@@ -199,4 +199,12 @@ model Transaction {
     updatedAt       DateTime @updatedAt
     description     String?
     invoiceImageUrl String?
+
+    deleted Boolean           @default(false)
+    status  TransactionStatus @default(PAID)
+}
+
+enum TransactionStatus {
+    UNPAID
+    PAID
 }

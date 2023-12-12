@@ -112,14 +112,14 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     watch,
   } = useForm({
     values: {
-      partnerId: '',
-      type: '',
-      category: '',
-      wallet: '',
-      createdDate: '',
-      amount: 0,
+      partnerId: transaction?.partnerId || '',
+      type: transaction?.typeId || '',
+      category: transaction?.categoryId || '',
+      wallet: transaction?.walletId || '',
+      createdDate: transaction?.createdDate || '',
+      amount: transaction?.amount || 0,
       invoiceImage: { base64String: '', size: 0, type: '' },
-      description: '',
+      description: transaction?.description || '',
     },
     resolver,
   });
@@ -127,6 +127,9 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
     const walletInfo = await checkWalletInfo(values.wallet as string, values.type as string, values.amount as number);
     if (walletInfo.status?.code === 200) {
+      const isUnPaid = typeOptions.some(
+        (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Borrow'),
+      );
       const data: TransactionCreateType = {
         amount: Number(values.amount),
         categoryId: values.category as string,
@@ -136,8 +139,8 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
         partnerId: values.partnerId as string,
         typeId: values.type as string,
         walletId: values.wallet as string,
+        status: isUnPaid ? 'UNPAID' : 'PAID',
       };
-
       const res = await createTransaction(data);
       if (res.status?.code === 201) {
         toast.success(res.message as string);
@@ -241,12 +244,16 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     if (transactionId && openDialog) fetchTransaction();
   }, [transactionId]);
 
-  useEffect(() => {
-    if (transaction) {
-      setValue('type', transaction.typeId);
-      setValue('category', transaction.categoryId);
-    }
-  }, [transaction, openDialog]);
+  // useEffect(() => {
+  //   if (transaction) {
+  //     setValue('type', transaction.typeId);
+  //     setValue('category', transaction.categoryId);
+  //     setValue('wallet', transaction.walletId);
+  //     setValue('createdDate', transaction.createdDate);
+  //     setValue('amount', transaction.amount);
+  //     setValue('description', transaction.description);
+  //   }
+  // }, [transaction, openDialog]);
 
   return (
     <Box>

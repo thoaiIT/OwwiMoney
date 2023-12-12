@@ -7,7 +7,10 @@ import { uploadToCloudinary } from '@/helper/lib/cloudiary';
 import { HttpStatusCodes, type ObjectWithDynamicKeys } from '@/helper/type';
 import type { Transaction } from '@prisma/client';
 
-export type TransactionCreateType = Omit<Transaction, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'createdDate'> & {
+export type TransactionCreateType = Omit<
+  Transaction,
+  'id' | 'userId' | 'createdAt' | 'updatedAt' | 'createdDate' | 'deleted'
+> & {
   createdDate: string;
 };
 
