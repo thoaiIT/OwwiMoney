@@ -6,14 +6,12 @@ import { CommonButton } from '@/components/button';
 import { CardContent, CardFooter, CardHeader, CommonCard } from '@/components/card';
 import Title from '@/components/dashboard/Title';
 import ConfirmDialog from '@/components/dialog/confirmDialog';
-import Loading from '@/components/loading';
 import CommonTable from '@/components/table/CommonTable';
 import type { ColumnType } from '@/components/table/TableHeader';
 import DefaultWallet from '@/public/icons/default_wallet.png';
 import type { Transaction } from '@prisma/client';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> & {
@@ -24,7 +22,6 @@ export type TransactionTableType = Omit<Transaction, 'createdAt' | 'updatedAt'> 
 };
 
 const WalletDetail = ({ newWallet, walletId }: { newWallet: WalletModel; walletId: string }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const columns: ColumnType<TransactionTableType>[] = [
@@ -38,7 +35,6 @@ const WalletDetail = ({ newWallet, walletId }: { newWallet: WalletModel; walletI
   ];
 
   const handleUpdateWallet = async (data: WalletCreateType, checkImage: boolean) => {
-    setIsLoading(true);
     if (walletId) {
       const result = await updateWallet({ ...data, walletId }, checkImage);
       if (result.status?.code === 200) {
@@ -48,11 +44,9 @@ const WalletDetail = ({ newWallet, walletId }: { newWallet: WalletModel; walletI
         toast.error(result.message as string);
       }
     }
-    setIsLoading(false);
   };
 
   const handleRemoveWallet = async () => {
-    setIsLoading(true);
     const result = await deleteWallet(walletId as string);
     if (result.status?.code === 200) {
       toast.success(result.message);
@@ -61,10 +55,8 @@ const WalletDetail = ({ newWallet, walletId }: { newWallet: WalletModel; walletI
     } else {
       toast.error(result.message);
     }
-    setIsLoading(false);
   };
 
-  if (isLoading) return <Loading />;
   return (
     <>
       <Title title="Wallet detail" />

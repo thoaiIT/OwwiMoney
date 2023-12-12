@@ -4,7 +4,6 @@ import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 
 import { CommonCard } from '@/components/card';
-import Loading from '@/components/loading';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -58,25 +57,26 @@ const WalletList = ({ walletList }: WalletListProps) => {
     }
     setIsLoading(false);
   };
-  if (isLoading) return <Loading />;
 
   return (
-    <div className="flex gap-4 flex-wrap">
-      {walletList &&
-        walletList.map((wallet, index) => (
-          <WalletCard
-            key={index}
-            wallet={wallet}
-            handleDeleteWallet={handleDeleteWallet}
+    <>
+      <div className="flex gap-4 flex-wrap">
+        {walletList &&
+          walletList.map((wallet, index) => (
+            <WalletCard
+              key={index}
+              wallet={wallet}
+              handleDeleteWallet={handleDeleteWallet}
+            />
+          ))}
+        <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full h-[292px] rounded-[8px] items-center justify-center flex">
+          <WalletDialog
+            handleCreateWallet={handleCreateWallet}
+            type="create"
           />
-        ))}
-      <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full h-[292px] rounded-[8px] items-center justify-center flex">
-        <WalletDialog
-          handleCreateWallet={handleCreateWallet}
-          type="create"
-        />
-      </CommonCard>
-    </div>
+        </CommonCard>
+      </div>
+    </>
   );
 };
 
