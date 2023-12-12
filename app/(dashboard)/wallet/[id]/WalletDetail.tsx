@@ -64,10 +64,13 @@ const WalletDetail = ({ newWallet, walletId }: { newWallet: WalletModel; walletI
     setIsLoading(false);
   };
 
-  if (isLoading) return <Loading />;
   return (
     <>
-      <Title title="Wallet detail" />
+      <div className="flex gap-2 items-center">
+        <Title title="Wallet detail" />
+        {isLoading && <Loading />}
+      </div>
+
       <CommonCard className="w-full rounded-[28px]">
         <CardHeader />
         <CardContent>

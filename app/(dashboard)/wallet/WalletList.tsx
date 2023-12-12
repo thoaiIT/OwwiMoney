@@ -4,6 +4,7 @@ import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 
 import { CommonCard } from '@/components/card';
+import Title from '@/components/dashboard/Title';
 import Loading from '@/components/loading';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -59,9 +60,13 @@ const WalletList = ({ walletList }: WalletListProps) => {
     setIsLoading(false);
   };
 
-  if (isLoading) return <Loading />;
   return (
     <>
+      <div className="flex items-center gap-2">
+        <Title title="Wallets" />
+        {isLoading && <Loading />}
+      </div>
+
       <div className="flex gap-4 flex-wrap">
         {walletList &&
           walletList.map((wallet, index) => (
