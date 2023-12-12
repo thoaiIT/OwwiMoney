@@ -2,8 +2,11 @@
 import { createWallet, deleteWallet, type WalletCreateType } from '@/actions/controller/walletController';
 import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
+
 import { CommonCard } from '@/components/card';
+import Loading from '@/components/loading';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 interface WalletType {
@@ -30,8 +33,10 @@ export interface WalletModel {
 
 const WalletList = ({ walletList }: WalletListProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateWallet = async (data: WalletCreateType) => {
+    setIsLoading(true);
     const result = await createWallet(data);
     if (result.status?.code === 201) {
       toast.success(result.message as string);
@@ -39,9 +44,11 @@ const WalletList = ({ walletList }: WalletListProps) => {
     } else {
       toast.error(result.message as string);
     }
+    setIsLoading(false);
   };
 
   const handleDeleteWallet = async (walletId: string) => {
+    setIsLoading(true);
     const result = await deleteWallet(walletId);
     if (result.status?.code === 200) {
       toast.success(result.message);
@@ -49,7 +56,9 @@ const WalletList = ({ walletList }: WalletListProps) => {
     } else {
       toast.error(result.message);
     }
+    setIsLoading(false);
   };
+  if (isLoading) return <Loading />;
 
   return (
     <div className="flex gap-4 flex-wrap">
