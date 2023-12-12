@@ -1,11 +1,13 @@
 'use client';
 
+import { getStatisticWeeklyByType } from '@/actions/controller/statisticController';
 import { CommonCard } from '@/components/card';
 import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
 import { ChevronDownIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 const Dashboard = () => {
   const barchartLabels = ['1/1/2023', '2', '3', '4'];
@@ -27,6 +29,14 @@ const Dashboard = () => {
       borderRadius: 10,
     },
   ];
+
+  useEffect(() => {
+    (async () => {
+      const response = await getStatisticWeeklyByType('Outcome');
+
+      console.log({ response });
+    })();
+  }, []);
 
   return (
     <div className="h-full">
