@@ -6,9 +6,9 @@ type Props = {
   labels: string[];
   datasets: Array<{
     label: string;
-    data: number[];
-    backgroundColor?: string | string[];
-    borderColor?: string | string[];
+    data: number[] | string[];
+    backgroundColor?: string | string[] | undefined;
+    borderColor?: string | string[] | undefined;
     borderWidth: number;
     borderRadius?: number;
   }>;

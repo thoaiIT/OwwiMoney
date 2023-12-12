@@ -7,3 +7,10 @@ export type FileImageType = {
   type: string;
   size: number;
 };
+
+export type StatisticType = {
+  dataValuesCurrentWeek: number[];
+  dateLabelsCurrentWeek: string[];
+  dataValuesPreviousWeek: number[];
+  dateLabelsPreviousWeek: string[];
+};

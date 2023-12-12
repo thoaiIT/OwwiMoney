@@ -21,28 +21,43 @@ class StatisticService {
       const today = new Date();
       const dateStart = new Date(today);
       const dateEnd = new Date(today);
-      dateStart.setDate(today.getDate() - today.getDay() + 1);
-      dateEnd.setDate(today.getDate() + (6 - today.getDay() + 1));
+      dateStart.setDate(today.getDate() - today.getDay() + 1 - 6); // The start of previous week
+      dateEnd.setDate(today.getDate() + (7 - today.getDay() + 1)); // The end of current week
 
-      const transactions = await this.statisticReposiroty.getTransactionByDateRangeAndType({
+      const statisticOutcome = await this.statisticReposiroty.getTransactionByDateRangeAndType({
         userId,
-        typeName,
+        typeName: 'Outcome',
         dateStart: dateStart.toISOString(),
         dateEnd: dateEnd.toISOString(),
       });
 
-      //   Handle ISO Date string, add one second for the new date to go to the current date, not previous date
+      //   Get List date of UTC Date
       const endDateLoop = new Date(dateEnd);
       const currentDate = new Date(dateStart);
-      const listDate = [];
+      const listDate: string[] = [];
       while (currentDate <= endDateLoop) {
         listDate.push(currentDate.toUTCString().slice(5, 11));
         currentDate.setDate(currentDate.getDate() + 1);
       }
+      // Find data relative with each item in listDate
+      const dataValues: number[] = listDate.reduce((acc: number[], item) => {
+        const idx = statisticOutcome.findIndex(
+          (dateGroup) => item.slice(0, 2) === dateGroup._id.day.toString().slice(8, 11),
+        );
+        acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
+        return acc;
+      }, []);
 
-      console.log({ listDate });
-
-      return { message: 'Success', data: { transactions, dateRangeLabels: listDate }, status: HttpStatusCodes[201] };
+      return {
+        message: 'Success',
+        data: {
+          dataValuesCurrentWeek: dataValues.slice(0, 7),
+          dateLabelsCurrentWeek: listDate.slice(0, 7),
+          dataValuesPreviousWeek: dataValues.slice(7),
+          dateLabelsPreviousWeek: listDate.slice(7),
+        },
+        status: HttpStatusCodes[201],
+      };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }

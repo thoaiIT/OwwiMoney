@@ -5,35 +5,39 @@ import { CommonCard } from '@/components/card';
 import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
+import type { StatisticType } from '@/types/component';
 import { ChevronDownIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const Dashboard = () => {
-  const barchartLabels = ['1/1/2023', '2', '3', '4'];
-  const barDataset = [
-    {
-      label: 'Last week',
-      data: [1, 2, 3, 4, 5],
-      backgroundColor: COMMON_COLOR[0],
-      borderColor: COMMON_COLOR[0],
-      borderWidth: 1,
-      borderRadius: 10,
-    },
-    {
-      label: 'This week',
-      data: [5, 4, 3, 2, 1],
-      backgroundColor: COMMON_COLOR[1],
-      borderColor: COMMON_COLOR[1],
-      borderWidth: 1,
-      borderRadius: 10,
-    },
-  ];
-
+  const [statisticData, setStatisticData] = useState<StatisticType>();
+  const barchartLabels = useMemo(() => statisticData?.dateLabelsCurrentWeek || [], [statisticData]);
+  const barDataset = useMemo(
+    () => [
+      {
+        label: 'Last week',
+        data: statisticData?.dataValuesPreviousWeek || [],
+        backgroundColor: COMMON_COLOR[0],
+        borderColor: COMMON_COLOR[0],
+        borderWidth: 1,
+        borderRadius: 10,
+      },
+      {
+        label: 'This week',
+        data: statisticData?.dateLabelsCurrentWeek || [],
+        backgroundColor: COMMON_COLOR[1],
+        borderColor: COMMON_COLOR[1],
+        borderWidth: 1,
+        borderRadius: 10,
+      },
+    ],
+    [statisticData],
+  );
   useEffect(() => {
     (async () => {
-      const response = await getStatisticWeeklyByType('Outcome');
-
+      const response = await getStatisticWeeklyByType('Income');
+      setStatisticData(response.data);
       console.log({ response });
     })();
   }, []);
