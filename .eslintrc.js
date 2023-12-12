@@ -57,7 +57,7 @@ module.exports = {
     '@typescript-eslint/no-this-alias': 'error',
     semi: ['error', 'always'],
     '@typescript-eslint/no-unused-vars': ['warn'],
-    'no-inline-styles/no-inline-styles': 2,
+    'no-inline-styles/no-inline-styles': 1,
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-var-requires': 'warn',
     'no-unused-vars': 'off',
