@@ -100,6 +100,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [transaction, setTransaction] = useState<TransactionType>();
   const [open, setOpen] = useState<boolean>(false);
+  console.log(transaction);
 
   const router = useRouter();
 
