@@ -140,39 +140,45 @@ const WalletDialog = ({
           reset();
         }}
       >
-        <p className={'text-base font-semibold mb-2'}>Wallet name</p>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <CommonInput
+        <div className="flex flex-col md:flex-row justify-between gap-2 md:min-w-[500px]">
+          <div className="flex flex-col md:w-1/2 min-w-max">
+            <p className={'text-base font-semibold mb-2'}>Wallet name</p>
+            <Controller
               name="name"
-              className="px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
-              placeholder="Wallet name"
-              value={String(value)}
-              onChange={onChange}
-              errors={errors}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <CommonInput
+                  name="name"
+                  className="px-6  border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus-visible:ring-0 "
+                  placeholder="Wallet name"
+                  value={String(value)}
+                  onChange={onChange}
+                  errors={errors}
+                />
+              )}
             />
-          )}
-        />
-
-        <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Wallet type</p>
-        <Controller
-          name="walletTypeId"
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <CommonCombobox
+          </div>
+          <div className="flex flex-col md:w-1/2 min-w-max">
+            <p className={'mb-2 text-base font-semibold leading-6 '}>Wallet type</p>
+            <Controller
               name="walletTypeId"
-              valueProp={value}
-              onChange={onChange}
-              optionsProp={walletTypeOption}
-              widthSelection={'100%'}
-              placeholder={'Select account type...'}
-              customInput={'px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
-              errors={errors}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <CommonCombobox
+                  name="walletTypeId"
+                  valueProp={value}
+                  onChange={onChange}
+                  optionsProp={walletTypeOption}
+                  widthSelection={'100%'}
+                  placeholder={'Select account type...'}
+                  customInput={'px-6  border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base'}
+                  errors={errors}
+                />
+              )}
             />
-          )}
-        />
+          </div>
+        </div>
+
         <p className={'mt-6 mb-2 text-base font-semibold leading-6 '}>Account number</p>
         <Controller
           name="accountNumber"
