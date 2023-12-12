@@ -4,6 +4,7 @@ import WalletCard from '@/app/(dashboard)/wallet/WalletCard';
 import WalletDialog from '@/app/(dashboard)/wallet/WalletDialog';
 
 import { CommonCard } from '@/components/card';
+import Loading from '@/components/loading';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -38,8 +39,8 @@ const WalletList = ({ walletList }: WalletListProps) => {
     setIsLoading(true);
     const result = await createWallet(data);
     if (result.status?.code === 201) {
-      toast.success(result.message as string);
       router.refresh();
+      toast.success(result.message as string);
     } else {
       toast.error(result.message as string);
     }
@@ -50,14 +51,15 @@ const WalletList = ({ walletList }: WalletListProps) => {
     setIsLoading(true);
     const result = await deleteWallet(walletId);
     if (result.status?.code === 200) {
-      toast.success(result.message);
       router.refresh();
+      toast.success(result.message);
     } else {
       toast.error(result.message);
     }
     setIsLoading(false);
   };
 
+  if (isLoading) return <Loading />;
   return (
     <>
       <div className="flex gap-4 flex-wrap">
