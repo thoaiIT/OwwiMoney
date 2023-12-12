@@ -18,7 +18,7 @@ const SideBar = () => {
         <SideBarRouter />
       </div>
       <button
-        onClick={() => signOut()}
+        onClick={() => signOut({ callbackUrl: '/login' })}
         className="flex justify-start items-center py-5 px-4 mb-[5px] leading-[1.2] text-base font-medium hover:font-bold text-color-resend"
       >
         <CiLogout className="w-6 h-6 mr-4" />
