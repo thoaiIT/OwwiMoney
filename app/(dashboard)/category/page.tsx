@@ -22,13 +22,15 @@ const Page = async ({ searchParams }: CategoryPageProps) => {
   const data: CategoryTableType[] = response.data?.categories || [];
   const totalPages: number = response.data?.totalPages || 0;
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <Title title="Category" />
-      <Category
-        dataTable={data}
-        totalPages={totalPages}
-      />
-    </Suspense>
+      <Suspense fallback={<Loading />}>
+        <Category
+          dataTable={data}
+          totalPages={totalPages}
+        />
+      </Suspense>
+    </>
   );
 };
 
