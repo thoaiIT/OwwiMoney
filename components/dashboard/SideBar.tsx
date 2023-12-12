@@ -2,6 +2,7 @@
 
 import SideBarRouter from '@/components/dashboard/SideBarRouter';
 import Logo from '@/components/layout/Logo';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { CiLogout } from 'react-icons/ci';
 
@@ -16,13 +17,13 @@ const SideBar = () => {
         </Link>
         <SideBarRouter />
       </div>
-      <Link
-        href="/api/auth/signout?callbackUrl=/login"
+      <button
+        onClick={() => signOut()}
         className="flex justify-start items-center py-5 px-4 mb-[5px] leading-[1.2] text-base font-medium hover:font-bold text-color-resend"
       >
         <CiLogout className="w-6 h-6 mr-4" />
         Logout
-      </Link>
+      </button>
     </div>
   );
 };
