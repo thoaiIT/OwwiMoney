@@ -1,3 +1,4 @@
+'use client';
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
