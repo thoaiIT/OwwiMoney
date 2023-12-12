@@ -9,6 +9,7 @@ import {
 } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
+import TransactionDialogSkeletons from '@/app/(dashboard)/transactions/TransactionDialogSkeletons';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
@@ -23,7 +24,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useLayoutEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -99,8 +100,8 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [transaction, setTransaction] = useState<TransactionType>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  console.log(transaction);
 
   const router = useRouter();
 
@@ -216,7 +217,6 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     const fetchCategoriesByType = async () => {
-      console.log('fetchCategoriesByType');
       const category = await getCategoryByType(watch('type'));
       const categoryOpts: DataType[] | undefined = category.data?.categories?.map((category) => {
         return { value: category.id, label: category.name } as DataType;
@@ -230,6 +230,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
       });
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
+      setIsLoading(false);
     };
     if (openDialog) {
       watch('type') && fetchPartnersByType();
@@ -237,24 +238,14 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     }
   }, [watch('type'), openDialog]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchTransaction = async () => {
+      setIsLoading(true);
       const transaction = await getTransactionById(transactionId as string);
       setTransaction(transaction.data as TransactionType);
     };
     if (transactionId && openDialog) fetchTransaction();
   }, [transactionId]);
-
-  // useEffect(() => {
-  //   if (transaction) {
-  //     setValue('type', transaction.typeId);
-  //     setValue('category', transaction.categoryId);
-  //     setValue('wallet', transaction.walletId);
-  //     setValue('createdDate', transaction.createdDate);
-  //     setValue('amount', transaction.amount);
-  //     setValue('description', transaction.description);
-  //   }
-  // }, [transaction, openDialog]);
 
   return (
     <Box>
@@ -263,7 +254,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
           formType === 'edit' ? (
             <></>
           ) : (
-            <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
+            <CommonButton className="relative w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
               <FaPlus />
               Add Transactions
             </CommonButton>
@@ -281,6 +272,11 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
           setPartnerOptions([]);
         }}
       >
+        {isLoading && (
+          <div className="absolute inset-0 top-16 z-50">
+            <TransactionDialogSkeletons />
+          </div>
+        )}
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
@@ -324,7 +320,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
         </div>
         <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
         {partnerOptions.length === 0 ? (
-          <div className="h-[60px] flex justify-center items-center text-base">
+          <div className="h-[84px] flex justify-center items-center text-base">
             {watch('type') ? 'No Partner' : 'Please select type!!'}
           </div>
         ) : (
