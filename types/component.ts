@@ -9,8 +9,18 @@ export type FileImageType = {
 };
 
 export type StatisticType = {
-  dataValuesCurrentWeek: number[];
-  dateLabelsCurrentWeek: string[];
-  dataValuesPreviousWeek: number[];
-  dateLabelsPreviousWeek: string[];
+  labelList: Array<Array<string>>;
+  dataList: Array<Array<string>> | Array<Array<number>>;
+  type: 'weekly' | 'monthly' | 'yearly' | string;
+};
+
+export type ResponseDataType<TResponse> = {
+  message: string | unknown;
+  data?: TResponse;
+  status:
+    | {
+        message: string;
+        code: number;
+      }
+    | undefined;
 };

@@ -10,7 +10,7 @@ class StatisticService {
     this.statisticReposiroty = statisticReposiroty;
   }
 
-  async getStatisticWeeklyByType(typeName: string) {
+  async getStatisticWeekly() {
     try {
       const session = await getServerSession(options);
       const userId = (session?.user?.userId as string) || (session?.user?.id as string);
@@ -21,8 +21,8 @@ class StatisticService {
       const today = new Date();
       const dateStart = new Date(today);
       const dateEnd = new Date(today);
-      dateStart.setDate(today.getDate() - today.getDay() + 1 - 6); // The start of previous week
-      dateEnd.setDate(today.getDate() + (7 - today.getDay() + 1)); // The end of current week
+      dateStart.setDate(today.getDate() - today.getDay() + 1 - 7); // The start of previous week
+      dateEnd.setDate(today.getDate() + (6 - today.getDay() + 1)); // The end of current week
 
       const statisticOutcome = await this.statisticReposiroty.getTransactionByDateRangeAndType({
         userId,
@@ -51,12 +51,125 @@ class StatisticService {
       return {
         message: 'Success',
         data: {
-          dataValuesCurrentWeek: dataValues.slice(0, 7),
-          dateLabelsCurrentWeek: listDate.slice(0, 7),
-          dataValuesPreviousWeek: dataValues.slice(7),
-          dateLabelsPreviousWeek: listDate.slice(7),
+          labelList: [listDate.slice(0, 7), listDate.slice(7)],
+          dataList: [dataValues.slice(0, 7), dataValues.slice(7)],
+          type: 'weekly',
         },
-        status: HttpStatusCodes[201],
+        status: HttpStatusCodes[200],
+      };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
+
+  async getStatisticMonthly() {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const today = new Date();
+      const dateStart = new Date(today.getFullYear() - 1, 0, 1); // The start of first date in previous year, start from 00:00:00 ISO
+      const dateEnd = new Date(today.getFullYear(), 12, 1); // The end of last date in current year, end to 00:00:00 ISO
+
+      //   Get List date of UTC Date
+      const endDateLoop = new Date(dateEnd);
+      const currentDate = new Date(dateStart);
+      currentDate.setDate(currentDate.getDate() + 1); // Plus one for just get the Month in range 2 years
+      endDateLoop.setDate(endDateLoop.getDate() - 1); // Minus one for just get the Month in range 2 years
+
+      const listDate: string[] = [];
+      const listLabel: string[] = [];
+      while (currentDate <= endDateLoop) {
+        listDate.push(currentDate.toISOString().slice(0, 7));
+        listLabel.push(currentDate.toUTCString().slice(8, 11));
+        currentDate.setMonth(currentDate.getMonth() + 1);
+      }
+
+      const statisticOutcome = await this.statisticReposiroty.getMonthlyTotalOutcomeByDateRangeAndType({
+        userId,
+        typeName: 'Outcome',
+        dateStart: dateStart.toISOString(),
+        dateEnd: dateEnd.toISOString(),
+      });
+
+      // console.log({ listDate });
+      // Find data relative with each item in listDate
+      const dataValues: number[] = listDate.reduce((acc: number[], item, i) => {
+        const idx = statisticOutcome.findIndex((dateGroup) => {
+          return dateGroup._id.month.toString().slice(0, 7) === item;
+        });
+        acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
+        return acc;
+      }, []);
+
+      return {
+        message: 'Success',
+        data: {
+          labelList: [listLabel.slice(0, 12), listLabel.slice(12)],
+          dataList: [dataValues.slice(0, 12), dataValues.slice(12)],
+          type: 'monthly',
+        },
+        status: HttpStatusCodes[200],
+      };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
+
+  async getStatisticYearly() {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const today = new Date();
+      const dateStart = new Date(today.getFullYear() - 4, 0, 1); // The start of first date in 5 year ago, start from 00:00:00 ISO
+      const dateEnd = new Date(today.getFullYear(), 12, 1); // The end of last date in current year, end to 00:00:00 ISO is the start of the nex year
+
+      const statisticOutcome = await this.statisticReposiroty.getYearlyTotalOutcomeByDateRangeAndType({
+        userId,
+        typeName: 'Outcome',
+        dateStart: dateStart.toISOString(),
+        dateEnd: dateEnd.toISOString(),
+      });
+
+      console.log({ statisticOutcome: JSON.stringify(statisticOutcome) });
+
+      //   Get List date of UTC Date
+      const endDateLoop = new Date(dateEnd);
+      const currentDate = new Date(dateStart);
+      currentDate.setDate(currentDate.getDate() + 1); // Plus one for just get the Month in range 2 years
+      endDateLoop.setDate(endDateLoop.getDate() - 1); // Minus one for just get the Month in range 2 years
+
+      const listDate: string[] = [];
+      while (currentDate <= endDateLoop) {
+        listDate.push(currentDate.toISOString().slice(0, 4));
+        currentDate.setFullYear(currentDate.getFullYear() + 1);
+      }
+
+      console.log({ listDate, dateStart, dateEnd });
+      // Find data relative with each item in listDate
+      const dataValues: number[] = listDate.reduce((acc: number[], item) => {
+        const idx = statisticOutcome.findIndex((dateGroup) => {
+          return dateGroup._id.year.toString().slice(0, 4) === item;
+        });
+        acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
+        return acc;
+      }, []);
+      console.log({ dataValues });
+      return {
+        message: 'Success',
+        data: {
+          labelList: [listDate],
+          dataList: [dataValues],
+          type: 'yearly',
+        },
+        status: HttpStatusCodes[200],
       };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };

@@ -6,9 +6,25 @@ import { HttpStatusCodes } from '@/helper/type';
 const statisticRepository = new StatisticRepository();
 const statisticService = new StatisticService(statisticRepository);
 
-export const getStatisticWeeklyByType = async (type: string) => {
+export const getStatisticWeekly = async () => {
   try {
-    return await statisticService.getStatisticWeeklyByType(type);
+    return await statisticService.getStatisticWeekly();
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const getStatisticMonthly = async () => {
+  try {
+    return await statisticService.getStatisticMonthly();
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const getStatisticYearly = async () => {
+  try {
+    return await statisticService.getStatisticYearly();
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
