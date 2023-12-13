@@ -287,7 +287,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
                 <CommonCombobox
                   name="type"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={typeOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Type...'}
@@ -306,7 +306,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
                 <CommonCombobox
                   name="category"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   maxVisibleItems={10}
                   optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
@@ -404,7 +404,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
                 <CommonCombobox
                   name="wallet"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={walletOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Wallet...'}

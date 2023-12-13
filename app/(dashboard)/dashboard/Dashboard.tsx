@@ -7,8 +7,6 @@ import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
 import type { ResponseDataType, StatisticType } from '@/types/component';
-import { ChevronRightIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 const Dashboard = () => {
@@ -73,8 +71,11 @@ const Dashboard = () => {
     { label: 'Yearly Outcome Comparison (5 years)', value: 'yearly' },
   ];
 
-  const changeBarchartOptionsHandler = (...event: any[]) => {
-    setBarChartOption(String(event));
+  const pieChartOptions = [{ label: 'January', value: '1' }];
+
+  const changeBarchartOptionsHandler = (value: string) => {
+    console.log({ value });
+    setBarChartOption(value);
   };
 
   return (
@@ -88,21 +89,12 @@ const Dashboard = () => {
                 name="type"
                 valueProp={barChartOption}
                 defaultValue={'weekly'}
-                onChange={changeBarchartOptionsHandler}
+                onChangeHandler={changeBarchartOptionsHandler}
                 optionsProp={barChartOptions}
                 widthSelection={'100%'}
                 placeholder={'Select category type...'}
-                customInput={'px-6 py-4 ps-0 border-none hover h-14 text-base'}
+                customInput={'px-6 py-4 ps-0 border-none hover h-14 text-base cursor-pointer'}
               />
-            </div>
-            <div className="flex justify-end gap-8">
-              <Link
-                href={'#'}
-                className="flex items-center gap-2"
-              >
-                <span>View All</span>
-                <ChevronRightIcon />
-              </Link>
             </div>
           </div>
           <BarChart
@@ -113,22 +105,38 @@ const Dashboard = () => {
         <div className="col-span-2">Transactions List</div>
         <div className="col-span-3 grid grid-cols-3 gap-2">
           <div className="grid gap-2">
-            <div className="flex gap-4 bg-white-500 rounded-2xl px-4 py-2">
-              <div className="">
-                <PieChart
-                  data={[]}
-                  label="Income"
-                  // labels={['1', '2', '3', '4']}
-                  cutout={35}
+            <div className="flex flex-col bg-white-500 rounded-2xl px-4 py-2">
+              <div className="flex items-center gap-2 justify-between">
+                <h1 className="text-xl">Overview</h1>
+                <CommonCombobox
+                  name="type"
+                  valueProp={'1'}
+                  defaultValue={'1'}
+                  onChangeHandler={() => {}}
+                  optionsProp={pieChartOptions}
+                  widthSelection={'46%'}
+                  placeholder={'Select...'}
+                  customInput={'text-sm h-6 rounded-[8px] bg-[#4455A2] text-white border-none'}
                 />
               </div>
-              <div className="">
-                <PieChart
-                  data={[1, 2, 3, 4]}
-                  label="Outcome"
-                  // labels={['1', '2', '3', '4']}
-                  cutout={35}
-                />
+
+              <div className="flex">
+                <div className="">
+                  <PieChart
+                    data={[]}
+                    label="Income"
+                    // labels={['1', '2', '3', '4']}
+                    cutout={35}
+                  />
+                </div>
+                <div className="">
+                  <PieChart
+                    data={[1, 2, 3, 4]}
+                    label="Outcome"
+                    // labels={['1', '2', '3', '4']}
+                    cutout={35}
+                  />
+                </div>
               </div>
             </div>
             <div className="bg-white-500 rounded-2xl px-4 py-2">New Transactions</div>

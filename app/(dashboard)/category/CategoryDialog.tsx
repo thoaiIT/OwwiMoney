@@ -200,7 +200,7 @@ const CategoryDialog = ({
             <CommonCombobox
               name="type"
               valueProp={value}
-              onChange={onChange}
+              onChangeHandler={onChange}
               optionsProp={categoryTypeOption}
               widthSelection={'100%'}
               placeholder={'Select category type...'}

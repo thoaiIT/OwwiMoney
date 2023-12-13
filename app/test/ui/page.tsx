@@ -74,7 +74,7 @@ export default function Home() {
           <p>Card Content</p>
           <CommonCombobox
             name="test"
-            onChange={() => {}}
+            onChangeHandler={() => {}}
             optionsProp={frameworks}
             widthSelection={400}
             maxVisibleItems={5}
