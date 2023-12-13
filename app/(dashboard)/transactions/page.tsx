@@ -1,26 +1,26 @@
 import Transactions from '@/app/(dashboard)/transactions/Transactions';
 import Title from '@/components/dashboard/Title';
+import Loading from '@/components/loading';
+import { DEFAULT_PAGE_SIZE } from '@/constants';
+import type { ObjectWithDynamicKeys } from '@/helper/type';
+import { Fragment, Suspense } from 'react';
 
-const data = [
-  { id: '1111', email: 'mail1@gmail.com', fullName: 'User0001 0001', order: '2' },
-  { id: '1112', email: 'mail2@gmail.com', fullName: 'User0003 0003', order: '5' },
-  { id: '1113', email: 'mail1@gmail.com', fullName: 'User0002 0002', order: '3' },
-  { id: '1114', email: 'mail4@gmail.com', fullName: 'User0004 0004', order: '0' },
-];
-
-const Page = () => {
-  const editHandler = (id: string) => {
-    console.log('My custom edit ' + id);
-  };
-
-  const deleteHandler = (id: string) => {
-    console.log('My custom delete ' + id);
-  };
+type SearchParams = { searchParams: ObjectWithDynamicKeys<string> };
+const Page = async ({ searchParams }: SearchParams) => {
+  const page = Number(searchParams.page) || 1;
+  const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
+  const tab = searchParams.tab || '';
   return (
-    <div>
+    <Fragment>
       <Title title="Recent Transactions" />
-      <Transactions dataTable={data} />
-    </div>
+      <Suspense fallback={<Loading />}>
+        <Transactions
+          tab={tab}
+          page={page}
+          pageSize={pageSize}
+        />
+      </Suspense>
+    </Fragment>
   );
 };
 

@@ -1,51 +1,75 @@
-'use client';
+import { getAllTransactionByUser } from '@/actions/controller/transactionController';
+import { getAllTypes } from '@/actions/controller/typeController';
 import TabClient from '@/app/(dashboard)/transactions/TabClient';
-import CommonTable from '@/components/table/CommonTable';
-import type { ColumnType } from '@/components/table/TableHeader';
+import { TableTransactionAll, type TransactionResType } from '@/app/(dashboard)/transactions/TableClient';
+import type { ObjectWithDynamicKeys } from '@/helper/type';
 
 type TransactionsProps = {
-  dataTable: any[];
+  page: number;
+  pageSize: number;
+  tab: string;
 };
-const Transactions: React.FC<TransactionsProps> = ({ dataTable }) => {
-  const editHandler = (id: string) => {
-    console.log('My custom edit ' + id);
-  };
 
-  const deleteHandler = (id: string) => {
-    console.log('My custom delete ' + id);
-  };
+const valueType: ObjectWithDynamicKeys<string> = {
+  revenue: 'Income',
+  expenses: 'Outcome',
+  loan: 'Loan',
+};
 
-  const columns: ColumnType<any>[] = [
-    { label: 'Email', field: 'email', sortable: true },
-    { label: 'Full Name', field: 'fullName', sortable: false },
-    { label: 'Order', field: 'order', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Actions', field: 'id', type: 'action' },
-  ];
+const Transactions = async ({ page, pageSize, tab }: TransactionsProps) => {
+  const types = await getAllTypes();
+  const typeId = types.data?.types.filter((t) => t.name === valueType[tab])[0]?.id;
+  const response = typeId
+    ? await getAllTransactionByUser(pageSize, page, { typeId })
+    : await getAllTransactionByUser(pageSize, page);
+  const data: TransactionResType[] = response.data?.transactions || [];
+  const totalPages: number = response.data?.totalPages || 1;
   return (
     <TabClient
-      defaultValue="account"
+      defaultValue={typeId ? tab : 'all'}
       tabNames={[
-        { value: 'account', label: 'Account' },
-        { value: 'password', label: 'Password' },
-        { value: 'email', label: 'Email' },
+        { value: 'all', label: 'All' },
+        { value: 'revenue', label: 'Revenue' },
+        { value: 'expenses', label: 'Expenses' },
+        { value: 'loan', label: 'Loan' },
       ]}
       tabContents={[
         {
-          value: 'account',
+          value: 'all',
           children: (
-            <CommonTable
-              data={dataTable}
-              columns={columns}
-              keyField={'id'}
-              editHandler={editHandler}
-              deleteHandler={deleteHandler}
-              useCheckbox
-              useRowNumber
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
             />
           ),
         },
-        { value: 'password', children: 'Password page' },
-        { value: 'email', children: 'Email page' },
+        {
+          value: 'revenue',
+          children: (
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
+            />
+          ),
+        },
+        {
+          value: 'expenses',
+          children: (
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
+            />
+          ),
+        },
+        {
+          value: 'loan',
+          children: (
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
+            />
+          ),
+        },
       ]}
     />
   );

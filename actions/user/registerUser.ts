@@ -9,7 +9,6 @@ export type UserCreateType = Pick<User, 'email' | 'name' | 'password'>;
 export const registerUser = async ({ email, password, name }: UserCreateType) => {
   try {
     // Validate filelds
-    console.log({ password });
     // Check empty fields
     if (!email || !password || !name) {
       return { message: 'Invalid fields!', status: HttpStatusCodes[422] };
@@ -20,7 +19,6 @@ export const registerUser = async ({ email, password, name }: UserCreateType) =>
 
     // Hash passwords
     const hashedPassword = await bcrypt.hash(password, 12);
-    console.log({ hashedPassword });
     // Register user
     const user: User = await prisma.user.create({
       data: {
@@ -42,7 +40,7 @@ export const registerUser = async ({ email, password, name }: UserCreateType) =>
     //   html: template,
     // });
 
-    return { message: 'User Created', body: { userId: user.id }, status: HttpStatusCodes[201] };
+    return { message: 'User Created', data: { userId: user.id }, status: HttpStatusCodes[201] };
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
   }

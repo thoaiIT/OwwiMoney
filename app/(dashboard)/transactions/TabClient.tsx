@@ -1,9 +1,9 @@
 'use client';
+import TransactionsDialog from '@/app/(dashboard)/transactions/TransactionsDialog';
 import { CommonTabs, TabsContent, TabsList, type tabsListType } from '@/components/Tab';
-import { CommonButton } from '@/components/button';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import type React from 'react';
-import type { ReactNode } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { Suspense, useState, type ReactNode } from 'react';
 
 type TabClientProps = {
   defaultValue: string;
@@ -12,14 +12,30 @@ type TabClientProps = {
 };
 
 const TabClient: React.FC<TabClientProps> = ({ defaultValue, tabNames, tabContents }) => {
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   return (
-    <CommonTabs defaultValue={defaultValue}>
+    <CommonTabs
+      defaultValue={defaultValue}
+      onValueChange={(value) => {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('tab', value);
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        router.push(`${pathname}${query}`);
+      }}
+    >
       <div className="flex justify-between">
         <TabsList tabNames={tabNames} />
-        <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
-          <FaPlus />
-          Add Transactions
-        </CommonButton>
+        <Suspense fallback={''}>
+          <TransactionsDialog
+            openDialog={openDialog}
+            setOpenDialog={setOpenDialog}
+          />
+        </Suspense>
       </div>
       {tabContents.map((tabContent) => (
         <TabsContent

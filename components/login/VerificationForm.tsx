@@ -3,9 +3,8 @@
 import { forgetPassword } from '@/actions/user/forgetPassword';
 import { VerificationModel } from '@/model/authModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { redirect, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -92,19 +91,18 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
       setLoading(false);
       toast.error(result.message as string);
     }
-    console.log({ result });
   });
 
   return (
     <>
       {type !== 'EmailVerification' && (
-        <Link
-          href="/api/auth/signout?callbackUrl=/login"
+        <button
+          onClick={() => signOut({ callbackUrl: '/login' })}
           className="text-color-resend hover:text-orange-600 hover:underline flex items-center font-semibold"
         >
           <CiLogout className="mr-2 " />
           Logout
-        </Link>
+        </button>
       )}
 
       <div className="flex flex-col justify-center">

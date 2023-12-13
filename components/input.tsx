@@ -10,17 +10,24 @@ export interface InputProps {
   className?: string;
   placeholder?: string;
   type?: HTMLInputTypeAttribute;
+  minValue?: string | number;
   icon?: ReactNode;
   name: string;
-  value?: string;
+  value?: string | number;
   errors?: FieldErrors;
   maxLength?: number;
-
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  isDisabled?: boolean;
+  preventCharacters?: boolean;
+  accept?: string;
 }
 
-function capitalizeFirstLetter(text: string): string {
+export function capitalizeFirstLetter(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function isNumber(c: string) {
+  return !isNaN(parseFloat(c)) && isFinite(Number(c));
 }
 
 const textFieldVariants = cva(
@@ -54,20 +61,35 @@ const CommonInput = ({
   errors,
   onChange,
   maxLength,
+  isDisabled,
+  minValue,
+  preventCharacters,
+  accept,
   ...props
 }: InputProps) => {
   return (
     <div className="w-full relative">
       {icon && icon}
       <input
+        accept={accept}
         maxLength={maxLength}
         value={value}
-        onChange={onChange}
+        onChange={(e) => {
+          if (preventCharacters) {
+            console.log('change');
+            (isNumber(e.target.value) || e.target.value === '') && onChange?.(e);
+          } else {
+            onChange?.(e);
+          }
+        }}
         type={type}
+        min={minValue}
+        readOnly={isDisabled}
         placeholder={placeholder ? placeholder : ' '}
         className={tailwindMerge([
           textFieldVariants({ intent: intent, className: className }),
           errors && errors[name]?.message && 'border-red-500',
+          isDisabled && 'cursor-pointer',
         ])}
         disabled={intent === 'disabled'}
         {...props}

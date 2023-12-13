@@ -6,7 +6,10 @@ import TableFooter from '@/components/table/TableFooter';
 import TableHeader, { type ColumnType } from '@/components/table/TableHeader';
 import TablePagination from '@/components/table/TablePagination';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
+import OwwiNoDataImg from '@/public/img/Owwi-NoData.png';
+import { tailwindMerge } from '@/utils/helper';
 import { Table } from '@radix-ui/themes';
+import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type TableProps<T> = {
@@ -19,6 +22,7 @@ type TableProps<T> = {
   showFooterTotal?: boolean;
   showFooterAvg?: boolean;
   usePagination?: boolean;
+  customBorderStyle?: string;
 };
 
 /**
@@ -52,6 +56,8 @@ type TableProps<T> = {
  *
  * @param {Function} customCellHandler - Function for custom cell rendering.
  *
+ * @param {string} customBorderStyle - custom border for table. Ex: border, border radius padding.
+ *
  * @returns {JSX.Element} The rendered table component.
  */
 
@@ -65,6 +71,7 @@ const CommonTable = <TData,>({
   showFooterTotal,
   showFooterAvg,
   usePagination,
+  customBorderStyle,
   editHandler,
   deleteHandler,
   customHandler,
@@ -134,8 +141,12 @@ const CommonTable = <TData,>({
     tableData?.addCustomAction('insertNewRow', insertNewRow);
   }, [insertNewRow]);
 
+  useEffect(() => {
+    setDataRender(data);
+  }, [data]);
+
   return (
-    <CommonCard className="w-full p-4">
+    <CommonCard className={tailwindMerge(['w-full p-4', customBorderStyle])}>
       <Table.Root>
         <TableHeader
           columns={updatedColumns}
@@ -153,12 +164,29 @@ const CommonTable = <TData,>({
           deleteHandler={deleteHandler}
           customHandler={customHandler}
         >
-          <TableFooter
-            columns={updatedColumns}
-            data={dataRender}
-            showTotal={showFooterTotal}
-            showAvg={showFooterAvg}
-          />
+          {!data.length && (
+            <Table.Row>
+              <Table.Cell colSpan={updatedColumns.length}>
+                <div className="flex w-full justify-center">
+                  <Image
+                    src={OwwiNoDataImg}
+                    width={200}
+                    height={200}
+                    alt="Logo"
+                    // className="absolute -top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/4"
+                  />
+                </div>
+              </Table.Cell>
+            </Table.Row>
+          )}
+          {data.length >= 1 && (
+            <TableFooter
+              columns={updatedColumns}
+              data={dataRender}
+              showTotal={showFooterTotal}
+              showAvg={showFooterAvg}
+            />
+          )}
         </TableBody>
       </Table.Root>
       {usePagination && <TablePagination tableData={tableData} />}
