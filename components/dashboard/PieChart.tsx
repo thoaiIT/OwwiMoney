@@ -8,6 +8,7 @@ type Props = {
   data: number[];
   cutout?: number;
   chartWidth?: number;
+  chartTitle?: string;
 };
 export function PieChart(props: Props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
@@ -60,6 +61,7 @@ export function PieChart(props: Props) {
         }}
         options={options}
       />
+      <p className="text-center mt-2">{props.chartTitle}</p>
     </>
   );
 }

@@ -10,6 +10,32 @@ class StatisticService {
     this.statisticReposiroty = statisticReposiroty;
   }
 
+  async getIncomeByMonth(month: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+    } catch (error) {
+      return { message: 'Invalid Server Error', status: HttpStatusCodes[500] };
+    }
+  }
+
+  async getOutcomeByMonth(month: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+    } catch (error) {
+      return { message: 'Invalid Server Error', status: HttpStatusCodes[500] };
+    }
+  }
+
   async getStatisticWeekly() {
     try {
       const session = await getServerSession(options);
