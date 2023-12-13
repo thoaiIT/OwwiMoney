@@ -191,6 +191,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     const fetchAllTypes = async () => {
+      console.log('fetch Type');
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
         return { value: type.id, label: type.name } as DataType;
@@ -226,7 +227,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     const fetchPartnersByType = async () => {
       const allPartners = await getPartnerByType(watch('type'));
       const partnerOpts: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
-        return { value: partner.id, label: partner.name } as DataType;
+        return { value: partner.id, label: partner.name, src: partner.image } as DataType;
       });
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
@@ -285,6 +286,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
               control={control}
               render={({ field: { onChange, value } }) => (
                 <CommonCombobox
+                  isDisabled={formType === 'edit'}
                   name="type"
                   valueProp={value}
                   onChange={onChange}
@@ -332,6 +334,7 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
                     handleClick={() => {
                       setValue('partnerId', item.value);
                     }}
+                    src={item.src}
                     key={item.value}
                     label={item.label}
                     className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
