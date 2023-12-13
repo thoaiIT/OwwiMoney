@@ -66,8 +66,8 @@ const Input: FC<InputProps> = ({ errors, name }) => {
           if (period.start && period.end) {
             changeDatepickerValue(
               {
-                startDate: null,
-                endDate: null,
+                startDate: '',
+                endDate: '',
               },
               input,
             );

@@ -5,10 +5,8 @@ import { usePathname } from 'next/navigation';
 import type { IconType } from 'react-icons';
 import { FaPaperPlane, FaWallet } from 'react-icons/fa';
 import { FaPeopleGroup } from 'react-icons/fa6';
-import { IoMdAnalytics } from 'react-icons/io';
 import { IoPricetags, IoSettings } from 'react-icons/io5';
 import { MdDashboard } from 'react-icons/md';
-import { PiTicketFill } from 'react-icons/pi';
 import { tailwindMerge } from '../../utils/helper';
 
 interface ListItemProps {
@@ -68,7 +66,7 @@ const SideBarRouter = () => {
         title="Category"
         href="/category"
       />
-      <ListItem
+      {/* <ListItem
         icon={IoMdAnalytics}
         title="Analytics"
         href="/analytics"
@@ -77,7 +75,7 @@ const SideBarRouter = () => {
         icon={PiTicketFill}
         title="Borrowers"
         href="/borrowers"
-      />
+      /> */}
       <ListItem
         icon={IoSettings}
         title="Settings"

@@ -4,7 +4,7 @@ import { HttpStatusCodes } from '@/helper/type';
 import type { User } from '@prisma/client';
 import UserRepository from '../repositories/userRepository';
 
-export type UserUpdateType = Pick<User, 'name' | 'email' | 'bio' | 'avatarUrl'>;
+export type UserUpdateType = Pick<User, 'name' | 'email' | 'bio' | 'image' | 'phone'>;
 
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
@@ -43,7 +43,7 @@ export const getUserById = async () => {
   try {
     return await userService.getUserById();
   } catch (error) {
-    return { message: error, status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
 
@@ -51,7 +51,7 @@ export const updateUser = async (data: UserUpdateType) => {
   try {
     return await userService.updateUser(data);
   } catch (error) {
-    return { message: error, status: HttpStatusCodes[500] };
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
 

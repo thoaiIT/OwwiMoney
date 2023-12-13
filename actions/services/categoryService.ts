@@ -15,7 +15,7 @@ class CategoryService {
   async createCategory(data: CategoryCreateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
@@ -29,7 +29,7 @@ class CategoryService {
   async getAllCategoryByUser(pageSize: number, page: number, query?: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -50,7 +50,7 @@ class CategoryService {
   async getCategoryByType(typeId: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -65,7 +65,7 @@ class CategoryService {
   async getCategoryByName(name: string) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -80,7 +80,7 @@ class CategoryService {
 
   async getCategoryById(categoryId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -92,7 +92,7 @@ class CategoryService {
 
   async updateCategory(data: CategoryUpdateType) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -109,7 +109,7 @@ class CategoryService {
 
   async deleteCategory(categoryId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };

@@ -17,7 +17,7 @@ class UserBudgetService {
   async createUserBudget(data: UserBudgetCreateType) {
     try {
       const session = await getServerSession(options);
-      const userId = session?.user?.userId as string;
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
@@ -31,7 +31,7 @@ class UserBudgetService {
   // Get list User Budget by UserId
   async getListUserBudgetByUserId() {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -49,7 +49,7 @@ class UserBudgetService {
   // Get detail User Budget
   async getDetailCategoryUserBudget(userBudgetId: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -67,7 +67,7 @@ class UserBudgetService {
   // Update User Budget
   async updateUserBudget(data: UserBudgetUpdateType) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
     const userBudget = await this.userBudgetRepository.getDetailCategoryUserBudget(data.userBudgetId);
 
     if (!userId) {
@@ -85,7 +85,7 @@ class UserBudgetService {
   // Update multiple User Budgets
   async updateMultipleUserBudgets(dataList: UserBudgetUpdateType[]) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
@@ -103,7 +103,7 @@ class UserBudgetService {
   // Get list User Budget by Type Name
   async getListUserBudgetByTypeName(typeName: string) {
     const session = await getServerSession(options);
-    const userId = session?.user?.userId as string;
+    const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {
       return { message: 'User is not valid', status: HttpStatusCodes[401] };
