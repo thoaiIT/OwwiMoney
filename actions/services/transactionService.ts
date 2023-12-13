@@ -40,6 +40,7 @@ class TransactionService {
       );
       return { message: 'Success', data: transactions, status: HttpStatusCodes[200] };
     } catch (error) {
+      console.log({ error });
       return { message: error, status: HttpStatusCodes[500] };
     }
   }

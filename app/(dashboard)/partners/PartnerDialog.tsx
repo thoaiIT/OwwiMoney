@@ -134,6 +134,7 @@ const PartnerDialog = () => {
       partnerId: values.partnerId as string,
       typeId: values.type as string,
       walletId: values.wallet as string,
+      status: 'PAID',
     };
 
     await createTransaction(data);

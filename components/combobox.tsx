@@ -129,20 +129,18 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             )}
             {...props}
           >
-            {options.length > 0 && (
-              <div className="flex items-center">
-                <BsSearch className="w-4 ml-3" />
-                <CommonInput
-                  name="search"
-                  intent="simple"
-                  placeholder="Search here... "
-                  className="text-base"
-                  onChange={(e) => {
-                    handleSearch(e.target.value);
-                  }}
-                />
-              </div>
-            )}
+            <div className="flex items-center">
+              <BsSearch className="w-4 ml-3" />
+              <CommonInput
+                name="search"
+                intent="simple"
+                placeholder="Search here... "
+                className="text-base"
+                onChange={(e) => {
+                  handleSearch(e.target.value);
+                }}
+              />
+            </div>
             <div
               style={{ maxHeight: height }}
               className={`${maxVisibleItems && maxVisibleItems < options.length ? 'overflow-y-scroll' : ''} border-t-2`}

@@ -8,7 +8,7 @@ import { type DatepickerType, type Period } from '@/components/datepicker/type';
 import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
 
 const CommonDatePicker = ({
-  value = null,
+  value = { startDate: '', endDate: '' },
   onChange,
   disabled = false,
   inputId,
@@ -122,24 +122,37 @@ const CommonDatePicker = ({
     },
     [secondDate, secondGotoDate],
   );
+  console.log(typeof value);
 
   useEffect(() => {
-    if (value && typeof value !== 'string' && value.startDate && value.endDate) {
-      const startDate = dayjs(value.startDate);
-      const endDate = dayjs(value.endDate);
-      const validDate = startDate.isValid() && endDate.isValid();
-      const condition = validDate && (startDate.isSame(endDate) || startDate.isBefore(endDate));
-      if (condition) {
-        setPeriod({
-          start: formatDate(startDate),
-          end: formatDate(endDate),
-        });
-        setInputText(
-          `${formatDate(startDate, 'DD-MM-YYYY')}${asSingle ? '' : ` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`}`,
-        );
+    if (value) {
+      let startDate: dayjs.Dayjs | null = null;
+      let endDate: dayjs.Dayjs | null = null;
+      if (typeof value === 'object' && 'startDate' in value && 'endDate' in value) {
+        startDate = dayjs(value.startDate);
+        endDate = dayjs(value.endDate);
+      } else if (typeof value === 'string') {
+        const date = dayjs(value);
+        if (date.isValid()) {
+          startDate = endDate = date;
+        }
+      }
+      if (startDate && endDate) {
+        const validDate = startDate.isValid() && endDate.isValid();
+        const condition = validDate && (startDate.isSame(endDate) || startDate.isBefore(endDate));
+        if (condition) {
+          setPeriod({
+            start: startDate.toString(),
+            end: endDate.toString(),
+          });
+          setInputText(
+            `${startDate ? formatDate(startDate, 'DD-MM-YYYY') : value}${
+              asSingle ? '' : ` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`
+            }`,
+          );
+        }
       }
     }
-
     if (value && typeof value !== 'string' && value.startDate === null && value.endDate === null) {
       setPeriod({
         start: null,
@@ -150,9 +163,15 @@ const CommonDatePicker = ({
   }, [asSingle, value]);
 
   useEffect(() => {
-    if (typeof value !== 'string') {
-      const startDate = value?.startDate;
-      const endDate = value?.endDate;
+    if (value) {
+      let startDate: string | undefined;
+      let endDate: string | undefined;
+      if (typeof value === 'object' && 'startDate' in value && 'endDate' in value) {
+        startDate = value.startDate;
+        endDate = value.endDate;
+      } else if (typeof value === 'string') {
+        startDate = endDate = value;
+      }
       if (startDate && dayjs(startDate).isValid()) {
         setFirstDate(dayjs(startDate));
         if (!asSingle) {

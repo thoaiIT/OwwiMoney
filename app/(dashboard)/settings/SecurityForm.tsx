@@ -2,13 +2,16 @@
 import { changePasswordProfile } from '@/actions/controller/userController';
 import { CommonButton } from '@/components/button';
 import CommonInput from '@/components/input';
+import Loading from '@/components/loading';
 import { SecurityModel } from '@/model/SettingModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 const resolver = classValidatorResolver(SecurityModel);
 const SecurityForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -23,6 +26,7 @@ const SecurityForm = () => {
     resolver,
   });
   const handleSubmitForm = handleSubmit(async (values: SecurityModel) => {
+    setIsLoading(true);
     const result = await changePasswordProfile({
       oldPassword: values.oldPassword as string,
       newPassword: values.newPassword as string,
@@ -33,6 +37,7 @@ const SecurityForm = () => {
     } else {
       toast.error(result.message as string);
     }
+    setIsLoading(false);
   });
   return (
     <div className="md:col-span-1 flex flex-col gap-4">
@@ -84,15 +89,17 @@ const SecurityForm = () => {
           />
         )}
       />
-
-      <CommonButton
-        intent={'secondary'}
-        onClick={handleSubmitForm}
-        disabled={false}
-        className="my-2 w-44 rounded-[4px] bg-theme-component hover:opacity-90 hover:bg-theme-component mt-6"
-      >
-        Update password
-      </CommonButton>
+      <div className="flex items-center gap-2">
+        <CommonButton
+          intent={'secondary'}
+          onClick={handleSubmitForm}
+          disabled={isLoading}
+          className="my-2 w-44 rounded-[4px] bg-theme-component hover:opacity-90 hover:bg-theme-component mt-2"
+        >
+          Update password
+        </CommonButton>
+        {isLoading && <Loading />}
+      </div>
     </div>
   );
 };

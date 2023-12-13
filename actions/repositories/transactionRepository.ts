@@ -13,6 +13,7 @@ class TransactionRepository {
     createdDate,
     description,
     invoiceImageUrl,
+    status,
   }: TransactionCreateType & { userId: string }) {
     return await client.transaction.create({
       data: {
@@ -25,6 +26,7 @@ class TransactionRepository {
         createdDate: new Date(createdDate),
         description,
         invoiceImageUrl,
+        status,
       },
     });
   }
@@ -37,18 +39,17 @@ class TransactionRepository {
   ) {
     const [transactions, total] = await Promise.all([
       client.transaction.findMany({
-        // where: { userId, deleted: false },
         where: {
           userId,
           ...filter,
+          deleted: false,
         },
         include: { type: true, category: true, partner: true, wallet: true },
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
       client.transaction.count({
-        // where: { userId, deleted: false },
-        where: { userId, ...filter },
+        where: { userId, ...filter, deleted: false },
       }),
     ]);
 
@@ -57,7 +58,7 @@ class TransactionRepository {
       transactions: transactions.map((transaction) => {
         const formatTransaction = {
           ...transaction,
-          createdDate: `${transaction.createdDate.getDay()}-${
+          createdDate: `${transaction.createdDate.getDate()}-${
             transaction.createdDate.getMonth() + 1
           }-${transaction.createdDate.getFullYear()}`,
           typeName: transaction.type.name,
@@ -81,7 +82,7 @@ class TransactionRepository {
       ? transaction
       : {
           ...transaction,
-          createdDate: `${transaction.createdDate.getDay()}-${
+          createdDate: `${transaction.createdDate.getDate()}-${
             transaction.createdDate.getMonth() + 1
           }-${transaction.createdDate.getFullYear()}`,
         };

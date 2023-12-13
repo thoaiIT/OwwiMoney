@@ -1,10 +1,8 @@
 'use client';
-
 import type { WalletModel } from '@/app/(dashboard)/wallet/WalletList';
 import { CommonButton } from '@/components/button';
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CommonCard } from '@/components/card';
 import ConfirmDialog from '@/components/dialog/confirmDialog';
-import Loading from '@/components/loading';
 import CreditIcon from '@/public/icons/credit.png';
 import DebitIcon from '@/public/icons/debit-card.png';
 import DigitalWallet from '@/public/icons/digital-wallet.png';
@@ -12,13 +10,12 @@ import CashIcon from '@/public/icons/money.png';
 import OtherWallet from '@/public/icons/wallet.png';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { IoIosArrowForward } from 'react-icons/io';
 
 interface WalletCardProps {
   wallet: WalletModel;
   handleDeleteWallet: (walletId: string) => void;
-  loading: boolean;
 }
 
 export const walletTypeIcon = [
@@ -44,22 +41,12 @@ export const walletTypeIcon = [
   },
 ];
 
-const WalletCard = ({ wallet, handleDeleteWallet, loading }: WalletCardProps) => {
-  const router = useRouter();
-
+const WalletCard = ({ wallet, handleDeleteWallet }: WalletCardProps) => {
   const iconTarget = walletTypeIcon.find((item) => item.name === wallet.walletType?.typeName);
 
   const walletImageUrl = wallet.walletImage ? wallet.walletImage : iconTarget?.image;
   return (
     <CommonCard className="2xl:w-[calc(25%-16px)] xl:w-[calc(50%-16px)] w-full rounded-[8px] relative">
-      {loading && (
-        <>
-          <div className="absolute bg-gray-400 w-full h-full rounded-[8px] bg-opacity-10" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Loading />
-          </div>
-        </>
-      )}
       <CardHeader>
         <CardTitle
           className="flex justify-between items-center pb-3 gap-24 h-10"
@@ -105,12 +92,12 @@ const WalletCard = ({ wallet, handleDeleteWallet, loading }: WalletCardProps) =>
         >
           Are you sure you want to delete this wallet?
         </ConfirmDialog>
-        <CommonButton
-          className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF]"
-          onClick={() => router.push(`/wallet/${wallet.id}`)}
+        <Link
+          className="w-fit h-fit rounded-[4px] gap-2 px-6 bg-[#3F72AF] flex p-2 items-center text-white hover:opacity-90"
+          href={`/wallet/${wallet.id}`}
         >
           <span className="text-sm ">Details</span> <IoIosArrowForward />
-        </CommonButton>
+        </Link>
       </CardFooter>
     </CommonCard>
   );
