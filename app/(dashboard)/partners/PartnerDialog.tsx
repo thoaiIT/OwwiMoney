@@ -307,7 +307,7 @@ const PartnerDialog = () => {
                 <CommonCombobox
                   name="type"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={typeOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Type...'}
@@ -326,7 +326,7 @@ const PartnerDialog = () => {
                 <CommonCombobox
                   name="category"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Category...'}
@@ -347,7 +347,7 @@ const PartnerDialog = () => {
                 <CommonCombobox
                   name="wallet"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={walletOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Wallet...'}

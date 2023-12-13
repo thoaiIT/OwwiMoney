@@ -7,3 +7,20 @@ export type FileImageType = {
   type: string;
   size: number;
 };
+
+export type StatisticType = {
+  labelList: Array<Array<string>>;
+  dataList: Array<Array<string>> | Array<Array<number>>;
+  type: 'weekly' | 'monthly' | 'yearly' | string;
+};
+
+export type ResponseDataType<TResponse> = {
+  message: string | unknown;
+  data?: TResponse;
+  status:
+    | {
+        message: string;
+        code: number;
+      }
+    | undefined;
+};

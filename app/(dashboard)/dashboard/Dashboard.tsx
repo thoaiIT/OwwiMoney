@@ -1,32 +1,82 @@
 'use client';
 
+import { getStatisticMonthly, getStatisticWeekly, getStatisticYearly } from '@/actions/controller/statisticController';
 import { CommonCard } from '@/components/card';
+import CommonCombobox from '@/components/combobox';
 import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
-import { ChevronDownIcon, ChevronRightIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
+import type { ResponseDataType, StatisticType } from '@/types/component';
+import { useEffect, useMemo, useState } from 'react';
 
 const Dashboard = () => {
-  const barchartLabels = ['1/1/2023', '2', '3', '4'];
-  const barDataset = [
-    {
-      label: 'Last week',
-      data: [1, 2, 3, 4, 5],
-      backgroundColor: COMMON_COLOR[0],
-      borderColor: COMMON_COLOR[0],
-      borderWidth: 1,
-      borderRadius: 10,
-    },
-    {
-      label: 'This week',
-      data: [5, 4, 3, 2, 1],
-      backgroundColor: COMMON_COLOR[1],
-      borderColor: COMMON_COLOR[1],
-      borderWidth: 1,
-      borderRadius: 10,
-    },
+  const [barChartOption, setBarChartOption] = useState<string>('weekly');
+  const [statisticData, setStatisticData] = useState<StatisticType>();
+  const barChartLabels = useMemo(() => {
+    if (statisticData?.type !== 'yearly') {
+      return statisticData?.labelList[1] || [];
+    } else {
+      return statisticData?.labelList[0] || [];
+    }
+  }, [statisticData]);
+  const barDataset = useMemo(() => {
+    if (statisticData?.type !== 'yearly') {
+      return [
+        {
+          label: statisticData?.type === 'weekly' ? 'Last week' : 'Last month',
+          data: statisticData?.dataList[0] || [],
+          backgroundColor: COMMON_COLOR[0],
+          borderColor: COMMON_COLOR[0],
+          borderWidth: 1,
+          borderRadius: 10,
+        },
+        {
+          label: statisticData?.type === 'weekly' ? 'This week' : 'This month',
+          data: statisticData?.dataList[1] || [],
+          backgroundColor: COMMON_COLOR[1],
+          borderColor: COMMON_COLOR[1],
+          borderWidth: 1,
+          borderRadius: 10,
+        },
+      ];
+    } else {
+      return [
+        {
+          label: 'Year',
+          data: statisticData?.dataList[0] || [],
+          backgroundColor: COMMON_COLOR[1],
+          borderColor: COMMON_COLOR[1],
+          borderWidth: 1,
+          borderRadius: 10,
+        },
+      ];
+    }
+  }, [statisticData]);
+  console.log({ barDataset, statisticData });
+  useEffect(() => {
+    (async () => {
+      const mapQueries: Record<string, ResponseDataType<StatisticType>> = {
+        weekly: await getStatisticWeekly(),
+        monthly: await getStatisticMonthly(),
+        yearly: await getStatisticYearly(),
+      };
+      const response = mapQueries[barChartOption];
+      setStatisticData(response?.data);
+    })();
+  }, [barChartOption]);
+
+  const barChartOptions = [
+    { label: 'Weekly Outcome Comparison', value: 'weekly' },
+    { label: 'Monthly Outcome Comparison', value: 'monthly' },
+    { label: 'Yearly Outcome Comparison (5 years)', value: 'yearly' },
   ];
+
+  const pieChartOptions = [{ label: 'January', value: '1' }];
+
+  const changeBarchartOptionsHandler = (value: string) => {
+    console.log({ value });
+    setBarChartOption(value);
+  };
 
   return (
     <div className="h-full">
@@ -35,44 +85,58 @@ const Dashboard = () => {
         <CommonCard className="col-span-3 px-8 py-2 w-full">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
-              <span>Weekly Outcome Comparision</span>
-              <ChevronDownIcon />
-            </div>
-            <div className="flex justify-end gap-8">
-              <Link
-                href={'#'}
-                className="flex items-center gap-2"
-              >
-                <span>View All</span>
-                <ChevronRightIcon />
-              </Link>
+              <CommonCombobox
+                name="type"
+                valueProp={barChartOption}
+                defaultValue={'weekly'}
+                onChangeHandler={changeBarchartOptionsHandler}
+                optionsProp={barChartOptions}
+                widthSelection={'100%'}
+                placeholder={'Select category type...'}
+                customInput={'px-6 py-4 ps-0 border-none hover h-14 text-base cursor-pointer'}
+              />
             </div>
           </div>
           <BarChart
-            datasets={barDataset}
-            label="ok"
-            labels={barchartLabels}
+            datasets={barDataset || []}
+            labels={barChartLabels}
           />
         </CommonCard>
         <div className="col-span-2">Transactions List</div>
         <div className="col-span-3 grid grid-cols-3 gap-2">
           <div className="grid gap-2">
-            <div className="flex gap-4 bg-white-500 rounded-2xl px-4 py-2">
-              <div className="">
-                <PieChart
-                  data={[]}
-                  label="Income"
-                  // labels={['1', '2', '3', '4']}
-                  cutout={35}
+            <div className="flex flex-col bg-white-500 rounded-2xl px-4 py-2">
+              <div className="flex items-center gap-2 justify-between">
+                <h1 className="text-xl">Overview</h1>
+                <CommonCombobox
+                  name="type"
+                  valueProp={'1'}
+                  defaultValue={'1'}
+                  onChangeHandler={() => {}}
+                  optionsProp={pieChartOptions}
+                  widthSelection={'46%'}
+                  placeholder={'Select...'}
+                  customInput={'text-sm h-6 rounded-[8px] bg-[#4455A2] text-white border-none'}
                 />
               </div>
-              <div className="">
-                <PieChart
-                  data={[1, 2, 3, 4]}
-                  label="Outcome"
-                  // labels={['1', '2', '3', '4']}
-                  cutout={35}
-                />
+
+              <div className="flex">
+                <div className="">
+                  <PieChart
+                    data={[]}
+                    label="Income"
+                    // labels={['1', '2', '3', '4']}
+                    cutout={35}
+                  />
+                </div>
+                <div className="">
+                  <PieChart
+                    data={[1, 2, 3, 4]}
+                    label="Outcome"
+                    // labels={['1', '2', '3', '4']}
+                    cutout={35}
+                  />
+                </div>
               </div>
             </div>
             <div className="bg-white-500 rounded-2xl px-4 py-2">New Transactions</div>

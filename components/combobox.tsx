@@ -32,7 +32,7 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     customInput?: string;
     name: string;
     valueProp?: string;
-    onChange: (value: string) => void;
+    onChangeHandler: (value: string) => void;
     errors?: FieldErrors;
   };
 
@@ -50,7 +50,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       customInput,
       name,
       valueProp,
-      onChange,
+      onChangeHandler,
       errors,
       align = 'center',
       sideOffset = 4,
@@ -136,7 +136,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                 name="search"
                 intent="simple"
                 placeholder="Search here... "
-                className="text-base"
+                className="text-xs"
                 onChange={(e) => {
                   handleSearch(e.target.value);
                 }}
@@ -162,7 +162,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                     key={option.value}
                     item={option}
                     onSelect={(item) => {
-                      onChange(item.value);
+                      onChangeHandler(item.value);
                       setValue(item.value);
                       setOpen(false);
                     }}
