@@ -6,6 +6,7 @@ import CommonInput from '@/components/input';
 import CommonTable from '@/components/table/CommonTable';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import useTableData from '@/components/table/hooks/useTableData';
+import useDebounce from '@/helper/hooks/useDebounce';
 import type { Partner } from '@prisma/client';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
@@ -61,11 +62,7 @@ export default function PartnerClient({
     router.push(url);
   };
 
-  let idTimeout: NodeJS.Timeout;
-  useEffect(() => {
-    idTimeout = setTimeout(callQuery, 500);
-    return () => clearTimeout(idTimeout);
-  }, [query]);
+  useDebounce(callQuery, 500, query);
 
   return (
     <div className="mb-2">
