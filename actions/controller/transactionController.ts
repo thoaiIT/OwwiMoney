@@ -1,6 +1,6 @@
 'use server';
 import { getTypeById } from '@/actions/controller/typeController';
-import { getWalletById, updateTotalBalance } from '@/actions/controller/walletController';
+import { getWalletById } from '@/actions/controller/walletController';
 import TransactionRepository from '@/actions/repositories/transactionRepository';
 import TransactionService from '@/actions/services/transactionService';
 import { uploadToCloudinary } from '@/helper/lib/cloudiary';
@@ -28,20 +28,15 @@ export const createTransaction = async (data: TransactionCreateType) => {
         return { message: 'Cannot create new transaction!!', status: HttpStatusCodes[500] };
       }
     })
-    .then(async (result) => {
-      try {
-        const type = await getTypeById(data.typeId);
-        const amount: number =
-          type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan' ? -data.amount : data.amount;
-
-        const update = await updateTotalBalance(amount, data.walletId);
-        if (update.status?.code === 200) {
-          return result;
-        } else return update;
-      } catch (error) {
-        return { message: 'Fail to update Total Balance of wallet', status: HttpStatusCodes[500] };
-      }
-    })
+    // .then(async (result) => {
+    //   try {
+    //     if (update.status?.code === 200) {
+    //       return result;
+    //     } else return update;
+    //   } catch (error) {
+    //     return { message: 'Fail to update Total Balance of wallet', status: HttpStatusCodes[500] };
+    //   }
+    // })
     .catch((error) => {
       console.log({ error });
       return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
@@ -52,7 +47,7 @@ export const createTransaction = async (data: TransactionCreateType) => {
 export const getAllTransactionByUser = async (
   pageSize: number,
   page: number,
-  filter?: ObjectWithDynamicKeys<string | number>,
+  filter?: ObjectWithDynamicKeys<string | number | boolean | undefined>,
 ) => {
   try {
     return await transactionService.getAllTransactionByUser(pageSize, page, filter);
@@ -85,4 +80,12 @@ export const checkWalletInfo = async (walletId: string, typeId: string, amount: 
   }
 
   return { message: 'OK', status: HttpStatusCodes[200] };
+};
+
+export const deleteTransaction = async (transactionId: string) => {
+  try {
+    return await transactionService.deleteTransaction(transactionId);
+  } catch (error) {
+    return { message: error, status: HttpStatusCodes[500] };
+  }
 };

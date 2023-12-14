@@ -11,6 +11,7 @@ import CommonInput, { capitalizeFirstLetter } from './input';
 export type DataType = {
   value: string;
   label: string;
+  src?: string;
 };
 
 type OptionItemProps = {
