@@ -9,7 +9,7 @@ import clsx from 'clsx';
 export type TableActionProps = {
   editHandler?: (id: string) => void;
   deleteHandler?: (id: string) => void;
-  customHandler?: (id: string) => void;
+  customActionsHandler?: (id: string) => React.ReactNode;
   selectHandler?: (checked: boolean, key: string) => void;
 };
 export type TableBodyCellProps<T> = {
@@ -29,7 +29,7 @@ const TableBodyCell = <TData,>({
   selectHandler,
   editHandler,
   deleteHandler,
-  customHandler,
+  customActionsHandler,
 }: TableActionProps & TableBodyCellProps<TData>) => {
   const editRowHandler = () => {
     if (editHandler) editHandler(row[keyField] as string);
@@ -39,11 +39,6 @@ const TableBodyCell = <TData,>({
   const deleteRowHandler = () => {
     if (deleteHandler) deleteHandler(row[keyField] as string);
     else console.log(`Delete record ${row[keyField]}`);
-  };
-
-  const customRowHandler = () => {
-    if (customHandler) customHandler(row[keyField] as string);
-    else console.log(`Custom record ${row[keyField]}`);
   };
 
   const selectRowHandler = (checked: Checkbox.CheckedState) => {
@@ -57,6 +52,13 @@ const TableBodyCell = <TData,>({
   }
 
   if (column.type === 'action') {
+    if (customActionsHandler) {
+      return (
+        <Table.Cell className={clsx(['align-middle', `flex justify-${column.textAlign} text-${column.textAlign}`])}>
+          {customActionsHandler(row[column.field] as string)}
+        </Table.Cell>
+      );
+    }
     return (
       <Table.Cell className={clsx(['flex gap-1 items-center justify-center', 'text-center py-1'])}>
         <CommonButton

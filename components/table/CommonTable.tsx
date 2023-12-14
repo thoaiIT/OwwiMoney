@@ -74,7 +74,7 @@ const CommonTable = <TData,>({
   customBorderStyle,
   editHandler,
   deleteHandler,
-  customHandler,
+  customActionsHandler,
 }: TableProps<TData> & TableActionProps): JSX.Element => {
   const [dataRender, setDataRender] = useState<TData[]>(data);
 
@@ -162,7 +162,7 @@ const CommonTable = <TData,>({
           selectHandler={selectItemHandler}
           editHandler={editHandler}
           deleteHandler={deleteHandler}
-          customHandler={customHandler}
+          customActionsHandler={customActionsHandler}
         >
           {!data.length && (
             <Table.Row>

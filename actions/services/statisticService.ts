@@ -10,7 +10,7 @@ class StatisticService {
     this.statisticReposiroty = statisticReposiroty;
   }
 
-  async getIncomeByMonth(month: string) {
+  async getAmountByMonth(type: string, month: string) {
     try {
       const session = await getServerSession(options);
       const userId = (session?.user?.userId as string) || (session?.user?.id as string);
@@ -18,19 +18,28 @@ class StatisticService {
       if (!userId) {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
-    } catch (error) {
-      return { message: 'Invalid Server Error', status: HttpStatusCodes[500] };
-    }
-  }
 
-  async getOutcomeByMonth(month: string) {
-    try {
-      const session = await getServerSession(options);
-      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+      const currentYear = new Date().getFullYear();
 
-      if (!userId) {
-        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      const monthNumber = parseInt(month, 10);
+      let nextMonthNumber = monthNumber + 1;
+
+      if (nextMonthNumber === 13) {
+        nextMonthNumber = 1;
       }
+
+      const startDate = new Date(`${currentYear}-${monthNumber < 10 ? `0${monthNumber}` : monthNumber}-01T00:00:00Z`);
+      const endDate = new Date(
+        `${monthNumber === 12 ? currentYear + 1 : currentYear}-${
+          nextMonthNumber < 10 ? `0${nextMonthNumber}` : nextMonthNumber
+        }-01T00:00:00Z`,
+      );
+
+      // Trừ đi 1 giây để lấy ngày cuối cùng của tháng trước
+      endDate.setSeconds(endDate.getSeconds() - 1);
+
+      const statisticOutcome = await this.statisticReposiroty.getAmountByMonth(type, startDate, endDate, userId);
+      return statisticOutcome;
     } catch (error) {
       return { message: 'Invalid Server Error', status: HttpStatusCodes[500] };
     }
@@ -73,6 +82,8 @@ class StatisticService {
         acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
         return acc;
       }, []);
+
+      console.log({ dataValues });
 
       return {
         message: 'Success',
@@ -198,6 +209,22 @@ class StatisticService {
         status: HttpStatusCodes[200],
       };
     } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
+
+  async getNewTransactionByUser() {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const transactions = await this.statisticReposiroty.getNewTransactionByUser(userId);
+      return { message: 'Success', data: transactions, status: HttpStatusCodes[200] };
+    } catch (error) {
+      console.log({ error });
       return { message: error, status: HttpStatusCodes[500] };
     }
   }
