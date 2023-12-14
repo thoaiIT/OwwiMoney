@@ -31,7 +31,7 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     customInput?: string;
     name: string;
     valueProp?: string;
-    onChange: (value: string) => void;
+    onChangeHandler: (value: string) => void;
     errors?: FieldErrors;
   };
 
@@ -49,7 +49,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       customInput,
       name,
       valueProp,
-      onChange,
+      onChangeHandler,
       errors,
       align = 'center',
       sideOffset = 4,
@@ -129,20 +129,18 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             )}
             {...props}
           >
-            {options.length > 0 && (
-              <div className="flex items-center">
-                <BsSearch className="w-4 ml-3" />
-                <CommonInput
-                  name="search"
-                  intent="simple"
-                  placeholder="Search here... "
-                  className="text-base"
-                  onChange={(e) => {
-                    handleSearch(e.target.value);
-                  }}
-                />
-              </div>
-            )}
+            <div className="flex items-center">
+              <BsSearch className="w-4 ml-3" />
+              <CommonInput
+                name="search"
+                intent="simple"
+                placeholder="Search here... "
+                className="text-xs"
+                onChange={(e) => {
+                  handleSearch(e.target.value);
+                }}
+              />
+            </div>
             <div
               style={{ maxHeight: height }}
               className={`${maxVisibleItems && maxVisibleItems < options.length ? 'overflow-y-scroll' : ''} border-t-2`}
@@ -163,7 +161,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                     key={option.value}
                     item={option}
                     onSelect={(item) => {
-                      onChange(item.value);
+                      onChangeHandler(item.value);
                       setValue(item.value);
                       setOpen(false);
                     }}

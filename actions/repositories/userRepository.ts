@@ -33,10 +33,10 @@ class UserRepository {
     return prisma.user.findFirst({ where: { id: userId } });
   }
 
-  async updateUser({ userId, name, email, bio, avatarUrl }: UserUpdateType & { userId: string }) {
+  async updateUser({ userId, name, email, bio, image }: UserUpdateType & { userId: string }) {
     return await prisma.user.update({
       where: { id: userId },
-      data: { name, email, bio, avatarUrl },
+      data: { name, email, bio, image },
     });
   }
 }

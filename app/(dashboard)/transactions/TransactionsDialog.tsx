@@ -4,10 +4,12 @@ import { getPartnerByType } from '@/actions/controller/partnerController';
 import {
   checkWalletInfo,
   createTransaction,
+  getTransactionById,
   type TransactionCreateType,
 } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
+import TransactionDialogSkeletons from '@/app/(dashboard)/transactions/TransactionDialogSkeletons';
 import { CommonButton } from '@/components/button';
 import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
 import CommonAvatar from '@/components/CommonAvatar';
@@ -22,7 +24,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useLayoutEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -33,6 +35,28 @@ export type FileType = {
   base64String: string;
   type: string;
   size: number;
+};
+
+export type TransactionsDialogProps = {
+  openDialog: boolean;
+  setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  formType?: 'create' | 'edit';
+  transactionId?: string;
+};
+
+export type TransactionType = {
+  id: string;
+  createdDate: string;
+  userId: string;
+  partnerId: string;
+  categoryId: string;
+  typeId: string;
+  walletId: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  description: string;
+  invoiceImageUrl: string;
 };
 
 export class NewTransactionModel {
@@ -64,14 +88,20 @@ export class NewTransactionModel {
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog = () => {
+const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
+  formType,
+  openDialog,
+  setOpenDialog,
+  transactionId,
+}) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
+  const [transaction, setTransaction] = useState<TransactionType>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -84,14 +114,14 @@ const TransactionsDialog = () => {
     watch,
   } = useForm({
     values: {
-      partnerId: '',
-      type: '',
-      category: '',
-      wallet: '',
-      createdDate: '',
-      amount: 0,
+      partnerId: transaction?.partnerId || '',
+      type: transaction?.typeId || '',
+      category: transaction?.categoryId || '',
+      wallet: transaction?.walletId || '',
+      createdDate: transaction?.createdDate || '',
+      amount: transaction?.amount || 0,
       invoiceImage: { base64String: '', size: 0, type: '' },
-      description: '',
+      description: transaction?.description || '',
     },
     resolver,
   });
@@ -99,6 +129,9 @@ const TransactionsDialog = () => {
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
     const walletInfo = await checkWalletInfo(values.wallet as string, values.type as string, values.amount as number);
     if (walletInfo.status?.code === 200) {
+      const isUnPaid = typeOptions.some(
+        (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Borrow'),
+      );
       const data: TransactionCreateType = {
         amount: Number(values.amount),
         categoryId: values.category as string,
@@ -108,8 +141,8 @@ const TransactionsDialog = () => {
         partnerId: values.partnerId as string,
         typeId: values.type as string,
         walletId: values.wallet as string,
+        status: isUnPaid ? 'UNPAID' : 'PAID',
       };
-      console.log(data);
       const res = await createTransaction(data);
       if (res.status?.code === 201) {
         toast.success(res.message as string);
@@ -197,21 +230,37 @@ const TransactionsDialog = () => {
       });
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
+      setIsLoading(false);
     };
-    watch('type') && fetchPartnersByType();
-    watch('type') && fetchCategoriesByType();
-  }, [watch('type')]);
+    if (openDialog) {
+      watch('type') && fetchPartnersByType();
+      watch('type') && fetchCategoriesByType();
+    }
+  }, [watch('type'), openDialog]);
+
+  useLayoutEffect(() => {
+    const fetchTransaction = async () => {
+      setIsLoading(true);
+      const transaction = await getTransactionById(transactionId as string);
+      setTransaction(transaction.data as TransactionType);
+    };
+    if (transactionId && openDialog) fetchTransaction();
+  }, [transactionId]);
 
   return (
     <Box>
       <DialogForm
         useCustomTrigger={
-          <CommonButton className="w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
-            <FaPlus />
-            Add Transactions
-          </CommonButton>
+          formType === 'edit' ? (
+            <></>
+          ) : (
+            <CommonButton className="relative w-[208px] duration-300 transition-all bg-theme-component flex gap-2 hover:duration-300 hover:transition-all hover:bg-theme-component hover:opacity-80 hover:ring-0">
+              <FaPlus />
+              Add Transactions
+            </CommonButton>
+          )
         }
-        titleDialog="New Transactions"
+        titleDialog={formType === 'edit' ? 'Edit Transaction' : 'New Transaction'}
         customStyleHeader="text-2xl"
         open={openDialog}
         handleOpenChange={() => {
@@ -223,6 +272,11 @@ const TransactionsDialog = () => {
           setPartnerOptions([]);
         }}
       >
+        {isLoading && (
+          <div className="absolute inset-0 top-16 z-50">
+            <TransactionDialogSkeletons />
+          </div>
+        )}
         <div className="flex justify-between gap-2 min-w-[500px]">
           <div className="flex flex-col w-1/2 min-w-max">
             <p className={'mt-6 mb-2 text-base font-semibold leading-6'}>Type</p>
@@ -233,7 +287,7 @@ const TransactionsDialog = () => {
                 <CommonCombobox
                   name="type"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={typeOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Type...'}
@@ -252,7 +306,8 @@ const TransactionsDialog = () => {
                 <CommonCombobox
                   name="category"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
+                  maxVisibleItems={10}
                   optionsProp={categoryOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Category...'}
@@ -265,7 +320,7 @@ const TransactionsDialog = () => {
         </div>
         <p className={'mb-2 text-base font-semibold leading-6 '}>Partner</p>
         {partnerOptions.length === 0 ? (
-          <div className="h-[60px] flex justify-center items-center text-base">
+          <div className="h-[84px] flex justify-center items-center text-base">
             {watch('type') ? 'No Partner' : 'Please select type!!'}
           </div>
         ) : (
@@ -349,7 +404,7 @@ const TransactionsDialog = () => {
                 <CommonCombobox
                   name="wallet"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={walletOptions as DataType[]}
                   widthSelection={'100%'}
                   placeholder={'Select Wallet...'}

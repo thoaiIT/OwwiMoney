@@ -3,20 +3,24 @@ import Title from '@/components/dashboard/Title';
 import Loading from '@/components/loading';
 import { DEFAULT_PAGE_SIZE } from '@/constants';
 import type { ObjectWithDynamicKeys } from '@/helper/type';
-import { Suspense } from 'react';
+import { Fragment, Suspense } from 'react';
 
 type SearchParams = { searchParams: ObjectWithDynamicKeys<string> };
 const Page = async ({ searchParams }: SearchParams) => {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
+  const tab = searchParams.tab || '';
   return (
-    <Suspense fallback={<Loading />}>
+    <Fragment>
       <Title title="Recent Transactions" />
-      <Transactions
-        page={page}
-        pageSize={pageSize}
-      />
-    </Suspense>
+      <Suspense fallback={<Loading />}>
+        <Transactions
+          tab={tab}
+          page={page}
+          pageSize={pageSize}
+        />
+      </Suspense>
+    </Fragment>
   );
 };
 
