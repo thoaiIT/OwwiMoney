@@ -14,14 +14,15 @@ const valueType: ObjectWithDynamicKeys<string> = {
   revenue: 'Income',
   expenses: 'Outcome',
   loan: 'Loan',
+  borrow: 'Borrow',
 };
 
 const Transactions = async ({ page, pageSize, tab }: TransactionsProps) => {
   const types = await getAllTypes();
-  const typeId = types.data?.types.filter((t) => t.name === valueType[tab])[0]?.id;
-  const response = typeId
-    ? await getAllTransactionByUser(pageSize, page, { typeId })
-    : await getAllTransactionByUser(pageSize, page);
+  const typeId = types.data?.types.filter((t) => t.name === valueType[tab])[0]?.id || '';
+  const filter = typeId ? { typeId: typeId } : {};
+  const response = await getAllTransactionByUser(pageSize, page, filter);
+
   const data: TransactionResType[] = response.data?.transactions || [];
   const totalPages: number = response.data?.totalPages || 1;
   return (
@@ -32,6 +33,7 @@ const Transactions = async ({ page, pageSize, tab }: TransactionsProps) => {
         { value: 'revenue', label: 'Revenue' },
         { value: 'expenses', label: 'Expenses' },
         { value: 'loan', label: 'Loan' },
+        { value: 'borrow', label: 'Borrow' },
       ]}
       tabContents={[
         {
@@ -63,6 +65,15 @@ const Transactions = async ({ page, pageSize, tab }: TransactionsProps) => {
         },
         {
           value: 'loan',
+          children: (
+            <TableTransactionAll
+              dataTable={data}
+              totalPages={totalPages}
+            />
+          ),
+        },
+        {
+          value: 'borrow',
           children: (
             <TableTransactionAll
               dataTable={data}
