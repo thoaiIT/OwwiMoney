@@ -50,6 +50,7 @@ const TableHeader = <TData,>({ columns, sortHandler, selectAllRowHandler }: Prop
           columnRender.map((column) => {
             return (
               <Table.ColumnHeaderCell
+                className={`w-[${column.width}px]`}
                 key={`header-column-${column.label}`}
                 onClick={
                   column.sortable
