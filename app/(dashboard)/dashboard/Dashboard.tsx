@@ -2,11 +2,14 @@
 
 import { getStatisticMonthly, getStatisticWeekly, getStatisticYearly } from '@/actions/controller/statisticController';
 import { CommonCard } from '@/components/card';
+import CardSlider from '@/components/cardslider/CardSlider';
 import CommonCombobox from '@/components/combobox';
 import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
 import type { ResponseDataType, StatisticType } from '@/types/component';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
 const Dashboard = () => {
@@ -102,7 +105,41 @@ const Dashboard = () => {
   return (
     <div className="h-full">
       <div className="grid xl:grid-cols-5 gap-4 h-[50%]">
-        <div className="xl:col-span-2">Wallets</div>
+        <CommonCard className="xl:col-span-2 px-8 py-2 w-full">
+          <div className="flex justify-between py-[16px]">
+            <div className="xl:col-span-2">Wallets </div>
+            <Link
+              href={'#'}
+              className="flex items-center gap-2"
+            >
+              <span>View All</span>
+              <ChevronRightIcon />
+            </Link>
+          </div>
+
+          <div className="flex mt-[40px] justify-center">
+            <div className="w-auto max-w-[400px] h-auto max-h-[250px] mb-4">
+              <CardSlider />
+            </div>
+          </div>
+
+          <div className="flex mt-[10px] justify-between items-end pt-3 border-t-[1px]">
+            <div className="flex flex-col text-right">
+              <span className="text-2xl text-blue-500 font-bold">2850.75</span>
+              <span className="text-sm text-[#AEAEAE]">Current balance</span>
+            </div>
+
+            <div className="flex flex-col text-right">
+              <span className="text-xl text-color-success font-bold">2000.75</span>
+              <span className="text-sm text-[#AEAEAE]">Income</span>
+            </div>
+
+            <div className="flex flex-col text-right">
+              <span className="text-xl text-color-error font-bold">850.75</span>
+              <span className="text-sm text-[#AEAEAE]">Outcome</span>
+            </div>
+          </div>
+        </CommonCard>
         <CommonCard className="xl:col-span-3 px-8 py-2 w-full">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
