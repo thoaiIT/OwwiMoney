@@ -106,7 +106,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             style={{ width: widthSelection }}
             ref={divRef}
             className={tailwindMerge(
-              'justify-between h-10 px-4 py-2 border inline-flex items-center rounded-md text-sm transition-colors',
+              'justify-between h-10 px-2 py-2 border inline-flex items-center rounded-md text-sm transition-colors',
               `${isDisabled && 'opacity-50 pointer-events-none'}`,
               customInput,
               open && 'border-dark-mode',
@@ -114,7 +114,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
             )}
           >
             {!value ? placeholder : optionsProp.find((option) => option.value === value)?.label}
-            <SlArrowDown className={`ml-2 h-4 w-4 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
+            <SlArrowDown className={`ml-2 h-2 w-2 shrink-0 opacity-50 ${open && 'rotate-180'}`} />
           </div>
         </PopoverPrimitive.Trigger>
         <PopoverPrimitive.Portal>
