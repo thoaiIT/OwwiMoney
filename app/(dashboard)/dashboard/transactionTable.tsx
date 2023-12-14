@@ -49,7 +49,7 @@ const TransactionTable = () => {
       sortable: true,
     },
     {
-      label: 'Type',
+      label: 'Category',
       field: 'categoryName',
       sortable: true,
     },

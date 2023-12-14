@@ -43,9 +43,9 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
             gap="3"
           >
             <Text size={'1'}>
-              Hi, <Strong>{session?.user?.name}</Strong>
+              <span className="text-red-400 font-bold">Hi,</span> <Strong>{session?.user?.name}</Strong>
             </Text>
-            <Text size={'1'}>{session?.user?.email}</Text>
+            {/* <Text size={'1'}>{session?.user?.email}</Text> */}
           </Flex>
           <IconButton
             onClick={() => console.log('Noti')}
