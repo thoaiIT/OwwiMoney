@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 const Dashboard = () => {
   const [barChartOption, setBarChartOption] = useState<string>('weekly');
+  const [pieChartOption, setPieChartOption] = useState<string>('1');
   const [statisticData, setStatisticData] = useState<StatisticType>();
   const barChartLabels = useMemo(() => {
     if (statisticData?.type !== 'yearly') {
@@ -65,24 +66,44 @@ const Dashboard = () => {
     })();
   }, [barChartOption]);
 
+  useEffect(() => {}, [pieChartOption]);
+
   const barChartOptions = [
     { label: 'Weekly Outcome Comparison', value: 'weekly' },
     { label: 'Monthly Outcome Comparison', value: 'monthly' },
     { label: 'Yearly Outcome Comparison (5 years)', value: 'yearly' },
   ];
 
-  const pieChartOptions = [{ label: 'January', value: '1' }];
+  const pieChartOptions = [
+    { label: 'January', value: '1' },
+    { label: 'February', value: '2' },
+    { label: 'March', value: '3' },
+    { label: 'April', value: '4' },
+    { label: 'May', value: '5' },
+    { label: 'June', value: '6' },
+    { label: 'July', value: '7' },
+    { label: 'August', value: '8' },
+    { label: 'September', value: '9' },
+    { label: 'Octorber', value: '10' },
+    { label: 'November', value: '11' },
+    { label: 'December', value: '12' },
+  ];
 
   const changeBarchartOptionsHandler = (value: string) => {
     console.log({ value });
     setBarChartOption(value);
   };
 
+  const changePieChartOptionsHandler = (value: string) => {
+    console.log(value);
+    setPieChartOption(value);
+  };
+
   return (
     <div className="h-full">
-      <div className="grid grid-cols-5 gap-4 h-[50%]">
-        <div className="col-span-2">Wallets</div>
-        <CommonCard className="col-span-3 px-8 py-2 w-full">
+      <div className="grid xl:grid-cols-5 gap-4 h-[50%]">
+        <div className="xl:col-span-2">Wallets</div>
+        <CommonCard className="xl:col-span-3 px-8 py-2 w-full">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <CommonCombobox
@@ -102,19 +123,20 @@ const Dashboard = () => {
             labels={barChartLabels}
           />
         </CommonCard>
-        <div className="col-span-2">Transactions List</div>
-        <div className="col-span-3 grid grid-cols-3 gap-2">
+        <div className="xl:col-span-2">Transactions List</div>
+        <div className="xl:col-span-3 grid xl:grid-cols-3 gap-2">
           <div className="grid gap-2">
             <div className="flex flex-col bg-white-500 rounded-2xl px-4 py-2">
               <div className="flex items-center gap-2 justify-between">
                 <h1 className="text-xl">Overview</h1>
                 <CommonCombobox
                   name="type"
-                  valueProp={'1'}
+                  maxVisibleItems={5}
+                  valueProp={pieChartOption}
                   defaultValue={'1'}
-                  onChangeHandler={() => {}}
+                  onChangeHandler={changePieChartOptionsHandler}
                   optionsProp={pieChartOptions}
-                  widthSelection={'46%'}
+                  widthSelection={'100px'}
                   placeholder={'Select...'}
                   customInput={'text-sm h-6 rounded-[8px] bg-[#4455A2] text-white border-none'}
                 />
@@ -127,6 +149,7 @@ const Dashboard = () => {
                     label="Income"
                     // labels={['1', '2', '3', '4']}
                     cutout={35}
+                    chartTitle="Income"
                   />
                 </div>
                 <div className="">
@@ -135,24 +158,16 @@ const Dashboard = () => {
                     label="Outcome"
                     // labels={['1', '2', '3', '4']}
                     cutout={35}
+                    chartTitle="Outcome"
                   />
                 </div>
               </div>
             </div>
             <div className="bg-white-500 rounded-2xl px-4 py-2">New Transactions</div>
           </div>
-          <CommonCard className="col-span-2 w-full px-4 py-2">Borrowsers</CommonCard>
+          <CommonCard className="xl:col-span-2 w-full px-4 py-2">Borrowsers</CommonCard>
         </div>
       </div>
-
-      {/* <FormSheet
-        titleSheet="Are you sure absolutely sure?"
-        side={'right'}
-        allowCloseOutside
-      >
-        This action cannot be undone. This will permanently delete your account and remove your data from our servers.
-      </FormSheet> */}
-      {/* <p>{session?.user?.email}</p> */}
     </div>
   );
 };

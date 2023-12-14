@@ -29,3 +29,18 @@ export const getStatisticYearly = async () => {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
+
+export const getIncomeByMonth = async (month: string) => {
+  try {
+    return await statisticService.getIncomeByMonth(month);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+export const getOutcomeByMonth = async (month: string) => {
+  try {
+    return await statisticService.getOutcomeByMonth(month);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
