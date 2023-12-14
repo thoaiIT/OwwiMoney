@@ -45,3 +45,11 @@ export const getNewTransactionByUser = async () => {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
+
+export const getTransactionByType = async (type: string) => {
+  try {
+    return await statisticService.getTransactionByType(type);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};

@@ -7,6 +7,7 @@ import {
   getStatisticWeekly,
   getStatisticYearly,
 } from '@/actions/controller/statisticController';
+import TransactionTable from '@/app/(dashboard)/dashboard/transactionTable';
 import CommonAvatar from '@/components/CommonAvatar';
 import { CommonCard } from '@/components/card';
 import CommonCombobox from '@/components/combobox';
@@ -145,7 +146,24 @@ const Dashboard = () => {
         <div className="xl:col-span-2">
           <CommonCard className="xl:col-span-2 w-full px-4 py-2 h-full">Wallets</CommonCard>
         </div>
-        <CommonCard className="xl:col-span-3 px-8 py-2 w-full">
+
+        <div className="xl:col-span-3">
+          <CommonCard className="xl:col-span-2 w-full py-4 px-6 h-[362px]">
+            <div className="flex justify-between">
+              <h1 className="text-xl font-semibold">Transaction history</h1>
+              <Link
+                href={'/transactions'}
+                className="flex items-center gap-2"
+              >
+                <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
+              </Link>
+            </div>
+            <div>
+              <TransactionTable />
+            </div>
+          </CommonCard>
+        </div>
+        <CommonCard className="xl:col-span-2 px-8 py-2 w-full flex flex-col justify-between">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <CommonCombobox
@@ -160,17 +178,16 @@ const Dashboard = () => {
               />
             </div>
           </div>
-          <BarChart
-            datasets={barDataset || []}
-            labels={barChartLabels}
-          />
+          <div className="h-full flex flex-col justify-center">
+            <BarChart
+              datasets={barDataset || []}
+              labels={barChartLabels}
+            />
+          </div>
         </CommonCard>
-        <div className="xl:col-span-2">
-          <CommonCard className="xl:col-span-2 w-full px-4 py-2 h-full">Borrowsers</CommonCard>
-        </div>
         <div className="xl:col-span-3 grid xl:grid-cols-4 gap-2">
           <div className="grid gap-2 xl:col-span-2">
-            <div className="flex flex-col bg-white-500 rounded-2xl px-4 py-2 shadow-md">
+            <div className="flex flex-col bg-white-500 rounded-2xl  shadow-md py-4 px-6">
               <div className="flex items-center gap-2 justify-between">
                 <h1 className="text-xl font-semibold">Overview</h1>
                 <CommonCombobox
@@ -186,14 +203,15 @@ const Dashboard = () => {
                 />
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex justify-center gap-10 mt-2">
                 <div className="">
                   <PieChart
                     data={pieChartData.incomeData as number[]}
                     label="Income"
                     labels={pieChartData.incomeLabels as string[]}
-                    cutout={35}
+                    cutout={40}
                     chartTitle="Income"
+                    chartWidth={130}
                   />
                 </div>
                 <div className="">
@@ -201,8 +219,9 @@ const Dashboard = () => {
                     data={pieChartData.outcomeData as number[]}
                     label="Outcome"
                     labels={pieChartData.outcomeLabels as string[]}
-                    cutout={35}
+                    cutout={40}
                     chartTitle="Outcome"
+                    chartWidth={130}
                   />
                 </div>
               </div>
@@ -221,7 +240,7 @@ const Dashboard = () => {
                         key={item.id}
                         label={item.name || ''}
                         src={item.image || ''}
-                        className={tailwindMerge('border-[1px] border-gray-300')}
+                        className={tailwindMerge('border-[1px] border-gray-300 w-10 h-10')}
                         customLabel={tailwindMerge('font-bold')}
                       />
                     );
@@ -238,7 +257,17 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <CommonCard className="xl:col-span-2 w-full px-4 py-2">Borrowsers</CommonCard>
+          <CommonCard className="xl:col-span-2 w-full py-4 px-6">
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-semibold">Borrowers</h1>
+              <Link
+                href={'/transactions'}
+                className="flex items-center gap-2"
+              >
+                <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
+              </Link>
+            </div>
+          </CommonCard>
         </div>
       </div>
     </div>
