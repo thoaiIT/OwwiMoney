@@ -22,9 +22,11 @@ const TabClient: React.FC<TabClientProps> = ({ defaultValue, tabNames, tabConten
       defaultValue={defaultValue}
       onValueChange={(value) => {
         const current = new URLSearchParams(Array.from(searchParams.entries()));
+        current.set('page', '1');
         current.set('tab', value);
         const search = current.toString();
         const query = search ? `?${search}` : '';
+        console.log({ pathname, query });
         router.push(`${pathname}${query}`);
       }}
     >

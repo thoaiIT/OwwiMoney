@@ -100,11 +100,18 @@ class TransactionRepository {
         };
   }
 
-  async deleteTransaction(transactionId: string) {
-    return await client.transaction.update({
-      where: { id: transactionId },
-      data: { deleted: true },
-    });
+  async deleteTransaction(transactionId: string, walletId: string, totalBalanceUpdate: number) {
+    const [deleteTransaction] = await client.$transaction([
+      client.transaction.update({
+        where: { id: transactionId },
+        data: { deleted: true },
+      }),
+      client.wallet.update({
+        where: { id: walletId },
+        data: { totalBalance: { increment: totalBalanceUpdate } },
+      }),
+    ]);
+    return deleteTransaction;
   }
 
   async removeTransaction(transactionId: string) {

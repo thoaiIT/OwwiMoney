@@ -83,13 +83,29 @@ class TransactionService {
         return { message: 'User is not valid', status: HttpStatusCodes[401] };
       }
 
-      const transactionExist = await this.transactionRepository.getTransactionById(transactionId);
-      if (!transactionExist) {
+      const transactionExist = await this.getTransactionById(transactionId);
+      if (!transactionExist.data) {
         return { message: 'Invalid Transaction or User', status: HttpStatusCodes[422] };
       }
 
-      const transaction = await this.transactionRepository.deleteTransaction(transactionId);
-      return { message: 'Success', data: { transaction }, status: HttpStatusCodes[200] };
+      const type = await getTypeById(transactionExist.data?.typeId || '');
+      const amount = transactionExist.data?.amount || 0;
+      const deleteAmount: number =
+        type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan' ? amount : -amount;
+
+      // const transaction = await this.transactionRepository.createTransaction({
+      //   ...data,
+      //   userId,
+      //   totalBalanceUpdate: amount,
+      // });
+      console.log({ transactionExist: transactionExist.data?.walletId });
+
+      const deletedTransaction = await this.transactionRepository.deleteTransaction(
+        transactionId,
+        transactionExist.data?.walletId,
+        deleteAmount,
+      );
+      return { message: 'Success', data: { deletedTransaction }, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
