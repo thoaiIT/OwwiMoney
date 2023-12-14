@@ -14,6 +14,17 @@ export type StatisticType = {
   type: 'weekly' | 'monthly' | 'yearly' | string;
 };
 
+export type PieChartAmountType = {
+  categoryName: string | undefined;
+  categoryId?: string | undefined;
+  _sum?: { amount: number | null };
+};
+
+export type TransactionDashboardType = {
+  name: string;
+  image: string | null;
+  id: string;
+};
 export type ResponseDataType<TResponse> = {
   message: string | unknown;
   data?: TResponse;

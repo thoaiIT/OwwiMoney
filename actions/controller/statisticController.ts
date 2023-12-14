@@ -30,16 +30,25 @@ export const getStatisticYearly = async () => {
   }
 };
 
-export const getIncomeByMonth = async (month: string) => {
+export const getAmountByMonth = async (type: string, month: string) => {
   try {
-    return await statisticService.getIncomeByMonth(month);
+    return await statisticService.getAmountByMonth(type, month);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
-export const getOutcomeByMonth = async (month: string) => {
+
+export const getNewTransactionByUser = async () => {
   try {
-    return await statisticService.getOutcomeByMonth(month);
+    return await statisticService.getNewTransactionByUser();
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};
+
+export const getTransactionByType = async (type: string) => {
+  try {
+    return await statisticService.getTransactionByType(type);
   } catch (error) {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }

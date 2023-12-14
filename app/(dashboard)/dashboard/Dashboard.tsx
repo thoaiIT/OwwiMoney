@@ -1,21 +1,36 @@
 'use client';
 
-import { getStatisticMonthly, getStatisticWeekly, getStatisticYearly } from '@/actions/controller/statisticController';
+import {
+  getAmountByMonth,
+  getNewTransactionByUser,
+  getStatisticMonthly,
+  getStatisticWeekly,
+  getStatisticYearly,
+} from '@/actions/controller/statisticController';
+import TransactionTable from '@/app/(dashboard)/dashboard/transactionTable';
+import CommonAvatar from '@/components/CommonAvatar';
 import { CommonCard } from '@/components/card';
 import CardSlider from '@/components/cardslider/CardSlider';
 import CommonCombobox from '@/components/combobox';
 import { BarChart } from '@/components/dashboard/BarChart';
 import { PieChart } from '@/components/dashboard/PieChart';
 import { COMMON_COLOR } from '@/constants';
-import type { ResponseDataType, StatisticType } from '@/types/component';
-import { ChevronRightIcon } from '@radix-ui/react-icons';
+import type { PieChartAmountType, ResponseDataType, StatisticType, TransactionDashboardType } from '@/types/component';
+import { tailwindMerge } from '@/utils/helper';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { FaChevronRight } from 'react-icons/fa';
 
 const Dashboard = () => {
   const [barChartOption, setBarChartOption] = useState<string>('weekly');
-  const [pieChartOption, setPieChartOption] = useState<string>('1');
+  const [pieChartOption, setPieChartOption] = useState<string>(() => {
+    const currentMonth = (new Date().getMonth() + 1).toString();
+    return currentMonth;
+  });
   const [statisticData, setStatisticData] = useState<StatisticType>();
+  const [incomePieData, setIncomePieData] = useState<PieChartAmountType[]>();
+  const [outcomePieData, setOutcomePieData] = useState<PieChartAmountType[]>();
+  const [newTransaction, setNewTransaction] = useState<TransactionDashboardType[]>();
   const barChartLabels = useMemo(() => {
     if (statisticData?.type !== 'yearly') {
       return statisticData?.labelList[1] || [];
@@ -23,6 +38,16 @@ const Dashboard = () => {
       return statisticData?.labelList[0] || [];
     }
   }, [statisticData]);
+
+  const pieChartData = useMemo(() => {
+    return {
+      outcomeLabels: outcomePieData?.map((item: PieChartAmountType) => item.categoryName) || [],
+      outcomeData: outcomePieData?.map((item: PieChartAmountType) => item._sum?.amount) || [],
+      incomeLabels: incomePieData?.map((item: PieChartAmountType) => item.categoryName) || [],
+      incomeData: incomePieData?.map((item: PieChartAmountType) => item._sum?.amount) || [],
+    };
+  }, [incomePieData, outcomePieData]);
+
   const barDataset = useMemo(() => {
     if (statisticData?.type !== 'yearly') {
       return [
@@ -56,7 +81,15 @@ const Dashboard = () => {
       ];
     }
   }, [statisticData]);
-  console.log({ barDataset, statisticData });
+
+  useEffect(() => {
+    (async () => {
+      const result = await getNewTransactionByUser();
+
+      setNewTransaction(result.data);
+    })();
+  }, []);
+
   useEffect(() => {
     (async () => {
       const mapQueries: Record<string, ResponseDataType<StatisticType>> = {
@@ -69,7 +102,15 @@ const Dashboard = () => {
     })();
   }, [barChartOption]);
 
-  useEffect(() => {}, [pieChartOption]);
+  useEffect(() => {
+    (async () => {
+      const resultIncome = await getAmountByMonth('Income', pieChartOption);
+      const resultOutcome = await getAmountByMonth('Outcome', pieChartOption);
+
+      setIncomePieData(resultIncome as PieChartAmountType[]);
+      setOutcomePieData(resultOutcome as PieChartAmountType[]);
+    })();
+  }, [pieChartOption]);
 
   const barChartOptions = [
     { label: 'Weekly Outcome Comparison', value: 'weekly' },
@@ -93,54 +134,75 @@ const Dashboard = () => {
   ];
 
   const changeBarchartOptionsHandler = (value: string) => {
-    console.log({ value });
     setBarChartOption(value);
   };
 
   const changePieChartOptionsHandler = (value: string) => {
-    console.log(value);
     setPieChartOption(value);
   };
 
   return (
     <div className="h-full">
-      <div className="grid xl:grid-cols-5 gap-4 h-[50%]">
-        <CommonCard className="xl:col-span-2 px-8 py-2 w-full">
-          <div className="flex justify-between py-[16px]">
-            <div className="xl:col-span-2">Wallets </div>
-            <Link
-              href={'#'}
-              className="flex items-center gap-2"
-            >
-              <span>View All</span>
-              <ChevronRightIcon />
-            </Link>
-          </div>
-
-          <div className="flex mt-[40px] justify-center">
-            <div className="w-auto max-w-[400px] h-auto max-h-[250px] mb-4">
-              <CardSlider />
-            </div>
-          </div>
-
-          <div className="flex mt-[10px] justify-between items-end pt-3 border-t-[1px]">
-            <div className="flex flex-col text-right">
-              <span className="text-2xl text-blue-500 font-bold">2850.75</span>
-              <span className="text-sm text-[#AEAEAE]">Current balance</span>
+      <div className="grid xl:grid-cols-5 gap-4">
+        <div className="xl:col-span-2">
+          <CommonCard className="xl:col-span-2 px-8 py-4 w-full">
+            <div className="flex justify-between">
+              <h1 className="text-xl font-semibold">Wallets</h1>
+              <Link
+                href={'#'}
+                className="flex items-center gap-2"
+              >
+                <Link
+                  href={'/transactions'}
+                  className="flex items-center gap-2"
+                >
+                  <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
+                </Link>
+              </Link>
             </div>
 
-            <div className="flex flex-col text-right">
-              <span className="text-xl text-color-success font-bold">2000.75</span>
-              <span className="text-sm text-[#AEAEAE]">Income</span>
+            <div className="flex mt-[2px] justify-center">
+              <div className="w-auto max-w-[400px] h-auto max-h-[250px] my-2">
+                <CardSlider />
+              </div>
             </div>
 
-            <div className="flex flex-col text-right">
-              <span className="text-xl text-color-error font-bold">850.75</span>
-              <span className="text-sm text-[#AEAEAE]">Outcome</span>
+            <div className="flex mt-[4px] justify-between items-end border-t-[1px]">
+              <div className="flex flex-col text-right">
+                <span className="text-lg text-blue-500 font-bold">2850.75</span>
+                <span className="text-sm text-[#AEAEAE]">Current balance</span>
+              </div>
+
+              <div className="flex flex-col text-right">
+                <span className="text-lg text-color-success font-bold">2000.75</span>
+                <span className="text-sm text-[#AEAEAE]">Income</span>
+              </div>
+
+              <div className="flex flex-col text-right">
+                <span className="text-lg text-color-error font-bold">850.75</span>
+                <span className="text-sm text-[#AEAEAE]">Outcome</span>
+              </div>
             </div>
-          </div>
-        </CommonCard>
-        <CommonCard className="xl:col-span-3 px-8 py-2 w-full">
+          </CommonCard>
+        </div>
+
+        <div className="xl:col-span-3">
+          <CommonCard className="xl:col-span-2 w-full py-4 px-6 h-full">
+            <div className="flex justify-between">
+              <h1 className="text-xl font-semibold">Transaction history</h1>
+              <Link
+                href={'/transactions'}
+                className="flex items-center gap-2"
+              >
+                <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
+              </Link>
+            </div>
+            <div>
+              <TransactionTable />
+            </div>
+          </CommonCard>
+        </div>
+        <CommonCard className="xl:col-span-2 px-8 py-2 w-full flex flex-col justify-between">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <CommonCombobox
@@ -151,21 +213,22 @@ const Dashboard = () => {
                 optionsProp={barChartOptions}
                 widthSelection={'100%'}
                 placeholder={'Select category type...'}
-                customInput={'px-6 py-4 ps-0 border-none hover h-14 text-base cursor-pointer'}
+                customInput={'px-6 py-4 ps-0 border-none hover h-14 text-base cursor-pointer font-semibold'}
               />
             </div>
           </div>
-          <BarChart
-            datasets={barDataset || []}
-            labels={barChartLabels}
-          />
+          <div className="h-full flex flex-col justify-center">
+            <BarChart
+              datasets={barDataset || []}
+              labels={barChartLabels}
+            />
+          </div>
         </CommonCard>
-        <div className="xl:col-span-2">Transactions List</div>
-        <div className="xl:col-span-3 grid xl:grid-cols-3 gap-2">
-          <div className="grid gap-2">
-            <div className="flex flex-col bg-white-500 rounded-2xl px-4 py-2">
+        <div className="xl:col-span-3 grid xl:grid-cols-4 gap-2">
+          <div className="grid gap-2 xl:col-span-2">
+            <div className="flex flex-col bg-white-500 rounded-2xl  shadow-md py-4 px-6">
               <div className="flex items-center gap-2 justify-between">
-                <h1 className="text-xl">Overview</h1>
+                <h1 className="text-xl font-semibold">Overview</h1>
                 <CommonCombobox
                   name="type"
                   maxVisibleItems={5}
@@ -179,30 +242,71 @@ const Dashboard = () => {
                 />
               </div>
 
-              <div className="flex">
+              <div className="flex justify-center gap-10 mt-2">
                 <div className="">
                   <PieChart
-                    data={[]}
+                    data={pieChartData.incomeData as number[]}
                     label="Income"
-                    // labels={['1', '2', '3', '4']}
-                    cutout={35}
+                    labels={pieChartData.incomeLabels as string[]}
+                    cutout={40}
                     chartTitle="Income"
+                    chartWidth={130}
                   />
                 </div>
                 <div className="">
                   <PieChart
-                    data={[1, 2, 3, 4]}
+                    data={pieChartData.outcomeData as number[]}
                     label="Outcome"
-                    // labels={['1', '2', '3', '4']}
-                    cutout={35}
+                    labels={pieChartData.outcomeLabels as string[]}
+                    cutout={40}
                     chartTitle="Outcome"
+                    chartWidth={130}
                   />
                 </div>
               </div>
             </div>
-            <div className="bg-white-500 rounded-2xl px-4 py-2">New Transactions</div>
+            <div className="bg-white-500 rounded-2xl px-4 py-2 flex flex-col gap-2 shadow-md">
+              <h1 className="text-xl font-semibold py-2">New transaction</h1>
+              <div className="flex justify-between">
+                {newTransaction &&
+                  newTransaction.map((item) => {
+                    console.log(newTransaction);
+                    return (
+                      <CommonAvatar
+                        handleClick={() => {
+                          'click';
+                        }}
+                        key={item.id}
+                        label={item.name || ''}
+                        src={item.image || ''}
+                        className={tailwindMerge('border-[1px] border-gray-300 w-10 h-10')}
+                        customLabel={tailwindMerge('font-bold')}
+                      />
+                    );
+                  })}
+              </div>
+              <div className="flex justify-end">
+                <Link
+                  href="/transactions"
+                  className="bg-[#FFC145] px-4 py-2 rounded-xl w-fit flex items-center gap-2 hover:opacity-90 "
+                >
+                  <p className="font-bold text-sm">Create transaction</p>
+                  <FaChevronRight />
+                </Link>
+              </div>
+            </div>
           </div>
-          <CommonCard className="xl:col-span-2 w-full px-4 py-2">Borrowsers</CommonCard>
+          <CommonCard className="xl:col-span-2 w-full py-4 px-6">
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-semibold">Borrowers</h1>
+              <Link
+                href={'/transactions'}
+                className="flex items-center gap-2"
+              >
+                <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
+              </Link>
+            </div>
+          </CommonCard>
         </div>
       </div>
     </div>
