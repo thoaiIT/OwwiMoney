@@ -6,6 +6,7 @@ import CommonInput from '@/components/input';
 import CommonTable from '@/components/table/CommonTable';
 import type { UseTableDataResult } from '@/components/table/hooks/useTableData';
 import useTableData from '@/components/table/hooks/useTableData';
+import useDebounce from '@/helper/hooks/useDebounce';
 import type { Partner } from '@prisma/client';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
@@ -48,8 +49,7 @@ export default function PartnerClient({
   useEffect(() => {
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
-
-  useEffect(() => {
+  const callQuery = () => {
     const currenQuery = queryString.parse(searchParams.toString());
     const updatedQuery = { ...currenQuery, query, page: 1 };
     const url = queryString.stringifyUrl(
@@ -60,7 +60,9 @@ export default function PartnerClient({
       { skipNull: true },
     );
     router.push(url);
-  }, [query]);
+  };
+
+  useDebounce(callQuery, 500, query);
 
   return (
     <div className="mb-2">
