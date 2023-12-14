@@ -48,8 +48,7 @@ export default function PartnerClient({
   useEffect(() => {
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
-
-  useEffect(() => {
+  const callQuery = () => {
     const currenQuery = queryString.parse(searchParams.toString());
     const updatedQuery = { ...currenQuery, query, page: 1 };
     const url = queryString.stringifyUrl(
@@ -60,6 +59,12 @@ export default function PartnerClient({
       { skipNull: true },
     );
     router.push(url);
+  };
+
+  let idTimeout: NodeJS.Timeout;
+  useEffect(() => {
+    idTimeout = setTimeout(callQuery, 500);
+    return () => clearTimeout(idTimeout);
   }, [query]);
 
   return (
