@@ -13,6 +13,7 @@ import Loading from '@/components/loading';
 import CommonTable from '@/components/table/CommonTable';
 import type { ColumnType } from '@/components/table/TableHeader';
 import useTableData, { type UseTableDataResult } from '@/components/table/hooks/useTableData';
+import useDebounce from '@/helper/hooks/useDebounce';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -120,7 +121,7 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
     tableData.changeTotalPage(totalPages || 0);
   }, [totalPages]);
 
-  useEffect(() => {
+  const callQuery = () => {
     const currenQuery = queryString.parse(searchParams.toString());
     const updatedQuery = { ...currenQuery, query, page: 1 };
     const url = queryString.stringifyUrl(
@@ -131,7 +132,9 @@ const Category = ({ dataTable, totalPages }: CategoryProps) => {
       { skipNull: true },
     );
     router.push(url);
-  }, [query]);
+  };
+
+  useDebounce(callQuery, 500, query);
 
   return (
     <>

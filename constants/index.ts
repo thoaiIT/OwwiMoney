@@ -12,6 +12,10 @@ export const PASTEL_COLORS = [
   '#fcc',
   '#ffe7cf',
   '#b6c7a7',
+  '#e8e8e8',
+  '#299d91',
+  '#7F8EC3',
+  '#A27744',
 ];
 
-export const COMMON_COLOR = ['#e8e8e8', '#299d91'];
+export const COMMON_COLOR = ['#e8e8e8', '#299d91', '#7F8EC3', '#A27744'];
