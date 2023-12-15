@@ -7,6 +7,7 @@ import {
   getStatisticWeekly,
   getStatisticYearly,
 } from '@/actions/controller/statisticController';
+import BorrowerTable from '@/app/(dashboard)/dashboard/borrowerTable';
 import TransactionTable from '@/app/(dashboard)/dashboard/transactionTable';
 import CommonAvatar from '@/components/CommonAvatar';
 import { CommonCard } from '@/components/card';
@@ -270,7 +271,6 @@ const Dashboard = () => {
               <div className="flex justify-between">
                 {newTransaction &&
                   newTransaction.map((item) => {
-                    console.log(newTransaction);
                     return (
                       <CommonAvatar
                         handleClick={() => {
@@ -305,6 +305,9 @@ const Dashboard = () => {
               >
                 <p className="text-sm hover:underline">View all</p> <FaChevronRight size={12} />
               </Link>
+            </div>
+            <div>
+              <BorrowerTable />
             </div>
           </CommonCard>
         </div>
