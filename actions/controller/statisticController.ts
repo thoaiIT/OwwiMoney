@@ -53,3 +53,11 @@ export const getTransactionByType = async (type: string) => {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
+
+export const getBorrowerByFilter = async (query?: string) => {
+  try {
+    return await statisticService.getBorrowerByFilter(query);
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};

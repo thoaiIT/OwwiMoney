@@ -277,6 +277,89 @@ class StatisticRepository {
       id: item.id,
     }));
   }
+
+  async getBorrowerByFilter(userId: string, query?: string) {
+    type FilterInside = { mode?: 'insensitive' | 'sensitive'; contains?: string };
+
+    const queryFilter: Array<Record<string, FilterInside | Record<string, FilterInside>>> = [
+      {
+        partner: {
+          name: {
+            mode: 'insensitive',
+            contains: query || '',
+          },
+        },
+      },
+    ];
+
+    const db = await connectToDatabase();
+    const results = await db
+      .collection('Transaction')
+      .aggregate([
+        {
+          $match: {
+            userId: new ObjectId(userId),
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            from: 'Type',
+            localField: 'typeId',
+            foreignField: '_id',
+            as: 'type',
+          },
+        },
+        {
+          $match: {
+            'type.name': 'Borrow',
+          },
+        },
+        {
+          $lookup: {
+            from: 'Partner',
+            localField: 'partnerId',
+            foreignField: '_id',
+            as: 'partnerInfo',
+          },
+        },
+        {
+          $match: {
+            'partnerInfo.name': { $regex: query || '', $options: 'i' }, // 'i' để không phân biệt hoa thường
+          },
+        },
+        {
+          $unwind: '$partnerInfo',
+        },
+        {
+          $sort: {
+            createdDate: -1,
+          },
+        },
+        {
+          $group: {
+            _id: '$partnerId',
+            partnerName: { $first: '$partnerInfo.name' },
+            latestCreatedDate: { $first: '$createdDate' },
+            total: { $sum: '$amount' },
+          },
+        },
+      ])
+      .toArray();
+
+    return results.map((item) => {
+      const utcDate = new Date(item.latestCreatedDate);
+      const day = utcDate.getUTCDate();
+      const month = utcDate.getUTCMonth() + 1; // Tháng bắt đầu từ 0
+      const year = utcDate.getUTCFullYear();
+      return {
+        name: item.partnerName,
+        createdDate: `${day}-${month}-${year}`,
+        amount: item.total,
+        id: item._id.toString(),
+      };
+    });
+  }
 }
 
 export default StatisticRepository;
