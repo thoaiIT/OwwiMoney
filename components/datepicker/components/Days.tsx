@@ -25,7 +25,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       const fullDay = `${day}-${calendarData.date.month() + 1}-${calendarData.date.year()}`;
       let className = '';
 
-      console.log(calendarData.date.month());
       if (dayjs(fullDay).isSame(period.start) && dayjs(fullDay).isSame(period.end)) {
         className = 'bg-celestial_blue-400 text-white font-medium rounded-full';
       } else if (dayjs(fullDay).isSame(period.start)) {
