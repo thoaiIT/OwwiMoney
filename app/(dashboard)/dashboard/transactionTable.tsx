@@ -47,6 +47,7 @@ const TransactionTable = () => {
       label: 'Partner',
       field: 'name',
       sortable: true,
+      customRender: (row: string) => <div className="py-2 ">{row}</div>,
     },
     {
       label: 'Category',
@@ -62,7 +63,7 @@ const TransactionTable = () => {
       label: 'Amount',
       field: 'amount',
       sortable: true,
-      customRender: (row: string) => <div className="py-2">{row}</div>,
+      customRender: (row: string) => <div className="py-2 font-bold text-green-700">{row}</div>,
     },
   ];
   return (

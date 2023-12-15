@@ -248,6 +248,21 @@ class StatisticService {
       return { message: error, status: HttpStatusCodes[500] };
     }
   }
+
+  async getBorrowerByFilter(query?: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      const borrowers = await this.statisticReposiroty.getBorrowerByFilter(userId, query);
+      return { message: 'Success', data: borrowers, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
 }
 
 export default StatisticService;
