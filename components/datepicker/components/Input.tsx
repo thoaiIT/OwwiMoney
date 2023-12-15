@@ -33,7 +33,7 @@ const Input: FC<InputProps> = ({ errors, name }) => {
       if (asSingle) {
         const date = parseFormattedDate(inputValue);
         if (dateIsValid(date.toDate())) {
-          dates.push(date.format('YYYY-MM-DD'));
+          dates.push(date.format('DD-MM-YYYY'));
         }
       }
       if (dates[0]) {
@@ -44,7 +44,7 @@ const Input: FC<InputProps> = ({ errors, name }) => {
           },
           e.target,
         );
-        if (dates[1]) changeDayHover(dayjs(dates[1]).add(-1, 'day').format('YYYY-MM-DD'));
+        if (dates[1]) changeDayHover(dayjs(dates[1]).add(-1, 'day').format('DD-MM-YYYY'));
         else changeDayHover(dates[0]);
       }
       changeInputText(e.target.value);

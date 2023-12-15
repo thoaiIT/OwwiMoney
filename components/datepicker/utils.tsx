@@ -27,11 +27,11 @@ export function ucFirst(value: string) {
   return `${value[0]?.toUpperCase()}${value.slice(1, value.length)}`;
 }
 
-export function formatDate(date: dayjs.Dayjs, format = 'YYYY-MM-DD') {
+export function formatDate(date: dayjs.Dayjs, format = 'DD-MM-YYYY') {
   return date.format(format);
 }
 
-export function parseFormattedDate(date: string, format = 'YYYY-MM-DD') {
+export function parseFormattedDate(date: string, format = 'DD-MM-YYYY') {
   return dayjs(date, format);
 }
 

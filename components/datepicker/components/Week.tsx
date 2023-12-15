@@ -10,7 +10,7 @@ const Week = () => {
           key={item}
           className="text-gray-500 text-center"
         >
-          {ucFirst(shortString(dayjs(`2022-11-${6 + item}`).format('ddd')))}
+          {ucFirst(shortString(dayjs(`${6 + item}-11-2022`).format('ddd')))}
         </div>
       ))}
     </div>

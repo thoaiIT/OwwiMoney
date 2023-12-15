@@ -13,7 +13,7 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
   const { period, changePeriod, dayHover, changeDayHover, disabledDates } = useContext(DatepickerContext);
   const currentDateClass = useCallback(
     (item: number) => {
-      const itemDate = `${calendarData.date.year()}-${calendarData.date.month() + 1}-${item >= 10 ? item : '0' + item}`;
+      const itemDate = `${item >= 10 ? item : '0' + item}-${calendarData.date.month() + 1}-${calendarData.date.year()}`;
       if (formatDate(dayjs()) === formatDate(dayjs(itemDate))) return 'text-celestial_blue-400';
       return '';
     },
@@ -22,9 +22,10 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
 
   const activeDateData = useCallback(
     (day: number) => {
-      const fullDay = `${calendarData.date.year()}-${calendarData.date.month() + 1}-${day}`;
+      const fullDay = `${day}-${calendarData.date.month() + 1}-${calendarData.date.year()}`;
       let className = '';
 
+      console.log(calendarData.date.month());
       if (dayjs(fullDay).isSame(period.start) && dayjs(fullDay).isSame(period.end)) {
         className = 'bg-celestial_blue-400 text-white font-medium rounded-full';
       } else if (dayjs(fullDay).isSame(period.start)) {
@@ -48,7 +49,7 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
   const hoverClassByDay = useCallback(
     (day: number) => {
       let className = currentDateClass(day);
-      const fullDay = `${calendarData.date.year()}-${calendarData.date.month() + 1}-${day >= 10 ? day : '0' + day}`;
+      const fullDay = `${day >= 10 ? day : '0' + day}-${calendarData.date.month() + 1}-${calendarData.date.year()}`;
 
       if (period.start && period.end) {
         if (dayjs(fullDay).isBetween(period.start, period.end, 'day', '[)')) {
@@ -123,7 +124,7 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
     (day: number, type: string) => {
       const object = getMetaData();
       const newDate = object[type as keyof typeof object];
-      const newHover = `${newDate.year()}-${newDate.month() + 1}-${day >= 10 ? day : '0' + day}`;
+      const newHover = `${day >= 10 ? day : '0' + day}-${newDate.month() + 1}-${newDate.year()}`;
 
       if (period.start && !period.end) {
         const hoverPeriod = { ...period, end: newHover };
@@ -175,12 +176,10 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
           onClickNextDays(day);
         }
       };
-
       if (disabledDates?.length) {
         const object = getMetaData();
         const newDate = object[type as keyof typeof object];
-        const clickDay = `${newDate.year()}-${newDate.month() + 1}-${day >= 10 ? day : '0' + day}`;
-
+        const clickDay = `${day >= 10 ? day : '0' + day}-${newDate.month() + 1}-${newDate.year()}`;
         if (period.start && !period.end) {
           dayjs(clickDay).isSame(dayHover) && continueClick();
         } else if (!period.start && period.end) {

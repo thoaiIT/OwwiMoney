@@ -77,22 +77,22 @@ const CommonDatePicker = ({
 
   const changeFirstMonth = useCallback(
     (month: number) => {
-      firstGotoDate(dayjs(`${firstDate.year()}-${month < 10 ? '0' : ''}${month}-01`));
+      firstGotoDate(dayjs(`1-${month}-${firstDate.year()}`));
     },
     [firstDate, firstGotoDate],
   );
 
   const changeFirstYear = useCallback(
     (year: number) => {
-      firstGotoDate(dayjs(`${year}-${firstDate.month() + 1}-01`));
+      firstGotoDate(dayjs(`1-${firstDate.month() + 1}-${year}`));
     },
     [firstDate, firstGotoDate],
   );
 
   const secondGotoDate = useCallback(
     (date: dayjs.Dayjs) => {
-      const newDate = dayjs(formatDate(date, 'YYYY-MM-DD'));
-      const reformatDate = dayjs(formatDate(firstDate, 'YYYY-MM-DD'));
+      const newDate = dayjs(formatDate(date, 'DD-MM-YYYY'));
+      const reformatDate = dayjs(formatDate(firstDate, 'DD-MM-YYYY'));
       if (newDate.isSame(reformatDate) || newDate.isBefore(reformatDate)) {
         setFirstDate(previousMonth(date));
       }
@@ -111,18 +111,19 @@ const CommonDatePicker = ({
 
   const changeSecondMonth = useCallback(
     (month: number) => {
-      secondGotoDate(dayjs(`${secondDate.year()}-${month < 10 ? '0' : ''}${month}-01`));
+      secondGotoDate(dayjs(`1-${month}-${secondDate.year()}`));
     },
     [secondDate, secondGotoDate],
   );
 
   const changeSecondYear = useCallback(
     (year: number) => {
-      secondGotoDate(dayjs(`${year}-${secondDate.month() + 1}-01`));
+      secondGotoDate(dayjs(`1-${secondDate.month() + 1}-${year}`));
     },
     [secondDate, secondGotoDate],
   );
-  console.log(typeof value);
+  console.log(value);
+  console.log(inputText);
 
   useEffect(() => {
     if (value) {
@@ -146,9 +147,7 @@ const CommonDatePicker = ({
             end: endDate.toString(),
           });
           setInputText(
-            `${startDate ? formatDate(startDate, 'DD-MM-YYYY') : value}${
-              asSingle ? '' : ` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`
-            }`,
+            `${value ? value : startDate.format('DD-MM-YYYY')}${asSingle ? '' : ` ~ ${endDate.format('DD-MM-YYYY')}`}`,
           );
         }
       }

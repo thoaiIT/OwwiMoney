@@ -51,7 +51,6 @@ export interface DatepickerStore {
   changeInputText: (text: string) => void;
   updateFirstDate: (date: dayjs.Dayjs) => void;
   changeDatepickerValue: (value: DateValueType, e?: HTMLInputElement | null | undefined) => void;
-  showFooter?: boolean;
   placeholder?: string | null;
   value: DateValueType;
   disabledDates?: DateRangeType[] | null;

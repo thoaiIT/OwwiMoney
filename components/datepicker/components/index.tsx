@@ -25,7 +25,7 @@ import {
 } from 'react-icons/md';
 
 const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear }: CalendarProps) => {
-  const { period, changePeriod, changeDayHover, showFooter, changeDatepickerValue, hideDatepicker, asSingle, input } =
+  const { period, changePeriod, changeDayHover, changeDatepickerValue, hideDatepicker, asSingle, input } =
     useContext(DatepickerContext);
   const [showMonths, setShowMonths] = useState(false);
   const [showYears, setShowYears] = useState(false);
@@ -79,21 +79,21 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
 
   const clickDay = useCallback(
     (day: number, month = date.month() + 1, year = date.year()) => {
-      const fullDay = `${year}-${month}-${day}`;
+      const fullDay = `${day}-${month}-${year}`;
       let newStart;
       let newEnd = null;
 
-      function chosePeriod(start: string, end: string) {
+      const chosePeriod = (start: string, end: string) => {
         const ipt = input?.current;
         changeDatepickerValue(
           {
-            startDate: dayjs(start).format('YYYY-MM-DD'),
-            endDate: dayjs(end).format('YYYY-MM-DD'),
+            startDate: dayjs(start).format('DD-MM-YYYY'),
+            endDate: dayjs(end).format('DD-MM-YYYY'),
           },
           ipt,
         );
         hideDatepicker();
-      }
+      };
 
       if (period.start && period.end) {
         if (changeDayHover) {
@@ -124,15 +124,9 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
           newStart = condition ? fullDay : period.start;
           newEnd = condition ? period.end : fullDay;
         }
-
-        if (!showFooter) {
-          if (newStart && newEnd) {
-            chosePeriod(newStart, newEnd);
-          }
-        }
       }
 
-      if (!(newEnd && newStart) || showFooter) {
+      if (!(newEnd && newStart)) {
         changePeriod({
           start: newStart,
           end: newEnd,
@@ -148,7 +142,6 @@ const Calendar = ({ date, onClickPrevious, onClickNext, changeMonth, changeYear 
       hideDatepicker,
       period.end,
       period.start,
-      showFooter,
       input,
     ],
   );
