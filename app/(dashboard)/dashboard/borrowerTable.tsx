@@ -59,7 +59,7 @@ const BorrowerTable = () => {
             name="searchKey"
             className="border-none hover:border-none outline-none shadow-none w-30"
             intent="simple"
-            placeholder="Search by name, type"
+            placeholder="Search by name..."
             value={query}
             onChange={(event) => {
               setQuery((prev) => event.target.value);
