@@ -35,7 +35,7 @@ const CommonAvatar: React.FC<CommonAvatarProps> = ({
         )}
       >
         <Avatar.Image
-          className="h-full w-full rounded-[inherit] object-cover"
+          className="h-full w-full rounded-[inherit] object-cover hover:scale-110 transition-all duration-500 "
           src={src || emptyUser.src}
           alt={alt}
         />

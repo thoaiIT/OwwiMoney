@@ -272,6 +272,8 @@ module.exports = {
         //button gaming shadow
         buttonShadow: '6px 6px 0 black',
         buttonHoverShadow: '10px 10px 0 #FBC638',
+        cardShadow:
+          'drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.04)) drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.04)) drop-shadow(0px 16px 24px rgba(0, 0, 0, 0.06))',
       },
     },
   },

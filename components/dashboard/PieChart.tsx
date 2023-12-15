@@ -8,11 +8,11 @@ type Props = {
   data: number[];
   cutout?: number;
   chartWidth?: number;
+  chartTitle?: string;
 };
 export function PieChart(props: Props) {
   ChartJS.register(ArcElement, Tooltip, Legend);
   const { label, labels, data } = props;
-  console.log(labels, data);
   const len = labels?.length;
   const isEmptyData = data.length === 0;
   const dataDisplay = {
@@ -40,6 +40,7 @@ export function PieChart(props: Props) {
           padding: 10,
           boxWidth: 15,
         },
+        display: false,
       },
     },
   };
@@ -60,6 +61,7 @@ export function PieChart(props: Props) {
         }}
         options={options}
       />
+      <p className="text-center mt-2 font-normal">{props.chartTitle}</p>
     </>
   );
 }

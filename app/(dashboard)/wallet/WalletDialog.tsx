@@ -168,7 +168,7 @@ const WalletDialog = ({
                 <CommonCombobox
                   name="walletTypeId"
                   valueProp={value}
-                  onChange={onChange}
+                  onChangeHandler={onChange}
                   optionsProp={walletTypeOption}
                   widthSelection={'100%'}
                   placeholder={'Select account type...'}

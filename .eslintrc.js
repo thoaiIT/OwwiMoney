@@ -45,7 +45,7 @@ module.exports = {
     'jsx-a11y/no-access-key': 'error',
     'react/self-closing-comp': 'warn',
     'prefer-arrow-callback': 'error',
-    'no-underscore-dangle': ['error', { enforceInMethodNames: true }],
+    'no-underscore-dangle': ['warn', { enforceInMethodNames: true }],
     'no-new-object': 'error',
     eqeqeq: 'error',
     radix: 'error',
