@@ -220,6 +220,63 @@ class StatisticRepository {
       id: item.id,
     }));
   }
+
+  async getTransactionByType(userId: string, type: string) {
+    const transactions = await client.transaction.findMany({
+      where: {
+        userId,
+        deleted: false,
+        type: {
+          name: type,
+        },
+      },
+      include: {
+        partner: { select: { name: true, image: true } },
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+    });
+
+    return transactions.map((item) => ({
+      name: item.partner.name,
+      createdDate: `${item.createdDate.getDate()}-${item.createdDate.getMonth() + 1}-${item.createdDate.getFullYear()}`,
+      categoryName: item.category.name,
+      amount: item.amount,
+      id: item.id,
+    }));
+  }
+
+  async getAllTransaction(userId: string) {
+    const transactions = await client.transaction.findMany({
+      where: {
+        userId,
+        deleted: false,
+      },
+      include: {
+        partner: { select: { name: true, image: true } },
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+    });
+
+    return transactions.map((item) => ({
+      name: item.partner.name,
+      createdDate: `${item.createdDate.getDate()}-${item.createdDate.getMonth() + 1}-${item.createdDate.getFullYear()}`,
+      categoryName: item.category.name,
+      amount: item.amount,
+      id: item.id,
+    }));
+  }
 }
 
 export default StatisticRepository;

@@ -228,6 +228,26 @@ class StatisticService {
       return { message: error, status: HttpStatusCodes[500] };
     }
   }
+  async getTransactionByType(type: string) {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+      let transactions;
+      if (type !== 'All') {
+        transactions = await this.statisticReposiroty.getTransactionByType(userId, type);
+      } else {
+        transactions = await this.statisticReposiroty.getAllTransaction(userId);
+      }
+      return { message: 'Success', data: transactions, status: HttpStatusCodes[200] };
+    } catch (error) {
+      console.log({ error });
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
 }
 
 export default StatisticService;
