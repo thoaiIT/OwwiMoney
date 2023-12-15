@@ -80,8 +80,23 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     { label: 'Partner', field: 'partnerName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Type', field: 'typeName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Date', field: 'createdDate', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Wallet', field: 'walletName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Amount', field: 'amount', sortable: true, headerTextAlign: 'left', textAlign: 'left' },
+    {
+      label: 'Wallet',
+      field: 'walletName',
+      sortable: true,
+      headerTextAlign: 'center',
+      textAlign: 'center',
+    },
+    {
+      label: 'Amount',
+      field: 'amount',
+      sortable: true,
+      headerTextAlign: 'left',
+      textAlign: 'left',
+      customRender: (value) => {
+        return <div>{Number(value).toLocaleString()}</div>;
+      },
+    },
     { label: 'Actions', field: 'id', type: 'action' },
   ];
 

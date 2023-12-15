@@ -234,6 +234,7 @@ const Dashboard = () => {
                   maxVisibleItems={5}
                   valueProp={pieChartOption}
                   defaultValue={'1'}
+                  customItem="text-xs"
                   onChangeHandler={changePieChartOptionsHandler}
                   optionsProp={pieChartOptions}
                   widthSelection={'100px'}
