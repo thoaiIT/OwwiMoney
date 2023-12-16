@@ -163,7 +163,7 @@ const Dashboard = () => {
             </div>
 
             <div className="flex  justify-center">
-              <div className="w-auto max-w-[400px] h-auto max-h-[250px]">
+              <div className="w-auto max-w-[400px] h-[250px]">
                 <CardSlider />
               </div>
             </div>
