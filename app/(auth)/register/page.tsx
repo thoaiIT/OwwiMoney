@@ -18,8 +18,8 @@ const Page = () => {
             src={OwwiFigure}
             alt="Owwi"
             className="absolute top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2 xl:block hidden"
-            width={540}
-            height={560}
+            width={580}
+            height={580}
           />
         </div>
       </Container>

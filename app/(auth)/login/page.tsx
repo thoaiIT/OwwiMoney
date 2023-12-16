@@ -21,8 +21,8 @@ const Page = async () => {
               src={OwwiFigure}
               alt="Owwi"
               className="absolute top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2 xl:block hidden"
-              width={540}
-              height={560}
+              width={600}
+              height={600}
             />
           </div>
         </Container>
