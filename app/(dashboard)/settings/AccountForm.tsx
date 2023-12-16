@@ -6,6 +6,7 @@ import CommonInput from '@/components/input';
 import Loading from '@/components/loading';
 import { AccountModel } from '@/model/SettingModel';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ChangeEvent } from 'react';
@@ -23,6 +24,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
   const [accountImage, setAccountImage] = useState(accountData?.image || '');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { data: session, update } = useSession();
 
   const {
     control,
@@ -68,8 +70,12 @@ const AccountForm = ({ accountData }: AccountProps) => {
     setIsLoading(true);
     const result = await updateUser(updateData as UserUpdateType);
     if (result.status?.code === 200) {
-      toast.success(result.message as string);
+      await update({
+        ...session,
+        user: { ...session?.user, name: result.data?.user.name, image: result.data?.user.image },
+      });
       router.refresh();
+      toast.success(result.message as string);
     } else {
       toast.error(result.message as string);
     }
@@ -104,11 +110,12 @@ const AccountForm = ({ accountData }: AccountProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="email"
-              className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0  bg-white"
+              className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0 bg-gray-200 opacity-90"
               placeholder="Username"
               value={String(value)}
               onChange={onChange}
               errors={errors}
+              isDisabled
             />
           )}
         />

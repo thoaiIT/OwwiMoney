@@ -1,5 +1,4 @@
 import Breadcrumb from '@/components/breadscrumb';
-import { CustomSwitch } from '@/components/switch';
 import ThemeSwitch from '@/components/theme-switch';
 import * as Avatar from '@radix-ui/react-avatar';
 import { Box, Flex, IconButton, Strong, Text } from '@radix-ui/themes';
@@ -15,7 +14,7 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
     <Box className="flex justify-between h-20 items-center ">
       <Breadcrumb />
       <Box className="flex items-center gap-4 h-5/4">
-        <CustomSwitch id="airplane-mode" />
+        {/* <CustomSwitch id="airplane-mode" /> */}
         <ThemeSwitch />
         <Box className="flex gap-3">
           <IoMdMail
@@ -34,7 +33,10 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
           <Avatar.Root className="bg-blackA1 inline-flex h-[40px] w-[40px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
             <Avatar.Image
               className="h-full w-full rounded-[inherit] object-cover"
-              src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+              src={
+                session?.user?.image ||
+                'https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80'
+              }
               alt="Colm Tuite"
             />
           </Avatar.Root>
@@ -45,8 +47,8 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
             <Text size={'1'}>
               <span className="text-red-400 font-bold">Hi,</span>{' '}
               <Strong>
-                {session?.user?.name && session?.user?.name?.length > 10
-                  ? session?.user?.name?.substring(0, 10) + '...'
+                {session?.user?.name && session?.user?.name?.length > 12
+                  ? session?.user?.name?.substring(0, 12) + '...'
                   : session?.user?.name}
               </Strong>
             </Text>
