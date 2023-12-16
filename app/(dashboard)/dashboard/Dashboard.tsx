@@ -144,10 +144,10 @@ const Dashboard = () => {
 
   return (
     <div className="h-full">
-      <div className="grid xl:grid-cols-5 gap-4">
+      <div className="grid xl:grid-cols-5 gap-4 ">
         <div className="xl:col-span-2">
-          <CommonCard className="xl:col-span-2 px-8 py-4 w-full">
-            <div className="flex justify-between">
+          <CommonCard className="xl:col-span-2 h-full w-full">
+            <div className="flex justify-between py-4 px-6">
               <h1 className="text-xl font-semibold">Wallets</h1>
               <Link
                 href={'#'}
@@ -162,13 +162,13 @@ const Dashboard = () => {
               </Link>
             </div>
 
-            <div className="flex mt-[2px] justify-center">
-              <div className="w-auto max-w-[400px] h-auto max-h-[250px] my-2">
+            <div className="flex  justify-center">
+              <div className="w-auto max-w-[400px] h-auto max-h-[250px]">
                 <CardSlider />
               </div>
             </div>
 
-            <div className="flex mt-[4px] justify-between items-end border-t-[1px]">
+            <div className="flex mt-[4px] justify-between items-end border-t-[1px] px-4 py-2">
               <div className="flex flex-col text-right">
                 <span className="text-lg text-blue-500 font-bold">2850.75</span>
                 <span className="text-sm text-[#AEAEAE]">Current balance</span>
@@ -225,7 +225,7 @@ const Dashboard = () => {
             />
           </div>
         </CommonCard>
-        <div className="xl:col-span-3 grid xl:grid-cols-4 gap-2">
+        <div className="xl:col-span-3 grid xl:grid-cols-4 gap-4">
           <div className="grid gap-2 xl:col-span-2">
             <div className="flex flex-col bg-white-500 rounded-2xl  shadow-md py-4 px-6">
               <div className="flex items-center gap-2 justify-between">

@@ -89,7 +89,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="username"
-              className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px]"
+              className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0  bg-white"
               placeholder="Username"
               value={String(value)}
               onChange={onChange}
@@ -104,7 +104,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="email"
-              className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
+              className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0  bg-white"
               placeholder="Username"
               value={String(value)}
               onChange={onChange}
@@ -119,8 +119,8 @@ const AccountForm = ({ accountData }: AccountProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonInput
               name="phone"
-              className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
-              placeholder="Phone"
+              className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0 bg-white"
+              placeholder="+84"
               value={String(value)}
               onChange={onChange}
               errors={errors}
@@ -134,7 +134,7 @@ const AccountForm = ({ accountData }: AccountProps) => {
           render={({ field: { onChange, value } }) => (
             <CommonTextarea
               name="bio"
-              className="px-6 py-4 border-[1px] border-theme-component shadow-none h-28 text-base focus-visible:ring-0"
+              className="px-6 py-4 border-[1px] border-theme-component shadow-none h-28 text-base focus-visible:ring-0 bg-white"
               placeholder="Bio"
               value={value as string}
               onChange={onChange}
