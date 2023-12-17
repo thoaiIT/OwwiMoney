@@ -45,7 +45,6 @@ const LoginForm = () => {
         router.refresh();
         toast.success('Login Successfully !');
       } else {
-        console.log(callback);
         toast.error('Invalid email or password !');
       }
     });

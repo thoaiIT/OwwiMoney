@@ -53,13 +53,11 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
   const router = useRouter();
   // const [deleteId, setDeleteId] = useState<string>('');
   const editHandler = (id: string) => {
-    console.log('My custom edit ' + id);
     setEditId(id);
     setOpenDialog(true);
   };
 
   const handleDeleteTransaction = async () => {
-    console.log('deleteTransactionId ' + deleteTransactionId);
     const result = await deleteTransaction(deleteTransactionId);
     if (result.status?.code === 200) {
       router.refresh();
@@ -70,7 +68,6 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
   };
 
   const deleteHandler = async (id: string) => {
-    console.log('My custom delete ' + id);
     setDeleteTransactionId(id);
     setOpenConfirmDialog(true);
   };

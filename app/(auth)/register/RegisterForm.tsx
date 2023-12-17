@@ -53,7 +53,7 @@ const RegisterForm = () => {
           router.refresh();
         }
         if (callback?.error) {
-          console.log(callback);
+          console.log(callback?.error);
         }
       });
     } else {

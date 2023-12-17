@@ -122,7 +122,6 @@ const CommonDatePicker = ({
     },
     [secondDate, secondGotoDate],
   );
-  console.log(typeof value);
 
   useEffect(() => {
     if (value) {

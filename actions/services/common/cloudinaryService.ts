@@ -43,8 +43,6 @@ export const uploadImageToCloudinary = async (base64String: string): Promise<str
         .end(uint8Array);
     });
 
-    console.log('Uploaded Image:', result);
-
     return result?.secure_url;
   } catch (error) {
     console.error('Failed to upload image to Cloudinary:', error);

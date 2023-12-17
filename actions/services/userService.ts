@@ -104,7 +104,7 @@ class UserService {
   // Get Info User by UserId
   async getUserById() {
     const session = await getServerSession(options);
-    console.log(session?.user?.id);
+
     const userId = (session?.user?.userId as string) || (session?.user?.id as string);
 
     if (!userId) {

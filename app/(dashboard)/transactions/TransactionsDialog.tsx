@@ -191,7 +191,6 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     const fetchAllTypes = async () => {
-      console.log('fetch Type');
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
         return { value: type.id, label: type.name } as DataType;

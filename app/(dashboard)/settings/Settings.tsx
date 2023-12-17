@@ -5,7 +5,6 @@ import TabClient from '@/app/(dashboard)/settings/TabClient';
 
 const Settings = async () => {
   const result = await getUserById();
-  console.log(result);
   const userProfile = {
     name: result.data?.user?.name,
     email: result.data?.user?.email,
