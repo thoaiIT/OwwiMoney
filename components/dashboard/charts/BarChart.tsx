@@ -37,13 +37,9 @@ export function BarChart(props: Props) {
     <>
       <Bar
         data={dataDisplay}
-        style={{
-          width: '50%',
-
-          height: 'max-content',
-          blockSize: 'max-content',
-        }}
         options={options}
+        height={'70%'}
+        width={'100%'}
       />
     </>
   );
