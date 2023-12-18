@@ -1,4 +1,4 @@
-import type { TransactionCreateType } from '@/actions/controller/transactionController';
+import type { TransactionCreateType, TransactionUpdateType } from '@/actions/controller/transactionController';
 import client from '@/helper/lib/prismadb';
 import type { ObjectWithDynamicKeys } from '@/helper/type';
 
@@ -117,6 +117,35 @@ class TransactionRepository {
   async removeTransaction(transactionId: string) {
     return await client.transaction.delete({
       where: { id: transactionId },
+    });
+  }
+
+  async updateTransaction({
+    id,
+    partnerId,
+    typeId,
+    categoryId,
+    amount,
+    createdDate,
+    invoiceImageUrl,
+    status,
+    walletId,
+    description,
+  }: TransactionUpdateType) {
+    return await client.transaction.update({
+      where: { id: id },
+      data: {
+        typeId,
+        categoryId,
+        deleted: false,
+        partnerId,
+        amount,
+        description,
+        createdDate: new Date(createdDate),
+        invoiceImageUrl,
+        status,
+        walletId,
+      },
     });
   }
 }

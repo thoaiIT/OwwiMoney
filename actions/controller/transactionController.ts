@@ -1,5 +1,4 @@
 'use server';
-import { getTypeById } from '@/actions/controller/typeController';
 import { getWalletById } from '@/actions/controller/walletController';
 import TransactionRepository from '@/actions/repositories/transactionRepository';
 import TransactionService from '@/actions/services/transactionService';
@@ -14,11 +13,17 @@ export type TransactionCreateType = Omit<
   createdDate: string;
 };
 
+export type TransactionUpdateType = Omit<
+  Transaction,
+  'userId' | 'createdAt' | 'updatedAt' | 'createdDate' | 'deleted'
+> & {
+  createdDate: string;
+};
+
 const transactionRepository = new TransactionRepository();
 const transactionService = new TransactionService(transactionRepository);
 
 export const createTransaction = async (data: TransactionCreateType) => {
-  console.log(data.invoiceImageUrl);
   const result = uploadToCloudinary(data.invoiceImageUrl || '')
     .then(async (url) => {
       try {
@@ -38,7 +43,6 @@ export const createTransaction = async (data: TransactionCreateType) => {
     //   }
     // })
     .catch((error) => {
-      console.log({ error });
       return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
     });
   return result;
@@ -64,11 +68,7 @@ export const getTransactionById = async (id: string) => {
   }
 };
 
-export const checkWalletInfo = async (walletId: string, typeId: string, amount: number) => {
-  const type = await getTypeById(typeId);
-  if (type.data?.type?.name === 'Outcome' || type.data?.type?.name === 'Loan') {
-    amount = -amount;
-  }
+export const checkWalletInfo = async (walletId: string, amount: number) => {
   const walletInfo = await getWalletById(walletId);
   if (Number(walletInfo.data?.wallet?.totalBalance) + amount < 0) {
     return {
@@ -85,6 +85,14 @@ export const checkWalletInfo = async (walletId: string, typeId: string, amount: 
 export const deleteTransaction = async (transactionId: string) => {
   try {
     return await transactionService.deleteTransaction(transactionId);
+  } catch (error) {
+    return { message: error, status: HttpStatusCodes[500] };
+  }
+};
+
+export const updateTransaction = async (data: TransactionUpdateType) => {
+  try {
+    return await transactionService.updateTransaction(data);
   } catch (error) {
     return { message: error, status: HttpStatusCodes[500] };
   }

@@ -6,8 +6,6 @@ export const sendMessage = async (socket, data) => {
 
   const partners = await prisma.partner.updateMany({ data: { deleted: false } });
 
-  console.log({ partners });
-
   prisma.$disconnect();
 };
 

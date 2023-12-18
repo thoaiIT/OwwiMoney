@@ -4,7 +4,6 @@ import { getPartnerByType } from '@/actions/controller/partnerController';
 import {
   checkWalletInfo,
   createTransaction,
-  getTransactionById,
   type TransactionCreateType,
 } from '@/actions/controller/transactionController';
 import { getAllTypes } from '@/actions/controller/typeController';
@@ -24,7 +23,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box } from '@radix-ui/themes';
 import { IsNotEmpty, Min } from 'class-validator';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useLayoutEffect, useState, type ChangeEvent } from 'react';
+import React, { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { BsSearch } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa';
@@ -41,7 +40,6 @@ export type TransactionsDialogProps = {
   openDialog: boolean;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
   formType?: 'create' | 'edit';
-  transactionId?: string;
 };
 
 export type TransactionType = {
@@ -61,23 +59,23 @@ export type TransactionType = {
 
 export class NewTransactionModel {
   @IsNotEmpty({ message: 'Partner is required' })
-  partnerId?: string;
+  partnerId: string;
 
   @IsNotEmpty({ message: 'Type is required' })
-  type?: string;
+  type: string;
 
   @IsNotEmpty({ message: 'Category is required' })
-  category?: string;
+  category: string;
 
   @IsNotEmpty({ message: 'Wallet is required' })
-  wallet?: string;
+  wallet: string;
 
   @IsNotEmpty({ message: 'Created Date is required' })
-  createdDate?: string;
+  createdDate: string;
 
   @IsNotEmpty({ message: 'Amount is required' })
   @Min(1, { message: 'Amount must be larger 0' })
-  amount?: number;
+  amount: number;
 
   @IsImage()
   @MaxSize(10000000)
@@ -88,18 +86,12 @@ export class NewTransactionModel {
 
 const resolver = classValidatorResolver(NewTransactionModel);
 
-const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
-  formType,
-  openDialog,
-  setOpenDialog,
-  transactionId,
-}) => {
+const TransactionsDialog: React.FC<TransactionsDialogProps> = ({ formType, openDialog, setOpenDialog }) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
   const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
-  const [transaction, setTransaction] = useState<TransactionType>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -114,33 +106,38 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
     watch,
   } = useForm({
     values: {
-      partnerId: transaction?.partnerId || '',
-      type: transaction?.typeId || '',
-      category: transaction?.categoryId || '',
-      wallet: transaction?.walletId || '',
-      createdDate: transaction?.createdDate || '',
-      amount: transaction?.amount || 0,
+      partnerId: '',
+      type: '',
+      category: '',
+      wallet: '',
+      createdDate: '',
+      amount: 0,
       invoiceImage: { base64String: '', size: 0, type: '' },
-      description: transaction?.description || '',
+      description: '',
     },
     resolver,
   });
 
   const handleSubmitForm = handleSubmit(async (values: NewTransactionModel) => {
-    const walletInfo = await checkWalletInfo(values.wallet as string, values.type as string, values.amount as number);
+    const amount = typeOptions.some(
+      (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Outcome'),
+    )
+      ? -(values.amount || 0)
+      : values.amount || 0;
+    const walletInfo = await checkWalletInfo(values.wallet as string, amount);
     if (walletInfo.status?.code === 200) {
       const isUnPaid = typeOptions.some(
         (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Borrow'),
       );
       const data: TransactionCreateType = {
         amount: Number(values.amount),
-        categoryId: values.category as string,
+        categoryId: values.category,
         createdDate: (values.createdDate as { endDate?: string }).endDate as string,
-        description: values.description as string,
-        invoiceImageUrl: values.invoiceImage?.base64String as string,
-        partnerId: values.partnerId as string,
-        typeId: values.type as string,
-        walletId: values.wallet as string,
+        description: values.description || '',
+        invoiceImageUrl: values.invoiceImage?.base64String || '',
+        partnerId: values.partnerId,
+        typeId: values.type,
+        walletId: values.wallet,
         status: isUnPaid ? 'UNPAID' : 'PAID',
       };
       const res = await createTransaction(data);
@@ -191,7 +188,6 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
 
   useEffect(() => {
     const fetchAllTypes = async () => {
-      console.log('fetch Type');
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
         return { value: type.id, label: type.name } as DataType;
@@ -200,11 +196,13 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
       setTypeOptions(typeOptions as DataType[]);
     };
     const fetchAllWallet = async () => {
+      setIsLoading(true);
       const allWallets = await getAllWallet();
       const walletOptions: DataType[] | undefined = allWallets.data?.wallets?.map((wallet) => {
         return { value: wallet.id, label: wallet.name } as DataType;
       });
       setWalletOptions(walletOptions as DataType[]);
+      setIsLoading(false);
     };
     if (openDialog) {
       fetchAllTypes();
@@ -231,22 +229,12 @@ const TransactionsDialog: React.FC<TransactionsDialogProps> = ({
       });
       setValue('partnerId', partnerOpts?.[0]?.value as string);
       setPartnerOptions(partnerOpts as DataType[]);
-      setIsLoading(false);
     };
     if (openDialog) {
       watch('type') && fetchPartnersByType();
       watch('type') && fetchCategoriesByType();
     }
   }, [watch('type'), openDialog]);
-
-  useLayoutEffect(() => {
-    const fetchTransaction = async () => {
-      setIsLoading(true);
-      const transaction = await getTransactionById(transactionId as string);
-      setTransaction(transaction.data as TransactionType);
-    };
-    if (transactionId && openDialog) fetchTransaction();
-  }, [transactionId]);
 
   return (
     <Box>

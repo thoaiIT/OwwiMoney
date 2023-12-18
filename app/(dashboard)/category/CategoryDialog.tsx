@@ -66,8 +66,6 @@ const CategoryDialog = ({
       description: values.description,
     };
 
-    console.log(values.categoryImage?.base64String);
-
     if (type === 'create' && handleCreateCategory) handleCreateCategory(data as CategoryCreateType);
     if (type === 'update' && handleUpdateCategory) handleUpdateCategory(data as CategoryCreateType, isNewImage);
 
