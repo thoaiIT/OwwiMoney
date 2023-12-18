@@ -5,6 +5,7 @@
     "paths": {
       "@/*": ["./*", ""]
     },
+    "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",

@@ -103,8 +103,7 @@ class PartnerService {
         imageUrl = (await uploadToCloudinary(data.image)) || '';
         if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
       }
-      console.log({ userId });
-      console.log({ ...data, image: imageUrl });
+
       const partner = await this.partnerRepository.updatePartner({ ...data, image: imageUrl });
       return { message: 'Success', data: { partner }, status: HttpStatusCodes[200] };
     } catch (error) {

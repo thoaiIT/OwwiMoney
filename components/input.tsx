@@ -76,7 +76,6 @@ const CommonInput = ({
         value={value}
         onChange={(e) => {
           if (preventCharacters) {
-            console.log('change');
             (isNumber(e.target.value) || e.target.value === '') && onChange?.(e);
           } else {
             onChange?.(e);
