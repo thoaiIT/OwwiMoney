@@ -56,7 +56,6 @@ export const deleteWallet = async (walletId: string) => {
   try {
     return await walletService.deleteWallet(walletId);
   } catch (error) {
-    console.log(error);
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };

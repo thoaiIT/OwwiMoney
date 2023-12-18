@@ -175,8 +175,6 @@ class StatisticService {
         dateEnd: dateEnd.toISOString(),
       });
 
-      console.log({ statisticOutcome: JSON.stringify(statisticOutcome) });
-
       //   Get List date of UTC Date
       const endDateLoop = new Date(dateEnd);
       const currentDate = new Date(dateStart);
@@ -198,7 +196,6 @@ class StatisticService {
         acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
         return acc;
       }, []);
-      console.log({ dataValues });
       return {
         message: 'Success',
         data: {
@@ -244,7 +241,6 @@ class StatisticService {
       }
       return { message: 'Success', data: transactions, status: HttpStatusCodes[200] };
     } catch (error) {
-      console.log({ error });
       return { message: error, status: HttpStatusCodes[500] };
     }
   }

@@ -72,7 +72,6 @@ export default function DashboardOutcomeComparison() {
       const weeklyData = (await getStatisticWeekly()).data as StatisticType;
       const monthlyData = (await getStatisticMonthly()).data as StatisticType;
       const yearlyData = (await getStatisticYearly()).data as StatisticType;
-      console.log({ weeklyData });
       setMapQueries({ weekly: weeklyData, monthly: monthlyData, yearly: yearlyData });
     })();
   }, []);

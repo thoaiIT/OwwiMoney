@@ -1,6 +1,5 @@
 'use client';
 import { deleteTransaction } from '@/actions/controller/transactionController';
-import TransactionsDialog from '@/app/(dashboard)/transactions/TransactionsDialog';
 import ConfirmDialog from '@/components/dialog/confirmDialog';
 import CommonTable from '@/components/table/CommonTable';
 import type { ColumnType } from '@/components/table/TableHeader';
@@ -45,17 +44,18 @@ export type TransactionResType = Omit<Transaction, 'createdAt' | 'updatedAt' | '
 };
 
 export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTable, totalPages }) => {
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const [editId, setEditId] = useState<string>('');
+  // const [openDialog, setOpenDialog] = useState<boolean>(false);
+  // const [editId, setEditId] = useState<string>('');
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [deleteTransactionId, setDeleteTransactionId] = useState<string>('');
 
   const router = useRouter();
   // const [deleteId, setDeleteId] = useState<string>('');
   const editHandler = (id: string) => {
-    console.log('My custom edit ' + id);
-    setEditId(id);
-    setOpenDialog(true);
+    // console.log('My custom edit ' + id);
+    // setEditId(id);
+    // setOpenDialog(true);
+    router.push(`/transactions/${id}`);
   };
 
   const handleDeleteTransaction = async () => {
@@ -80,8 +80,23 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
     { label: 'Partner', field: 'partnerName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Type', field: 'typeName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
     { label: 'Date', field: 'createdDate', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Wallet', field: 'walletName', sortable: true, headerTextAlign: 'center', textAlign: 'center' },
-    { label: 'Amount', field: 'amount', sortable: true, headerTextAlign: 'left', textAlign: 'left' },
+    {
+      label: 'Wallet',
+      field: 'walletName',
+      sortable: true,
+      headerTextAlign: 'center',
+      textAlign: 'center',
+    },
+    {
+      label: 'Amount',
+      field: 'amount',
+      sortable: true,
+      headerTextAlign: 'left',
+      textAlign: 'left',
+      customRender: (value) => {
+        return <div>{Number(value).toLocaleString()}</div>;
+      },
+    },
     { label: 'Actions', field: 'id', type: 'action' },
   ];
 
@@ -93,12 +108,12 @@ export const TableTransactionAll: React.FC<TableTransactionAllProps> = ({ dataTa
   return (
     <Fragment>
       <Suspense fallback={''}>
-        <TransactionsDialog
+        {/* <TransactionsDialog
           transactionId={editId}
           formType="edit"
           openDialog={openDialog}
           setOpenDialog={setOpenDialog}
-        />
+        /> */}
       </Suspense>
       <CommonTable
         data={dataTable}
