@@ -1,6 +1,5 @@
 import CommonAvatar from '@/components/CommonAvatar';
 import Breadcrumb from '@/components/breadscrumb';
-import { CustomSwitch } from '@/components/switch';
 import ThemeSwitch from '@/components/theme-switch';
 import { Box, Flex, IconButton, Strong, Text } from '@radix-ui/themes';
 import { useSession } from 'next-auth/react';
@@ -15,7 +14,7 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
     <Box className="flex justify-between h-20 items-center ">
       <Breadcrumb />
       <Box className="flex items-center gap-4 h-5/4">
-        <CustomSwitch id="airplane-mode" />
+        {/* <CustomSwitch id="airplane-mode" /> */}
         <ThemeSwitch />
         <Box className="flex gap-3">
           <IoMdMail
@@ -41,7 +40,12 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
             gap="3"
           >
             <Text size={'1'}>
-              <span className="text-red-400 font-bold">Hi,</span> <Strong>{session?.user?.name}</Strong>
+              <span className="text-red-400 font-bold">Hi,</span>{' '}
+              <Strong>
+                {session?.user?.name && session?.user?.name?.length > 12
+                  ? session?.user?.name?.substring(0, 12) + '...'
+                  : session?.user?.name}
+              </Strong>
             </Text>
             {/* <Text size={'1'}>{session?.user?.email}</Text> */}
           </Flex>

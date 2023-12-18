@@ -8,7 +8,7 @@ import { CiLogout } from 'react-icons/ci';
 
 const SideBar = () => {
   return (
-    <div className="h-[100% - 8px] overflow-y-auto m-2 hidden border-r-2 lg:w-1/6 lg:min-w-[316px] md:w-2/5 md:max-w-[316px] md:p-6 bg-theme text-theme-foreground shadow-lg rounded-3xl md:flex md:flex-col justify-between">
+    <div className="h-[100% - 8px] overflow-y-auto m-2 hidden border-r-2 lg:w-1/6 md:w-2/5 md:max-w-[316px] p-4 bg-theme text-theme-foreground shadow-lg rounded-3xl md:flex md:flex-col justify-between">
       <div>
         <Link href={'/dashboard'}>
           <div className="flex justify-center items-center my-10">
