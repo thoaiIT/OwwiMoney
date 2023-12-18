@@ -5,7 +5,7 @@ import Calendar from '@/components/datepicker/components';
 import Input from '@/components/datepicker/components/Input';
 import { DatepickerContext } from '@/components/datepicker/const';
 import { type DatepickerType, type Period } from '@/components/datepicker/type';
-import useOnClickOutside, { Arrow, formatDate, nextMonth, previousMonth } from './utils';
+import useOnClickOutside, { Arrow, convertToDDMMYYYY, formatDate, nextMonth, previousMonth } from './utils';
 
 const CommonDatePicker = ({
   value = { startDate: '', endDate: '' },
@@ -122,7 +122,6 @@ const CommonDatePicker = ({
     },
     [secondDate, secondGotoDate],
   );
-  console.log(typeof value);
 
   useEffect(() => {
     if (value) {
@@ -132,7 +131,8 @@ const CommonDatePicker = ({
         startDate = dayjs(value.startDate);
         endDate = dayjs(value.endDate);
       } else if (typeof value === 'string') {
-        const date = dayjs(value);
+        const formatValue = convertToDDMMYYYY(value);
+        const date = dayjs(formatValue, 'DD-MM-YYYY');
         if (date.isValid()) {
           startDate = endDate = date;
         }
@@ -146,8 +146,8 @@ const CommonDatePicker = ({
             end: endDate.toString(),
           });
           setInputText(
-            `${startDate ? formatDate(startDate, 'DD-MM-YYYY') : value}${
-              asSingle ? '' : ` ~ ${formatDate(endDate, 'DD-MM-YYYY')}`
+            `${startDate ? formatDate(dayjs(startDate, 'DD-MM-YYYY'), 'DD-MM-YYYY') : value}${
+              asSingle ? '' : ` ~ ${formatDate(dayjs(endDate, 'DD-MM-YYYY'), 'DD-MM-YYYY')}`
             }`,
           );
         }
