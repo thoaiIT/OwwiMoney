@@ -29,7 +29,6 @@ const ForgotPasswordForm = () => {
   });
 
   const handleSubmitForm = handleSubmit(async (values) => {
-    console.log(values);
     setIsLoading(true);
     await forgetPassword({ email: values.email }).then((result) => {
       setIsLoading(false);

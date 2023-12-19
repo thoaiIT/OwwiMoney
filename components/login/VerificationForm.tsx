@@ -154,7 +154,6 @@ const VerificationForm: React.FC<VerificationFormProps> = ({ type, email }) => {
           <button
             className="ml-2 text-color-resend hover:text-orange-500"
             onClick={() => {
-              console.log('click');
               setResend(true);
               setTime(60);
               resendOTPHandler();

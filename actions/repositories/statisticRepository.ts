@@ -198,7 +198,6 @@ class StatisticRepository {
         }
       }
     }
-    console.log({ startDate, endDate, summary });
     return summary;
   }
   async getNewTransactionByUser(userId: string) {

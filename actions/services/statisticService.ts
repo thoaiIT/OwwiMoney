@@ -83,8 +83,6 @@ class StatisticService {
         return acc;
       }, []);
 
-      console.log({ dataValues });
-
       return {
         message: 'Success',
         data: {
@@ -132,7 +130,6 @@ class StatisticService {
         dateEnd: dateEnd.toISOString(),
       });
 
-      // console.log({ listDate });
       // Find data relative with each item in listDate
       const dataValues: number[] = listDate.reduce((acc: number[], item, i) => {
         const idx = statisticOutcome.findIndex((dateGroup) => {
@@ -187,7 +184,6 @@ class StatisticService {
         currentDate.setFullYear(currentDate.getFullYear() + 1);
       }
 
-      console.log({ listDate, dateStart, dateEnd });
       // Find data relative with each item in listDate
       const dataValues: number[] = listDate.reduce((acc: number[], item) => {
         const idx = statisticOutcome.findIndex((dateGroup) => {
@@ -196,6 +192,7 @@ class StatisticService {
         acc.push(idx >= 0 ? statisticOutcome[idx]?.total || 0 : 0);
         return acc;
       }, []);
+
       return {
         message: 'Success',
         data: {

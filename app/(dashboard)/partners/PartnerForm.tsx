@@ -83,7 +83,7 @@ export default function PartnerForm({
   useEffect(() => {
     setPartnerImage(partnerData?.image || '');
   }, [partnerData?.image]);
-  console.log({ partnerImage });
+
   return (
     <CommonCard className="p-4 md:p-16 md:pr-20 lg:pr-40 2xl:pr-96 w-full">
       <div className="grid grid-cols-3 gap-4 items-center">
