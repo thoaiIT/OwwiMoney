@@ -28,10 +28,12 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       if (dayjs(fullDay).isSame(period.start) && dayjs(fullDay).isSame(period.end)) {
         className = 'bg-celestial_blue-400 text-white font-medium rounded-full';
       } else if (dayjs(fullDay).isSame(period.start)) {
+        console.log(2);
         className = `bg-celestial_blue-400 text-white font-medium ${
           dayjs(fullDay).isSame(dayHover) && !period.end ? 'rounded-full' : 'rounded-l-full'
         }`;
       } else if (dayjs(fullDay).isSame(period.end)) {
+        console.log(3);
         className = `bg-celestial_blue-400 text-white font-medium ${
           dayjs(fullDay).isSame(dayHover) && !period.start ? 'rounded-full' : 'rounded-r-full'
         }`;
@@ -124,7 +126,6 @@ const Days = ({ calendarData, onClickPreviousDays, onClickDay, onClickNextDays }
       const object = getMetaData();
       const newDate = object[type as keyof typeof object];
       const newHover = `${newDate.year()}-${newDate.month() + 1}-${day >= 10 ? day : '0' + day}`;
-
       if (period.start && !period.end) {
         const hoverPeriod = { ...period, end: newHover };
         if (dayjs(newHover).isBefore(dayjs(period.start))) {
