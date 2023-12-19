@@ -164,13 +164,17 @@ const CommonDatePicker = ({
 
   useEffect(() => {
     if (value) {
-      let startDate: string | undefined;
-      let endDate: string | undefined;
+      let startDate: dayjs.Dayjs | null = null;
+      let endDate: dayjs.Dayjs | null = null;
       if (typeof value === 'object' && 'startDate' in value && 'endDate' in value) {
-        startDate = value.startDate;
-        endDate = value.endDate;
+        startDate = dayjs(value.startDate);
+        endDate = dayjs(value.endDate);
       } else if (typeof value === 'string') {
-        startDate = endDate = value;
+        const formatValue = convertToDDMMYYYY(value);
+        const date = dayjs(formatValue, 'DD-MM-YYYY');
+        if (date.isValid()) {
+          startDate = endDate = date;
+        }
       }
       if (startDate && dayjs(startDate).isValid()) {
         setFirstDate(dayjs(startDate));
