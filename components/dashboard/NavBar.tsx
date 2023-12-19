@@ -1,6 +1,6 @@
+import CommonAvatar from '@/components/CommonAvatar';
 import Breadcrumb from '@/components/breadscrumb';
 import ThemeSwitch from '@/components/theme-switch';
-import * as Avatar from '@radix-ui/react-avatar';
 import { Box, Flex, IconButton, Strong, Text } from '@radix-ui/themes';
 import { useSession } from 'next-auth/react';
 import { IoIosArrowDown, IoMdMail } from 'react-icons/io';
@@ -29,17 +29,12 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
             />
           </Box>
         </Box>
-        <Box className="bg-white-500 h-full w-[30vh] rounded-2xl flex items-center p-2 justify-evenly shadow-md">
-          <Avatar.Root className="bg-blackA1 inline-flex h-[40px] w-[40px] select-none items-center justify-center overflow-hidden rounded-full align-middle">
-            <Avatar.Image
-              className="h-full w-full rounded-[inherit] object-cover"
-              src={
-                session?.user?.image ||
-                'https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80'
-              }
-              alt="Colm Tuite"
-            />
-          </Avatar.Root>
+        <Box className="bg-white-500 h-full w-[30vh] rounded-2xl flex items-center py-2 px-4 justify-between shadow-md">
+          <CommonAvatar
+            alt="User avatar"
+            src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+            className="w-12 h-12"
+          />
           <Flex
             direction="column"
             gap="3"

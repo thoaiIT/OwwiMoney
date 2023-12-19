@@ -45,7 +45,7 @@ const Breadcrumb = () => {
               index >= pathSegments.length - 1 && 'text-theme-text font-semibold',
             )}
           >
-            {pathSegments[index - 1] === 'wallet' ? (
+            {pathSegments[index - 1] === 'wallet' || pathSegments[index - 1] === 'transactions' ? (
               <>
                 <span className="flex items-center gap-2">
                   <GiOwl />

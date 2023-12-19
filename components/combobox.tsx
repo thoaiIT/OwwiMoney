@@ -18,6 +18,7 @@ type OptionItemProps = {
   item: DataType;
   onSelect: (item: DataType) => void;
   isActive?: boolean;
+  className?: string;
 };
 
 type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root> &
@@ -32,6 +33,7 @@ type CommonComboboxProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitiv
     customInput?: string;
     name: string;
     valueProp?: string;
+    customItem?: string;
     onChangeHandler: (value: string) => void;
     errors?: FieldErrors;
   };
@@ -48,6 +50,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
       label,
       customLabel,
       customInput,
+      customItem,
       name,
       valueProp,
       onChangeHandler,
@@ -167,6 +170,7 @@ const CommonCombobox = React.forwardRef<React.ElementRef<typeof PopoverPrimitive
                       setOpen(false);
                     }}
                     isActive={value === option.value}
+                    className={customItem}
                   />
                 ))
               )}
@@ -202,7 +206,7 @@ CommonCombobox.displayName = 'Combobox';
 
 export default CommonCombobox;
 
-export const OptionItem: React.FC<OptionItemProps> = ({ item, onSelect, isActive }) => {
+export const OptionItem: React.FC<OptionItemProps> = ({ item, onSelect, isActive, className }) => {
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       onSelect(item);
@@ -219,6 +223,7 @@ export const OptionItem: React.FC<OptionItemProps> = ({ item, onSelect, isActive
       className={tailwindMerge(
         'py-2 px-4 hover:duration-300 flex items-center text-base',
         'hover:duration-300 hover:bg-theme-hover hover:rounded hover:cursor-pointer',
+        className,
       )}
     >
       {item.label}
