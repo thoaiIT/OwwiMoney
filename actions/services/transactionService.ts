@@ -129,8 +129,10 @@ class TransactionService {
         if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
       }
       const transaction = await this.transactionRepository.updateTransaction({ ...data, invoiceImageUrl: imageUrl });
+      console.log({ updateTransaction: transaction });
       return { message: 'Success', data: { transaction }, status: HttpStatusCodes[200] };
     } catch (error) {
+      console.log({ error });
       return { message: error, status: HttpStatusCodes[500] };
     }
   }
