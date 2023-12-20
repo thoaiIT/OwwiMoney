@@ -64,6 +64,7 @@ export default function DashboardOverview() {
           optionsProp={pieChartOptions}
           widthSelection={'100px'}
           placeholder={'Select...'}
+          customItem="text-xs"
           customInput={'text-sm h-6 rounded-[8px] bg-[#4455A2] text-white border-none'}
         />
       </div>
