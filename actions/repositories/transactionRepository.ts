@@ -70,9 +70,9 @@ class TransactionRepository {
       transactions: transactions.map((transaction) => {
         const formatTransaction = {
           ...transaction,
-          createdDate: `${formatDateMonth(transaction.createdDate.getDate())}-${formatDateMonth(
+          createdDate: `${transaction.createdDate.getFullYear()}-${formatDateMonth(
             transaction.createdDate.getMonth() + 1,
-          )}-${transaction.createdDate.getFullYear()}`,
+          )}-${formatDateMonth(transaction.createdDate.getDate())}`,
           typeName: transaction.type.name,
           categoryName: transaction.category.name,
           partnerName: transaction.partner.name,
@@ -135,23 +135,31 @@ class TransactionRepository {
     status,
     walletId,
     description,
+    updatedAmount,
   }: TransactionUpdateType) {
     console.log('typeof createdDate', createdDate, new Date(createdDate));
-    return await client.transaction.update({
-      where: { id: id },
-      data: {
-        typeId,
-        categoryId,
-        deleted: false,
-        partnerId,
-        amount,
-        description,
-        createdDate: new Date(createdDate),
-        invoiceImageUrl,
-        status,
-        walletId,
-      },
-    });
+    const [updateTransaction] = await client.$transaction([
+      client.transaction.update({
+        where: { id: id },
+        data: {
+          typeId,
+          categoryId,
+          deleted: false,
+          partnerId,
+          amount,
+          description,
+          createdDate: new Date(createdDate),
+          invoiceImageUrl,
+          status,
+          walletId,
+        },
+      }),
+      client.wallet.update({
+        where: { id: walletId },
+        data: { totalBalance: { increment: updatedAmount } },
+      }),
+    ]);
+    return updateTransaction;
   }
 }
 

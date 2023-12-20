@@ -128,6 +128,7 @@ class TransactionService {
         imageUrl = (await uploadToCloudinary(data.invoiceImageUrl)) || '';
         if (!imageUrl) return { message: 'Failed to upload image', status: HttpStatusCodes[400] };
       }
+
       const transaction = await this.transactionRepository.updateTransaction({ ...data, invoiceImageUrl: imageUrl });
       console.log({ updateTransaction: transaction });
       return { message: 'Success', data: { transaction }, status: HttpStatusCodes[200] };

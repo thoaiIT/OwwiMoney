@@ -150,13 +150,14 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
         id: transaction.id,
         amount: Number(values.amount),
         categoryId: values.category,
-        createdDate: (values.createdDate as { endDate?: string }).endDate as string,
+        createdDate: ((values.createdDate as { endDate?: string }).endDate as string) || values.createdDate,
         description: values.description || '',
         invoiceImageUrl: values.invoiceImage?.base64String || '',
         partnerId: values.partnerId,
         typeId: values.type,
         walletId: values.wallet,
         status: values.status,
+        updatedAmount: amount,
       };
       console.log({ data });
       // setIsLoading(true);
