@@ -66,7 +66,7 @@ const NavBar = ({ noti = true }: { noti?: boolean }) => {
             {togglePanel ? <IoIosArrowUp size={22} /> : <IoIosArrowDown size={22} />}
           </IconButton>
           {togglePanel && (
-            <CommonCard className="absolute bottom-[-0.2rem] right-0 transform translate-y-full w-48 rounded-lg shadow-md">
+            <CommonCard className="absolute bottom-[-0.2rem] right-0 transform translate-y-full w-48 rounded-lg shadow-md z-10">
               <Link href={'/settings'}>
                 <div className="hover:text-white hover:bg-[#1eabf8] px-4 py-4 rounded-lg rounded-bl-none rounded-br-none w-[100%]">
                   Setting
