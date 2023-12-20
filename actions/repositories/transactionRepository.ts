@@ -89,11 +89,15 @@ class TransactionRepository {
       where: {
         id,
       },
+      include: {
+        type: true,
+      },
     });
     return !transaction
       ? transaction
       : {
           ...transaction,
+          type: transaction.type.name,
           createdDate: `${transaction.createdDate.getDate()}-${
             transaction.createdDate.getMonth() + 1
           }-${transaction.createdDate.getFullYear()}`,
@@ -132,6 +136,7 @@ class TransactionRepository {
     walletId,
     description,
   }: TransactionUpdateType) {
+    console.log('typeof createdDate', createdDate, new Date(createdDate));
     return await client.transaction.update({
       where: { id: id },
       data: {

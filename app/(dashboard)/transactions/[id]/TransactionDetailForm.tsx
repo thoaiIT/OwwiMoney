@@ -20,6 +20,7 @@ import CommonInput from '@/components/input';
 import { tailwindMerge } from '@/utils/helper';
 import { IsImage, MaxSize } from '@/utils/validate/decorators';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
+import * as Toggle from '@radix-ui/react-toggle';
 import { IsNotEmpty, Min } from 'class-validator';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -53,6 +54,8 @@ export class UpdateTransactionModel {
   @IsNotEmpty({ message: 'Amount is required' })
   @Min(1, { message: 'Amount must be larger 0' })
   amount: number;
+
+  status: 'PAID' | 'UNPAID';
 
   @IsImage()
   @MaxSize(10000000)
@@ -91,6 +94,7 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
       createdDate: transaction?.createdDate || '',
       amount: transaction?.amount || 0,
       invoiceImage: { base64String: '', size: 0, type: '' },
+      status: transaction?.status || 'PAID',
       description: transaction?.description || '',
     },
     resolver,
@@ -138,9 +142,10 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
       : amountChange;
     const walletInfo = await checkWalletInfo(values.wallet as string, amount);
     if (walletInfo.status?.code === 200) {
-      const isUnPaid = typeOptions.some(
-        (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Borrow'),
-      );
+      // const isUnPaid = typeOptions.some(
+      //   (type) => type.value === values.type && (type.label === 'Loan' || type.label === 'Borrow'),
+      // );
+
       const data: TransactionUpdateType = {
         id: transaction.id,
         amount: Number(values.amount),
@@ -151,7 +156,7 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
         partnerId: values.partnerId,
         typeId: values.type,
         walletId: values.wallet,
-        status: isUnPaid ? 'UNPAID' : 'PAID',
+        status: values.status,
       };
       console.log({ data });
       // setIsLoading(true);
@@ -415,6 +420,31 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
             </label>
           )}
         </div>
+        {(transaction.type === 'Borrow' || transaction.type === 'Loan') && (
+          <>
+            <p className="mb-2 text-base font-semibold leading-6 col-span-1">Status</p>
+            <div className="col-span-2">
+              <Controller
+                name="status"
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Toggle.Root
+                    aria-label="Toggle italic"
+                    onClick={() => {
+                      value === 'PAID' ? onChange('UNPAID') : onChange('PAID');
+                    }}
+                    className={tailwindMerge(
+                      'justify-between inline-flex items-center rounded-md transition-colors px-6 py-4 border-[1px] border-solid border-[#D1D1D1] hover h-14 text-base focus:border-dark-mode',
+                      value === 'PAID' && 'text-color-success border-color-success focus:border-color-success',
+                    )}
+                  >
+                    {value}
+                  </Toggle.Root>
+                )}
+              />
+            </div>
+          </>
+        )}
         <p className="mb-2 text-base font-semibold leading-6 col-span-1">Description</p>
         <div className="col-span-2">
           <Controller
