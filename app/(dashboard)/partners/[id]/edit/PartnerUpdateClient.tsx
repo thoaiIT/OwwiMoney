@@ -39,7 +39,6 @@ export default function PartnerUpdateClient({ id }: { id: string }) {
       if (respone.status?.code === 200) {
         setPartnerData((respone.data?.partner || {}) as PartnerUpdateType);
       }
-      console.log({ respone });
     })();
   }, [id]);
 

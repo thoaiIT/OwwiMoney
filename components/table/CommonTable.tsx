@@ -132,7 +132,6 @@ const CommonTable = <TData,>({
   const insertNewRow = useCallback(() => {
     setDataRender((prev) => {
       const updated = [...prev.map((item) => ({ ...item }))];
-      console.log({ dataKeys: Object.keys(data) });
       return updated;
     });
   }, []);

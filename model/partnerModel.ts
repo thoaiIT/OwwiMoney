@@ -4,21 +4,21 @@ import { IsNotEmpty } from 'class-validator';
 export class PartnerModel {
   //   @IsImage()
   //   @MaxSize(10000000)
-  avatar: FileImageType | undefined;
+  avatar: FileImageType;
 
   @IsNotEmpty({ message: 'Type is required' })
-  type: string | undefined;
+  type: string;
 
   // @IsNotEmpty({ message: 'Wallet is required' })
-  contact: string | undefined;
+  contact: string;
 
-  address: string | undefined;
+  address: string;
 
   // @IsNotEmpty({ message: 'Created Date is required' })
-  email: string | undefined;
+  email: string;
 
   @IsNotEmpty({ message: 'Name is required' })
-  name: string | undefined;
+  name: string;
 
-  description: string | undefined;
+  description: string;
 }

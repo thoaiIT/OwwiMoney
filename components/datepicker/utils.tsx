@@ -210,3 +210,14 @@ export default function useOnClickOutside(
     };
   }, [ref, handler]);
 }
+
+export const convertToDDMMYYYY = (value: string): string => {
+  const formatsToTry = ['DD-MM-YYYY', 'D-M-YYYY', 'YYYY-M-D', 'YYYY-MM-DD', 'YYYY-D-M'];
+  for (const format of formatsToTry) {
+    const parsedDate = dayjs(value, format, true);
+    if (parsedDate.isValid()) {
+      return parsedDate.format('DD-MM-YYYY');
+    }
+  }
+  return '';
+};

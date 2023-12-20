@@ -48,8 +48,8 @@ const SecurityForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="oldPassword"
-            className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px]"
-            placeholder="Old Password"
+            className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0 bg-white md:w-96"
+            placeholder="Old password"
             value={String(value)}
             onChange={onChange}
             errors={errors}
@@ -64,7 +64,7 @@ const SecurityForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="newPassword"
-            className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
+            className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0 bg-white md:w-96"
             placeholder="New password"
             value={String(value)}
             onChange={onChange}
@@ -80,7 +80,7 @@ const SecurityForm = () => {
         render={({ field: { onChange, value } }) => (
           <CommonInput
             name="confirmPassword"
-            className="px-6 py-4 border-none shadow-none hover h-14 text-base focus-visible:ring-0 md:min-w-[500px] w-72"
+            className="border-[1px] border-theme-component px-6 py-4  shadow-none hover h-14 text-base focus-visible:ring-0 bg-white md:w-96"
             placeholder="Confirm password"
             value={String(value)}
             onChange={onChange}

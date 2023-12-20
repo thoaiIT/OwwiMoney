@@ -23,7 +23,7 @@ const SideBarRouter = () => {
       <Link
         href={href}
         className={tailwindMerge(
-          'flex justify-start items-center py-5 px-4 mb-[5px] leading-[1.2] text-base font-medium',
+          'flex justify-start items-center p-4 mb-[6px] leading-[1.2] text-base font-medium',
           className,
           `${
             pathname.startsWith(href)

@@ -198,7 +198,6 @@ class StatisticRepository {
         }
       }
     }
-    console.log({ startDate, endDate, summary });
     return summary;
   }
   async getNewTransactionByUser(userId: string) {
@@ -211,7 +210,7 @@ class StatisticRepository {
         partner: { select: { name: true, image: true } }, // Lựa chọn các trường bạn muốn bao gồm cho partner
       },
       orderBy: { createdDate: 'desc' }, // Sắp xếp theo createdDate giảm dần
-      take: 5,
+      take: 4,
     });
 
     return transactions.map((item) => ({

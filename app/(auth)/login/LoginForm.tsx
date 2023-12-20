@@ -45,7 +45,6 @@ const LoginForm = () => {
         router.refresh();
         toast.success('Login Successfully !');
       } else {
-        console.log(callback);
         toast.error('Invalid email or password !');
       }
     });
@@ -64,7 +63,7 @@ const LoginForm = () => {
     <>
       <Heading
         title="OwwiMoney"
-        custom="md:text-7xl text-5xl text-center xl:text-start text-dark-blue"
+        custom="xl:text-7xl text-5xl text-center xl:text-start text-dark-blue"
       />
       <div className="flex items-center justify-center xl:justify-start">
         <Image
@@ -76,7 +75,7 @@ const LoginForm = () => {
         />
         <Heading
           title="Login"
-          custom="mt-2 text-4xl text-center xl:text-start"
+          custom="text-4xl text-center xl:text-start"
         />
       </div>
       <form>
@@ -135,9 +134,8 @@ const LoginForm = () => {
         </CommonButton>
       </form>
 
-      <div className="mt-1">
-        <p className="text-sm text-gray-400 text-center">or continue with</p>
-      </div>
+      <p className="text-sm text-gray-400 text-center">or continue with</p>
+
       <div className="grid grid-cols-3 gap-2">
         <CommonButton
           intent={'outline'}

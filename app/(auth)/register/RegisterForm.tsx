@@ -53,7 +53,7 @@ const RegisterForm = () => {
           router.refresh();
         }
         if (callback?.error) {
-          console.log(callback);
+          console.log(callback?.error);
         }
       });
     } else {
@@ -74,7 +74,7 @@ const RegisterForm = () => {
         />
         <Heading
           title="Hello!"
-          custom="md:text-7xl text-5xl text-center xl:text-start items-starts"
+          custom="md:text-6xl text-5xl text-center xl:text-start items-starts"
         />
       </div>
       <Heading

@@ -9,7 +9,6 @@ export default function ProcessIndicator() {
   useEffect(() => {
     if (filled < 100 && isRuning) {
       setTimeout(() => setFilled((prev) => (prev += 2)), 50);
-      console.log(filled);
     }
   }, [filled, isRuning]);
   return (
