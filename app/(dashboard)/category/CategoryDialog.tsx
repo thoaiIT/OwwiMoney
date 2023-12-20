@@ -92,15 +92,16 @@ const CategoryDialog = ({
   };
 
   useEffect(() => {
-    (async () => {
+    const fetchAllTypes = async () => {
       const allTypes = await getAllTypes();
       const typeOptions: DataType[] | undefined = allTypes.data?.types?.map((type) => {
         return { value: type.id, label: type.name } as DataType;
       });
 
       setCategoryTypeOption(typeOptions as DataType[]);
-    })();
-  }, []);
+    };
+    openDialog && fetchAllTypes();
+  }, [openDialog]);
 
   useEffect(() => {
     const getCategoryDetail = async () => {
