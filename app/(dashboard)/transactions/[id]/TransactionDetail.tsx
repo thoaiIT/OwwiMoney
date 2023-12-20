@@ -11,7 +11,6 @@ type TransactionDetailType = {
 const TransactionDetail = async ({ id }: TransactionDetailType) => {
   const transactionRes = await getTransactionById(id);
   const transaction: TransactionType = transactionRes.data as TransactionType;
-  console.log({ transaction });
   return (
     <Fragment>
       <Title title="Transaction Detail" />
