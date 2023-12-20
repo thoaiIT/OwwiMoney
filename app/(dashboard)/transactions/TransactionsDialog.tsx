@@ -49,12 +49,14 @@ export type TransactionType = {
   partnerId: string;
   categoryId: string;
   typeId: string;
+  type?: string;
   walletId: string;
   amount: number;
   createdAt: Date;
   updatedAt: Date;
   description: string;
   invoiceImageUrl: string;
+  status: 'PAID' | 'UNPAID';
 };
 
 export class NewTransactionModel {
