@@ -7,14 +7,14 @@ type SearchParams = { searchParams: any };
 export default async function Partners({ searchParams }: SearchParams) {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || DEFAULT_PAGE_SIZE;
-  const respone = await getAllPartnerByUser(pageSize, page, searchParams?.query);
+  const response = await getAllPartnerByUser(pageSize, page, searchParams?.query);
 
   return (
     <div>
       <Title title="Partners" />
       <PartnerClient
-        partners={respone.data?.partners as DisplayPartner[] | []}
-        totalPages={respone.data?.totalPages}
+        partners={response.data?.partners as DisplayPartner[] | []}
+        totalPages={response.data?.totalPages}
       />
     </div>
   );

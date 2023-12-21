@@ -8,19 +8,19 @@ function Client() {
   const fakeSendMessage = (e: any) => {
     e.preventDefault();
     // (async () => {
-    //   const respone = await fetch('/api/chat', {
+    //   const response = await fetch('/api/chat', {
     //     method: 'POST',
     //     body: JSON.stringify({ message: Math.round(Math.random() * 1000) }),
     //   });
-    //   const data = await respone.json();
+    //   const data = await response.json();
     //   console.log({ data });
     // })();
     socket.emit('chat', { action: 'push', message: 'ok' });
   };
   useEffect(() => {
     // (async () => {
-    //   const respone = await fetch('/app/api/socket');
-    //   const data = await respone.json();
+    //   const response = await fetch('/app/api/socket');
+    //   const data = await response.json();
 
     //   const socket = openSocket();
     //   socket.on('chat', (data: { action: string; message: string }) => {

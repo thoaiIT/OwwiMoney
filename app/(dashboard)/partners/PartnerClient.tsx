@@ -41,8 +41,8 @@ export default function PartnerClient({
   const deleteConfirmHandler = async () => {
     const response = await deletePartner(deleteId);
     if (response.status?.code === 200) {
-      router.prefetch('/partners');
       router.push('/partners');
+      router.refresh();
     }
   };
 

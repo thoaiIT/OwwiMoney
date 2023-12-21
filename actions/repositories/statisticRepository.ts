@@ -359,6 +359,64 @@ class StatisticRepository {
       };
     });
   }
+
+  async getWalletsStatistic(userId: string) {
+    const db = await connectToDatabase();
+    const results = await db
+      .collection('Transaction')
+      .aggregate([
+        {
+          $match: {
+            userId: new ObjectId(userId),
+            deleted: false,
+          },
+        },
+        {
+          $lookup: {
+            from: 'Type',
+            localField: 'typeId',
+            foreignField: '_id',
+            as: 'type',
+          },
+        },
+        {
+          $match: {
+            'type.name': {
+              $regex: /Income|Outcome/i,
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: 'Wallet',
+            localField: 'walletId',
+            foreignField: '_id',
+            as: 'wallet',
+          },
+        },
+        {
+          $sort: {
+            createdDate: -1,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              typeId: '$typeId',
+              walletId: '$walletId',
+              typeName: '$type.name',
+              walletName: '$wallet.name',
+              walletBalance: '$wallet.totalBalance',
+              walletAccountNumber: '$wallet.accountNumber',
+            },
+            totalAmount: { $sum: '$amount' }, // Assuming you want to sum the 'amount' field
+            count: { $sum: 1 }, // Optional: Count the number of documents in each group
+          },
+        },
+      ])
+      .toArray();
+    return results;
+  }
 }
 
 export default StatisticRepository;

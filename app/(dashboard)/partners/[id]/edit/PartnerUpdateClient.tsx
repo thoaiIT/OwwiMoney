@@ -24,20 +24,20 @@ export default function PartnerUpdateClient({ id }: { id: string }) {
       typeId: values.type || '',
       image: values.avatar?.base64String || '',
     };
-    const respone = await updatePartner(partner);
+    const response = await updatePartner(partner);
     setIsLoading(false);
-    if (respone.status?.code === 200) {
+    if (response.status?.code === 200) {
       toast.success('Updated partner successfully!');
       router.push('/partners');
-      router.prefetch('/partners');
+      router.refresh();
     }
   };
 
   useEffect(() => {
     (async () => {
-      const respone = await getPartnerById(id);
-      if (respone.status?.code === 200) {
-        setPartnerData((respone.data?.partner || {}) as PartnerUpdateType);
+      const response = await getPartnerById(id);
+      if (response.status?.code === 200) {
+        setPartnerData((response.data?.partner || {}) as PartnerUpdateType);
       }
     })();
   }, [id]);

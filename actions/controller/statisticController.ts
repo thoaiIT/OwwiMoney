@@ -61,3 +61,11 @@ export const getBorrowerByFilter = async (query?: string) => {
     return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
   }
 };
+
+export const getWalletsStatistic = async () => {
+  try {
+    return await statisticService.getWalletsStatistic();
+  } catch (error) {
+    return { message: 'Internal Server Error', status: HttpStatusCodes[500] };
+  }
+};

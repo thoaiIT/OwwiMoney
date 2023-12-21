@@ -18,12 +18,12 @@ export default function PartnerCreateClient() {
       typeId: values.type || '',
       image: values.avatar?.base64String || '',
     };
-    const respone = await createPartner(partner);
+    const response = await createPartner(partner);
 
-    if (respone.status?.code === 201) {
+    if (response.status?.code === 201) {
       toast.success('Partner created successfully');
-      router.prefetch('/partners');
       router.push('/partners');
+      router.refresh();
     }
   };
   return (

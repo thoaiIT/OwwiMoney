@@ -2,7 +2,13 @@ import type StatisticRepository from '@/actions/repositories/statisticRepository
 import { options } from '@/app/api/auth/[...nextauth]/options';
 import { getServerSession } from 'next-auth';
 import { HttpStatusCodes } from '../../helper/type';
-
+export type WalletStatisticType = {
+  walletName?: string;
+  walletAccountNumber?: string | number;
+  totalBalance?: number;
+  Outcome?: number;
+  Income?: number;
+};
 class StatisticService {
   private statisticReposiroty: StatisticRepository;
 
@@ -252,6 +258,44 @@ class StatisticService {
       }
       const borrowers = await this.statisticReposiroty.getBorrowerByFilter(userId, query);
       return { message: 'Success', data: borrowers, status: HttpStatusCodes[200] };
+    } catch (error) {
+      return { message: error, status: HttpStatusCodes[500] };
+    }
+  }
+
+  async getWalletsStatistic() {
+    try {
+      const session = await getServerSession(options);
+      const userId = (session?.user?.userId as string) || (session?.user?.id as string);
+
+      if (!userId) {
+        return { message: 'User is not valid', status: HttpStatusCodes[401] };
+      }
+
+      const data = await this.statisticReposiroty.getWalletsStatistic(userId);
+
+      type ReturnType = Record<string, WalletStatisticType>;
+      const statistic: ReturnType = data.reduce((acc, item) => {
+        const walletName = item._id.walletName[0];
+        const filters = data.filter((i) => i._id.walletName[0] === walletName);
+        acc[walletName] = {
+          totalBalance: filters[0]!._id.walletBalance[0],
+          walletAccountNumber: filters[0]!._id.walletAccountNumber[0],
+        };
+        filters.forEach((filter) => {
+          acc[walletName][filter._id.typeName[0]] = filter.totalAmount;
+        });
+        acc[walletName].Outcome = acc[walletName].Outcome ? acc[walletName].Outcome : 0;
+        acc[walletName].Income = acc[walletName].Income ? acc[walletName].Income : 0;
+        return acc;
+      }, {});
+
+      const result = [];
+      for (const key of Object.keys(statistic)) {
+        result.push({ walletName: key, ...statistic[key] });
+      }
+
+      return { message: 'Success', data: result, status: HttpStatusCodes[200] };
     } catch (error) {
       return { message: error, status: HttpStatusCodes[500] };
     }
