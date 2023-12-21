@@ -1,6 +1,6 @@
 'use client';
 import { getCategoryByType } from '@/actions/controller/categoryController';
-import { getPartnerByType } from '@/actions/controller/partnerController';
+import { getPartnerById } from '@/actions/controller/partnerController';
 import {
   checkWalletInfo,
   updateTransaction,
@@ -10,11 +10,10 @@ import { getAllTypes } from '@/actions/controller/typeController';
 import { getAllWallet } from '@/actions/controller/walletController';
 import type { FileType, TransactionType } from '@/app/(dashboard)/transactions/TransactionsDialog';
 import CommonAvatar from '@/components/CommonAvatar';
-import { CommonPopover, CommonPopoverContent, CommonPopoverTrigger } from '@/components/Popover';
 import CommonTextarea from '@/components/Textarea';
 import { CommonButton } from '@/components/button';
 import { CommonCard } from '@/components/card';
-import CommonCombobox, { OptionItem, type DataType } from '@/components/combobox';
+import CommonCombobox, { type DataType } from '@/components/combobox';
 import CommonDatePicker from '@/components/datepicker';
 import CommonInput from '@/components/input';
 import { tailwindMerge } from '@/utils/helper';
@@ -26,9 +25,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { BsSearch } from 'react-icons/bs';
 import { FaCloudUploadAlt } from 'react-icons/fa';
-import { GoPlus } from 'react-icons/go';
 import { toast } from 'react-toastify';
 
 type TransactionDetailFormType = {
@@ -69,11 +66,11 @@ const resolver = classValidatorResolver(UpdateTransactionModel);
 const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
   const [typeOptions, setTypeOptions] = useState<DataType[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<DataType[]>([]);
-  const [partnerOptions, setPartnerOptions] = useState<DataType[]>([]);
-  const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
+  const [partner, setPartner] = useState<DataType>({ label: 'Partner', value: 'partner' });
+  // const [morePartnerOptions, setMorePartnerOptions] = useState<DataType[]>([]);
   const [walletOptions, setWalletOptions] = useState<DataType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  // const [open, setOpen] = useState<boolean>(false);
 
   const [transactionImage, setTransactionImage] = useState<string>(transaction?.invoiceImageUrl || '');
 
@@ -117,21 +114,21 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
     }
   };
 
-  const handleSearch = (searchString: string) => {
-    setMorePartnerOptions(
-      partnerOptions.slice(6).filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())),
-    );
-  };
+  // const handleSearch = (searchString: string) => {
+  //   setMorePartnerOptions(
+  //     partnerOptions.slice(6).filter((option) => option.label.toLowerCase().includes(searchString.toLowerCase())),
+  //   );
+  // };
 
-  const handleSelectItem = (item: DataType) => {
-    setPartnerOptions((prev) => {
-      prev.splice(prev.indexOf(item), 1);
-      const items = [item, ...prev];
-      return items;
-    });
-    setValue('partnerId', item.value);
-    setOpen(false);
-  };
+  // const handleSelectItem = (item: DataType) => {
+  //   setPartnerOptions((prev) => {
+  //     prev.splice(prev.indexOf(item), 1);
+  //     const items = [item, ...prev];
+  //     return items;
+  //   });
+  //   setValue('partnerId', item.value);
+  //   setOpen(false);
+  // };
 
   const handleSubmitForm = handleSubmit(async (values) => {
     const amountChange = values.amount - transaction.amount;
@@ -165,6 +162,7 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
       // setIsLoading(false);
       if (res.status?.code === 200) {
         toast.success(res.message as string);
+        router.push('/transactions');
         router.refresh();
       } else {
         toast.error(res.message as string);
@@ -174,9 +172,9 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
     }
   });
 
-  useEffect(() => {
-    setMorePartnerOptions(partnerOptions.slice(6));
-  }, [partnerOptions]);
+  // useEffect(() => {
+  //   setMorePartnerOptions(partnerOptions.slice(6));
+  // }, [partnerOptions]);
 
   useEffect(() => {
     const fetchAllTypes = async () => {
@@ -194,8 +192,19 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
       });
       setWalletOptions(walletOptions as DataType[]);
     };
+    const fetchPartnersById = async () => {
+      const partnerRes = await getPartnerById(transaction.partnerId);
+      const partner: DataType | undefined = {
+        value: partnerRes.data?.partner?.id,
+        label: partnerRes.data?.partner?.name,
+        src: partnerRes.data?.partner?.image,
+      } as DataType;
+
+      setPartner(partner);
+    };
     fetchAllTypes();
     fetchAllWallet();
+    fetchPartnersById();
   }, []);
 
   useEffect(() => {
@@ -206,17 +215,8 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
       });
       setCategoryOptions(categoryOpts as DataType[]);
     };
-    const fetchPartnersByType = async () => {
-      const allPartners = await getPartnerByType(watch('type'));
-      const partnerOpts: DataType[] | undefined = allPartners.data?.partners?.map((partner) => {
-        return { value: partner.id, label: partner.name, src: partner.image } as DataType;
-      });
-      const selectedIndex = partnerOpts?.findIndex((p) => p.value === transaction.partnerId);
-      const selectedItem = partnerOpts?.splice(selectedIndex || 0, 1) as DataType[];
-      setPartnerOptions([...selectedItem, ...(partnerOpts as DataType[])]);
-    };
+
     if (watch('type')) {
-      fetchPartnersByType();
       fetchCategoriesByType();
     }
   }, [watch('type')]);
@@ -245,6 +245,7 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonCombobox
+              isDisabled
               name="type"
               valueProp={value}
               onChangeHandler={onChange}
@@ -258,82 +259,18 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
           )}
         />
         <p className="mb-2 text-base font-semibold leading-6 col-span-1">Partner</p>
-        {partnerOptions.length === 0 ? (
-          <div className="h-[84px] flex justify-start items-center text-base col-span-2">
-            {watch('type') ? 'No Partner' : 'Please select type!!'}
-          </div>
-        ) : (
-          <div className="flex gap-5 col-span-2">
-            {partnerOptions.map((item, index: number) => {
-              if (partnerOptions.length === 7 || index < 6) {
-                return (
-                  <CommonAvatar
-                    handleClick={() => {
-                      setValue('partnerId', item.value);
-                    }}
-                    src={item.src}
-                    key={item.value}
-                    label={item.label}
-                    className={tailwindMerge(watch('partnerId') === item.value && 'border-2 border-black')}
-                    customLabel={tailwindMerge(watch('partnerId') === item.value && 'font-bold')}
-                  />
-                );
-              }
-            })}
-            {partnerOptions.length > 7 && (
-              <CommonPopover
-                open={open}
-                onOpenChange={() => {
-                  setOpen(!open);
-                }}
-              >
-                <CommonPopoverTrigger asChild>
-                  <div className="flex flex-col justify-center items-center">
-                    <CommonButton
-                      intent={'outline'}
-                      className="h-[60px] w-[60px] rounded-full"
-                    >
-                      <GoPlus size={24} />
-                    </CommonButton>
-                    <p
-                      className={
-                        'text-base font-normal color-[#404040] w-[68px] text-ellipsis overflow-hidden whitespace-nowrap text-center'
-                      }
-                    >
-                      More...
-                    </p>
-                  </div>
-                </CommonPopoverTrigger>
-                <CommonPopoverContent>
-                  <div className="flex items-center">
-                    <BsSearch className="w-4 ml-3" />
-                    <CommonInput
-                      name="search"
-                      intent="simple"
-                      placeholder="Search here... "
-                      className="text-base"
-                      onChange={(e) => {
-                        handleSearch(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="h-min max-h-60 overflow-y-auto border-t-2">
-                    {morePartnerOptions.map((option) => {
-                      return (
-                        <OptionItem
-                          key={option.value}
-                          item={option}
-                          onSelect={handleSelectItem}
-                          isActive={watch('partnerId') === option.value}
-                        />
-                      );
-                    })}
-                  </div>
-                </CommonPopoverContent>
-              </CommonPopover>
-            )}
-          </div>
-        )}
+        <div className="flex gap-5 col-span-2">
+          <CommonAvatar
+            handleClick={() => {
+              setValue('partnerId', partner.value);
+            }}
+            src={partner.src}
+            key={partner.value}
+            label={partner.label}
+            className="border-2 border-black"
+            customLabel="font-bold"
+          />
+        </div>
 
         <p className="mb-2 text-base font-semibold leading-6 col-span-1">Category</p>
         <Controller
@@ -360,6 +297,7 @@ const TransactionDetailForm = ({ transaction }: TransactionDetailFormType) => {
           control={control}
           render={({ field: { onChange, value } }) => (
             <CommonCombobox
+              isDisabled
               name="wallet"
               valueProp={value}
               onChangeHandler={onChange}

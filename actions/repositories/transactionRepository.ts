@@ -70,9 +70,9 @@ class TransactionRepository {
       transactions: transactions.map((transaction) => {
         const formatTransaction = {
           ...transaction,
-          createdDate: `${transaction.createdDate.getFullYear()}-${formatDateMonth(
-            transaction.createdDate.getMonth() + 1,
-          )}-${formatDateMonth(transaction.createdDate.getDate())}`,
+          createdDate: `${transaction.createdDate.getDate()}-${
+            transaction.createdDate.getMonth() + 1
+          }-${transaction.createdDate.getFullYear()}`,
           typeName: transaction.type.name,
           categoryName: transaction.category.name,
           partnerName: transaction.partner.name,
@@ -98,9 +98,9 @@ class TransactionRepository {
       : {
           ...transaction,
           type: transaction.type.name,
-          createdDate: `${transaction.createdDate.getDate()}-${
-            transaction.createdDate.getMonth() + 1
-          }-${transaction.createdDate.getFullYear()}`,
+          createdDate: `${transaction.createdDate.getFullYear()}-${formatDateMonth(
+            transaction.createdDate.getMonth() + 1,
+          )}-${formatDateMonth(transaction.createdDate.getDate())}`,
         };
   }
 
