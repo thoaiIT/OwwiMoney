@@ -38,10 +38,11 @@ export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) =>
       if (localTheme === 'dark') {
         document.documentElement.classList.add('dark');
       }
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
     }
+    // else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    //   setTheme('dark');
+    //   document.documentElement.classList.add('dark');
+    // }
   }, []);
 
   return (
