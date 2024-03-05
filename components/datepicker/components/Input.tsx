@@ -116,8 +116,8 @@ const Input: FC<InputProps> = ({ errors, name }) => {
     <>
       <input
         className={tailwindMerge([
-          'flex px-6 py-4 border-[1px] outline-none border-solid border-[#D1D1D1] hover h-14 text-base rounded-md w-full focus:border-1 focus:border-[#000]',
-          errors && errors[name]?.message && 'border-red-500 outline-red-500',
+          'flex px-6 py-4 border-[1px] outline-none border-solid border-[#D1D1D1] hover h-14 text-base rounded-md w-full focus:border-1 ',
+          errors && errors[name]?.message && 'border-red-500',
         ])}
         ref={inputRef}
         type="text"
