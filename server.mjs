@@ -4,9 +4,9 @@
 // const { Server } = require('socket.io');
 // const { sendMessage } = require('./actions/chat/lmao.js');
 import { createServer } from 'http';
-import { parse } from 'url';
 import next from 'next';
 import { Server } from 'socket.io';
+import { parse } from 'url';
 import { sendMessage } from './actions/chat/lmao.mjs';
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -40,12 +40,6 @@ app.prepare().then(() => {
     }
   });
 
-  //   io = new Server(httpServer, {
-  //     cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELELE'] },
-  //   });
-  //   io.on('connection', async (socket) => {
-  //     console.log('connected socket');
-  //   });
   io = new Server(httpServer, {
     cors: { origin: '*', methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELELE'] },
   });

@@ -18,6 +18,7 @@ export type TransactionUpdateType = Omit<
   'userId' | 'createdAt' | 'updatedAt' | 'createdDate' | 'deleted'
 > & {
   createdDate: string;
+  updatedAmount?: number;
 };
 
 const transactionRepository = new TransactionRepository();
